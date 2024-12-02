@@ -1,0 +1,62 @@
+SRC_TEST := \
+testing/testing_sgetrf.cpp
+
+
+SRC_TOOL :=   \
+testing/testing_zaxpy.cpp  \
+testing/magma_util.cpp  \
+testing/magma_zutil.cpp  \
+testing/magma_zgesvd_check.cpp  \
+testing/magma_generate.cpp  \
+testing/magma_cutil.cpp  \
+testing/magma_dutil.cpp  \
+testing/magma_sutil.cpp  \
+testing/magma_sgesvd_check.cpp  \
+testing/magma_dgesvd_check.cpp  \
+testing/magma_cgesvd_check.cpp
+
+
+
+
+SRC_FORT :=  \
+testing/lin/zbdt01.f  \
+testing/lin/zget22.f  \
+testing/lin/zhet21.f  \
+testing/lin/zhet22.f  \
+testing/lin/zhst01.f  \
+testing/lin/zunt01.f  \
+testing/lin/zqpt01.f  \
+testing/lin/zqrt02.f  \
+testing/lin/zlarfy.f  \
+testing/lin/zstt21.f  \
+testing/lin/cbdt01.f  \
+testing/lin/cget22.f  \
+testing/lin/chet21.f  \
+testing/lin/chet22.f  \
+testing/lin/chst01.f  \
+testing/lin/cunt01.f  \
+testing/lin/cqpt01.f  \
+testing/lin/cqrt02.f  \
+testing/lin/clarfy.f  \
+testing/lin/cstt21.f  \
+testing/lin/dbdt01.f  \
+testing/lin/dget22.f  \
+testing/lin/dsyt21.f  \
+testing/lin/dsyt22.f  \
+testing/lin/dhst01.f  \
+testing/lin/dort01.f  \
+testing/lin/dqpt01.f  \
+testing/lin/dqrt02.f  \
+testing/lin/dlarfy.f  \
+testing/lin/dstt21.f  \
+testing/lin/sbdt01.f  \
+testing/lin/sget22.f  \
+testing/lin/ssyt21.f  \
+testing/lin/ssyt22.f  \
+testing/lin/shst01.f  \
+testing/lin/sort01.f  \
+testing/lin/sqpt01.f  \
+testing/lin/sqrt02.f  \
+testing/lin/slarfy.f  \
+testing/lin/sstt21.f
+
