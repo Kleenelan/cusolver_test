@@ -1,31 +1,31 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
        @date
- 
+
        @author Mark Gates
        @precisions normal z -> s d c
 
     Wrappers around a few CBLAS functions.
-    
-    Primarily, we use the standard Fortran BLAS interface in MAGMA. However,
+
+    Primarily, we use the standard Fortran BLAS interface in ICLA. However,
     functions that return a value (as opposed to subroutines that are void)
     are not portable, as they depend on how Fortran returns values. The routines
     here provide a portable interface. These are not identical to CBLAS, in
     particular, [cz]dot[uc] return complex numbers (as in Fortran BLAS) rather
     than return values via an argument.
-    
+
     Only these BLAS-1 functions are provided:
-    
-    magma_cblas_dzasum / dasum
-    magma_cblas_dznrm2 / dnrm2
-    magma_cblas_zdotc  / ddot
-    magma_cblas_zdotu  / ddot
+
+    icla_cblas_dzasum / dasum
+    icla_cblas_dznrm2 / dnrm2
+    icla_cblas_zdotc  / ddot
+    icla_cblas_zdotu  / ddot
 
 */
-#include "magma_internal.h"
+#include "icla_internal.h"
 
 #define COMPLEX
 
@@ -34,8 +34,8 @@
             \f$ \sum_i | real(x_i) | + | imag(x_i) | \f$.
 
     To avoid dependence on CBLAS and incompatability issues between BLAS
-    libraries, MAGMA uses its own implementation, following BLAS reference.
-    
+    libraries, ICLA uses its own implementation, following BLAS reference.
+
     @param[in]
     n       Number of elements in vector x. n >= 0.
 
@@ -46,26 +46,26 @@
     @param[in]
     incx    Stride between consecutive elements of x. incx > 0.
 
-    @ingroup magma_asum
+    @ingroup icla_asum
 *******************************************************************************/
 extern "C"
-double magma_cblas_dzasum(
-    magma_int_t n,
-    const magmaDoubleComplex *x, magma_int_t incx )
+double icla_cblas_dzasum(
+    icla_int_t n,
+    const iclaDoubleComplex *x, icla_int_t incx )
 {
     if ( n <= 0 || incx <= 0 ) {
         return 0;
     }
     double result = 0;
     if ( incx == 1 ) {
-        for( magma_int_t i=0; i < n; ++i ) {
-            result += MAGMA_Z_ABS1( x[i] );
+        for( icla_int_t i=0; i < n; ++i ) {
+            result += ICLA_Z_ABS1( x[i] );
         }
     }
     else {
-        magma_int_t nincx = n*incx;
-        for( magma_int_t i=0; i < nincx; i += incx ) {
-            result += MAGMA_Z_ABS1( x[i] );
+        icla_int_t nincx = n*incx;
+        for( icla_int_t i=0; i < nincx; i += incx ) {
+            result += ICLA_Z_ABS1( x[i] );
         }
     }
     return result;
@@ -78,8 +78,8 @@ static inline double sqr( double x ) { return x*x; }
     Returns 2-norm of vector x. Avoids unnecesary over/underflow.
 
     To avoid dependence on CBLAS and incompatability issues between BLAS
-    libraries, MAGMA uses its own implementation, following BLAS reference.
-    
+    libraries, ICLA uses its own implementation, following BLAS reference.
+
     @param[in]
     n       Number of elements in vector x. n >= 0.
 
@@ -90,12 +90,12 @@ static inline double sqr( double x ) { return x*x; }
     @param[in]
     incx    Stride between consecutive elements of x. incx > 0.
 
-    @ingroup magma_nrm2
+    @ingroup icla_nrm2
 *******************************************************************************/
 extern "C"
-double magma_cblas_dznrm2(
-    magma_int_t n,
-    const magmaDoubleComplex *x, magma_int_t incx )
+double icla_cblas_dznrm2(
+    icla_int_t n,
+    const iclaDoubleComplex *x, icla_int_t incx )
 {
     if (n <= 0 || incx <= 0) {
         return 0;
@@ -106,7 +106,7 @@ double magma_cblas_dznrm2(
         // the following loop is equivalent to this call to the lapack
         // auxiliary routine:
         // call zlassq( n, x, incx, scale, ssq )
-        for( magma_int_t ix=0; ix < 1 + (n-1)*incx; ix += incx ) {
+        for( icla_int_t ix=0; ix < 1 + (n-1)*incx; ix += incx ) {
             if ( real( x[ix] ) != 0 ) {
                 double temp = fabs( real( x[ix] ));
                 if (scale < temp) {
@@ -130,7 +130,7 @@ double magma_cblas_dznrm2(
             }
             #endif
         }
-        return scale*magma_dsqrt(ssq);
+        return scale*icla_dsqrt(ssq);
     }
 }
 
@@ -140,8 +140,8 @@ double magma_cblas_dznrm2(
     Returns dot product of vectors x and y; \f$ x^H y \f$.
 
     To avoid dependence on CBLAS and incompatability issues between BLAS
-    libraries, MAGMA uses its own implementation, following BLAS reference.
-    
+    libraries, ICLA uses its own implementation, following BLAS reference.
+
     @param[in]
     n       Number of elements in vector x and y. n >= 0.
 
@@ -159,24 +159,24 @@ double magma_cblas_dznrm2(
     @param[in]
     incy    Stride between consecutive elements of dy. incy > 0.
 
-    @ingroup magma__dot
+    @ingroup icla__dot
 *******************************************************************************/
 extern "C"
-magmaDoubleComplex magma_cblas_zdotc(
-    magma_int_t n,
-    const magmaDoubleComplex *x, magma_int_t incx,
-    const magmaDoubleComplex *y, magma_int_t incy )
+iclaDoubleComplex icla_cblas_zdotc(
+    icla_int_t n,
+    const iclaDoubleComplex *x, icla_int_t incx,
+    const iclaDoubleComplex *y, icla_int_t incy )
 {
     // after too many issues with MKL and other BLAS, just write our own dot product!
-    magmaDoubleComplex value = MAGMA_Z_ZERO;
-    magma_int_t i;
+    iclaDoubleComplex value = ICLA_Z_ZERO;
+    icla_int_t i;
     if ( incx == 1 && incy == 1 ) {
         for( i=0; i < n; ++i ) {
             value = value + conj( x[i] ) * y[i];
         }
     }
     else {
-        magma_int_t ix=0, iy=0;
+        icla_int_t ix=0, iy=0;
         if ( incx < 0 ) { ix = (-n + 1)*incx; }
         if ( incy < 0 ) { iy = (-n + 1)*incy; }
         for( i=0; i < n; ++i ) {
@@ -194,7 +194,7 @@ magmaDoubleComplex magma_cblas_zdotc(
     @return dot product (unconjugated) of vectors x and y; \f$ x^T y \f$.
 
     To avoid dependence on CBLAS and incompatability issues between BLAS
-    libraries, MAGMA uses its own implementation, following BLAS reference.
+    libraries, ICLA uses its own implementation, following BLAS reference.
 
     @param[in]
     n       Number of elements in vector x and y. n >= 0.
@@ -213,24 +213,24 @@ magmaDoubleComplex magma_cblas_zdotc(
     @param[in]
     incy    Stride between consecutive elements of dy. incy > 0.
 
-    @ingroup magma__dot
+    @ingroup icla__dot
 *******************************************************************************/
 extern "C"
-magmaDoubleComplex magma_cblas_zdotu(
-    magma_int_t n,
-    const magmaDoubleComplex *x, magma_int_t incx,
-    const magmaDoubleComplex *y, magma_int_t incy )
+iclaDoubleComplex icla_cblas_zdotu(
+    icla_int_t n,
+    const iclaDoubleComplex *x, icla_int_t incx,
+    const iclaDoubleComplex *y, icla_int_t incy )
 {
     // after too many issues with MKL and other BLAS, just write our own dot product!
-    magmaDoubleComplex value = MAGMA_Z_ZERO;
-    magma_int_t i;
+    iclaDoubleComplex value = ICLA_Z_ZERO;
+    icla_int_t i;
     if ( incx == 1 && incy == 1 ) {
         for( i=0; i < n; ++i ) {
             value = value + x[i] * y[i];
         }
     }
     else {
-        magma_int_t ix=0, iy=0;
+        icla_int_t ix=0, iy=0;
         if ( incx < 0 ) { ix = (-n + 1)*incx; }
         if ( incy < 0 ) { iy = (-n + 1)*incy; }
         for( i=0; i < n; ++i ) {

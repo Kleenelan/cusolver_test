@@ -1,5 +1,5 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
@@ -7,60 +7,60 @@
 
        @author Mark Gates
 */
-#include "magma_internal.h"
+#include "icla_internal.h"
 
 
 /***************************************************************************//**
-    Returns version of MAGMA, as defined by
-    MAGMA_VERSION_MAJOR, MAGMA_VERSION_MINOR, MAGMA_VERSION_MICRO constants.
+    Returns version of ICLA, as defined by
+    ICLA_VERSION_MAJOR, ICLA_VERSION_MINOR, ICLA_VERSION_MICRO constants.
 
     @param[out] major   Set to major version number.
     @param[out] minor   Set to minor version number.
     @param[out] micro   Set to micro version number.
 
-    @ingroup magma_util
+    @ingroup icla_util
 *******************************************************************************/
 extern "C"
-void magma_version( magma_int_t* major, magma_int_t* minor, magma_int_t* micro )
+void icla_version( icla_int_t* major, icla_int_t* minor, icla_int_t* micro )
 {
     if ( major != NULL && minor != NULL && micro != NULL ) {
-        *major = MAGMA_VERSION_MAJOR;
-        *minor = MAGMA_VERSION_MINOR;
-        *micro = MAGMA_VERSION_MICRO;
+        *major = ICLA_VERSION_MAJOR;
+        *minor = ICLA_VERSION_MINOR;
+        *micro = ICLA_VERSION_MICRO;
     }
 }
 
 
 /***************************************************************************//**
-    Determines the number of GPUs to use, based on $MAGMA_NUM_GPUS environment
+    Determines the number of GPUs to use, based on $ICLA_NUM_GPUS environment
     variable, and limited to actual number of GPUs available.
-    If $MAGMA_NUM_GPUS is not set, uses 1.
+    If $ICLA_NUM_GPUS is not set, uses 1.
 
     @return Number of GPUs to use.
 
-    @ingroup magma_util
+    @ingroup icla_util
 *******************************************************************************/
 extern "C"
-magma_int_t magma_num_gpus( void )
+icla_int_t icla_num_gpus( void )
 {
-    const char *ngpu_str = getenv("MAGMA_NUM_GPUS");
-    magma_int_t ngpu = 1;
+    const char *ngpu_str = getenv("ICLA_NUM_GPUS");
+    icla_int_t ngpu = 1;
     if ( ngpu_str != NULL ) {
         char* endptr;
         ngpu = strtol( ngpu_str, &endptr, 10 );
-        magma_int_t ndevices;
-        magma_device_t devices[ MagmaMaxGPUs ];
-        magma_getdevices( devices, MagmaMaxGPUs, &ndevices );
+        icla_int_t ndevices;
+        icla_device_t devices[ iclaMaxGPUs ];
+        icla_getdevices( devices, iclaMaxGPUs, &ndevices );
         // if *endptr == '\0' then entire string was valid number (or empty)
         if ( ngpu < 1 || *endptr != '\0' ) {
             ngpu = 1;
-            fprintf( stderr, "$MAGMA_NUM_GPUS='%s' is an invalid number; using %lld GPU.\n",
+            fprintf( stderr, "$ICLA_NUM_GPUS='%s' is an invalid number; using %lld GPU.\n",
                      ngpu_str, (long long) ngpu );
         }
-        else if ( ngpu > MagmaMaxGPUs || ngpu > ndevices ) {
-            ngpu = min( ndevices, MagmaMaxGPUs );
-            fprintf( stderr, "$MAGMA_NUM_GPUS='%s' exceeds MagmaMaxGPUs=%d or available GPUs=%lld; using %lld GPUs.\n",
-                     ngpu_str, MagmaMaxGPUs, (long long) ndevices, (long long) ngpu );
+        else if ( ngpu > iclaMaxGPUs || ngpu > ndevices ) {
+            ngpu = min( ndevices, iclaMaxGPUs );
+            fprintf( stderr, "$ICLA_NUM_GPUS='%s' exceeds iclaMaxGPUs=%d or available GPUs=%lld; using %lld GPUs.\n",
+                     ngpu_str, iclaMaxGPUs, (long long) ndevices, (long long) ngpu );
         }
         assert( 1 <= ngpu && ngpu <= ndevices );
     }
@@ -75,17 +75,17 @@ magma_int_t magma_num_gpus( void )
     parallel processing vs the original one assumes a specific ordering and
     has to be done sequentially.
 
-    @ingroup magma_internal
+    @ingroup icla_internal
 *******************************************************************************/
 extern "C"
-void magma_swp2pswp( magma_trans_t trans, magma_int_t n, magma_int_t *ipiv, magma_int_t *newipiv)
+void icla_swp2pswp( icla_trans_t trans, icla_int_t n, icla_int_t *ipiv, icla_int_t *newipiv)
 {
-    magma_int_t i, newind, ind;
+    icla_int_t i, newind, ind;
 
     for (i=0; i < n; i++)
         newipiv[i] = -1;
 
-    if (trans == MagmaNoTrans) {
+    if (trans == iclaNoTrans) {
         for (i=0; i < n; i++) {
             newind = ipiv[i] - 1;
             if (newipiv[newind] == -1) {
@@ -196,17 +196,17 @@ void magma_swp2pswp( magma_trans_t trans, magma_int_t n, magma_int_t *ipiv, magm
         nb=10, ngpu=3, dev=1, j0=13, j1=72  =>  dj0= 3, dj1=22 (i.e., global j=13-19, 40-49, 70-71)
         nb=10, ngpu=3, dev=2, j0=13, j1=72  =>  dj0= 0, dj1=20 (i.e., global j=20-29, 50-59)
 
-    @ingroup magma_internal
+    @ingroup icla_internal
 *******************************************************************************/
 extern "C"
-void magma_indices_1D_bcyclic( magma_int_t nb, magma_int_t ngpu, magma_int_t dev,
-                               magma_int_t j0, magma_int_t j1,
-                               magma_int_t* dj0, magma_int_t* dj1 )
+void icla_indices_1D_bcyclic( icla_int_t nb, icla_int_t ngpu, icla_int_t dev,
+                               icla_int_t j0, icla_int_t j1,
+                               icla_int_t* dj0, icla_int_t* dj1 )
 {
     // on GPU jdev, which contains j0, dj0 maps to j0.
     // on other GPUs, dj0 is start of the block on that GPU after j0's block.
-    magma_int_t jblock = (j0 / nb) / ngpu;
-    magma_int_t jdev   = (j0 / nb) % ngpu;
+    icla_int_t jblock = (j0 / nb) / ngpu;
+    icla_int_t jdev   = (j0 / nb) % ngpu;
     if ( dev < jdev ) {
         jblock += 1;
     }

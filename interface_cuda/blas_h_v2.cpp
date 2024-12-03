@@ -1,5 +1,5 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
@@ -8,7 +8,7 @@
        @author Ahmad Abdelfattah
 */
 #include <cuda.h>    // for CUDA_VERSION
-#include "magma_internal.h"
+#include "icla_internal.h"
 #include "error.h"
 
 // =============================================================================
@@ -44,7 +44,7 @@
 
     @param[in]
     dA      HALF PRECISION array on GPU device.
-            If transA == MagmaNoTrans, the m-by-k matrix A of dimension (ldda,k), ldda >= max(1,m); \n
+            If transA == iclaNoTrans, the m-by-k matrix A of dimension (ldda,k), ldda >= max(1,m); \n
             otherwise,                 the k-by-m matrix A of dimension (ldda,m), ldda >= max(1,k).
 
     @param[in]
@@ -52,7 +52,7 @@
 
     @param[in]
     dB      HALF PRECISION array on GPU device.
-            If transB == MagmaNoTrans, the k-by-n matrix B of dimension (lddb,n), lddb >= max(1,k); \n
+            If transB == iclaNoTrans, the k-by-n matrix B of dimension (lddb,n), lddb >= max(1,k); \n
             otherwise,                 the n-by-k matrix B of dimension (lddb,k), lddb >= max(1,n).
 
     @param[in]
@@ -69,24 +69,24 @@
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_gemm
+    @ingroup icla_gemm
 *******************************************************************************/
 extern "C" void
-magma_hgemm(
-    magma_trans_t transA, magma_trans_t transB,
-    magma_int_t m, magma_int_t n, magma_int_t k,
-    magmaHalf alpha,
-    magmaHalf_const_ptr dA, magma_int_t ldda,
-    magmaHalf_const_ptr dB, magma_int_t lddb,
-    magmaHalf beta,
-    magmaHalf_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+icla_hgemm(
+    icla_trans_t transA, icla_trans_t transB,
+    icla_int_t m, icla_int_t n, icla_int_t k,
+    iclaHalf alpha,
+    iclaHalf_const_ptr dA, icla_int_t ldda,
+    iclaHalf_const_ptr dB, icla_int_t lddb,
+    iclaHalf beta,
+    iclaHalf_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
 #if CUDA_VERSION >= 7500
-    magma_int_t arch = magma_getdevice_arch();
+    icla_int_t arch = icla_getdevice_arch();
     if( arch >= 530 ) {
         #if CUDA_VERSION >= 9000
         // turn on tensor cores by default
@@ -110,8 +110,8 @@ magma_hgemm(
     else {
         printf("ERROR: unsupported architecture for %s \n", __func__ );
     }
-#elif defined(MAGMA_HAVE_HIP)
-    magma_int_t arch = magma_getdevice_arch();
+#elif defined(ICLA_HAVE_HIP)
+    icla_int_t arch = icla_getdevice_arch();
     if( arch >= 330 ) {
         hipblasGemmEx(
 		      queue->hipblas_handle(),
@@ -133,18 +133,18 @@ magma_hgemm(
 }
 
 extern "C" void
-magma_hgemmx(
-    magma_trans_t transA, magma_trans_t transB,
-    magma_int_t m, magma_int_t n, magma_int_t k,
+icla_hgemmx(
+    icla_trans_t transA, icla_trans_t transB,
+    icla_int_t m, icla_int_t n, icla_int_t k,
     float alpha,
-    magmaHalf_const_ptr dA, magma_int_t ldda,
-    magmaHalf_const_ptr dB, magma_int_t lddb,
+    iclaHalf_const_ptr dA, icla_int_t ldda,
+    iclaHalf_const_ptr dB, icla_int_t lddb,
     float beta,
-    float *dC, magma_int_t lddc,
-    magma_queue_t queue )
+    float *dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
-#if defined(MAGMA_HAVE_HIP)
-    magma_int_t arch = magma_getdevice_arch();
+#if defined(ICLA_HAVE_HIP)
+    icla_int_t arch = icla_getdevice_arch();
     if( arch >= 330 ) {
         hipblasGemmEx(
 		      queue->hipblas_handle(),
@@ -162,7 +162,7 @@ magma_hgemmx(
     }
 #else
     #if CUDA_VERSION >= 7500
-    magma_int_t arch = magma_getdevice_arch();
+    icla_int_t arch = icla_getdevice_arch();
     if( arch >= 530 ) {
         #if CUDA_VERSION >= 9000
         // turn on tensor cores by default

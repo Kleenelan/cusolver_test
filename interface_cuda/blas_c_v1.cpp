@@ -1,5 +1,5 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
@@ -8,17 +8,17 @@
        @author Mark Gates
        @generated from interface_cuda/blas_z_v1.cpp, normal z -> c, Fri Nov 29 12:16:16 2024
 */
-#ifndef MAGMA_NO_V1
+#ifndef ICLA_NO_V1
 
-#include "magma_internal.h"
-#include "magmablas_v1.h"  // includes v1 prototypes; does NOT map routine names
+#include "icla_internal.h"
+#include "iclablas_v1.h"  // includes v1 prototypes; does NOT map routine names
 #include "error.h"
 
 #define COMPLEX
 
-#ifdef MAGMA_HAVE_CUDA
+#ifdef ICLA_HAVE_CUDA
 
-// These MAGMA v1 routines are all deprecated.
+// These ICLA v1 routines are all deprecated.
 // See blas_c_v2.cpp for documentation.
 
 
@@ -26,114 +26,114 @@
 // Level 1 BLAS
 
 /******************************************************************************/
-extern "C" magma_int_t
-magma_icamax_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx )
+extern "C" icla_int_t
+icla_icamax_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx )
 {
-    return magma_icamax( n, dx, incx, magmablasGetQueue() );
+    return icla_icamax( n, dx, incx, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
-extern "C" magma_int_t
-magma_icamin_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx )
+extern "C" icla_int_t
+icla_icamin_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx )
 {
-    return magma_icamin( n, dx, incx, magmablasGetQueue() );
+    return icla_icamin( n, dx, incx, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" float
-magma_scasum_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx )
+icla_scasum_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx )
 {
-    return magma_scasum( n, dx, incx, magmablasGetQueue() );
+    return icla_scasum( n, dx, incx, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_caxpy_v1(
-    magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_ptr       dy, magma_int_t incy )
+icla_caxpy_v1(
+    icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_ptr       dy, icla_int_t incy )
 {
-    magma_caxpy( n, alpha, dx, incx, dy, incy, magmablasGetQueue() );
+    icla_caxpy( n, alpha, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_ccopy_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_ptr       dy, magma_int_t incy )
+icla_ccopy_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_ptr       dy, icla_int_t incy )
 {
-    magma_ccopy( n, dx, incx, dy, incy, magmablasGetQueue() );
+    icla_ccopy( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C"
-magmaFloatComplex magma_cdotc_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_const_ptr dy, magma_int_t incy )
+iclaFloatComplex icla_cdotc_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_const_ptr dy, icla_int_t incy )
 {
-    return magma_cdotc( n, dx, incx, dy, incy, magmablasGetQueue() );
+    return icla_cdotc( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C"
-magmaFloatComplex magma_cdotu_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_const_ptr dy, magma_int_t incy )
+iclaFloatComplex icla_cdotu_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_const_ptr dy, icla_int_t incy )
 {
-    return magma_cdotu( n, dx, incx, dy, incy, magmablasGetQueue() );
+    return icla_cdotu( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 #endif // COMPLEX
 
 
 /******************************************************************************/
 extern "C" float
-magma_scnrm2_v1(
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx )
+icla_scnrm2_v1(
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx )
 {
-    return magma_scnrm2( n, dx, incx, magmablasGetQueue() );
+    return icla_scnrm2( n, dx, incx, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_crot_v1(
-    magma_int_t n,
-    magmaFloatComplex_ptr dx, magma_int_t incx,
-    magmaFloatComplex_ptr dy, magma_int_t incy,
-    float c, magmaFloatComplex s )
+icla_crot_v1(
+    icla_int_t n,
+    iclaFloatComplex_ptr dx, icla_int_t incx,
+    iclaFloatComplex_ptr dy, icla_int_t incy,
+    float c, iclaFloatComplex s )
 {
-    magma_crot( n, dx, incx, dy, incy, c, s, magmablasGetQueue() );
+    icla_crot( n, dx, incx, dy, incy, c, s, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
-magma_csrot_v1(
-    magma_int_t n,
-    magmaFloatComplex_ptr dx, magma_int_t incx,
-    magmaFloatComplex_ptr dy, magma_int_t incy,
+icla_csrot_v1(
+    icla_int_t n,
+    iclaFloatComplex_ptr dx, icla_int_t incx,
+    iclaFloatComplex_ptr dy, icla_int_t incy,
     float c, float s )
 {
-    magma_csrot( n, dx, incx, dy, incy, c, s, magmablasGetQueue() );
+    icla_csrot( n, dx, incx, dy, incy, c, s, iclablasGetQueue() );
 }
 #endif // COMPLEX
 
@@ -141,13 +141,13 @@ magma_csrot_v1(
 /******************************************************************************/
 #ifdef REAL
 extern "C" void
-magma_crotm_v1(
-    magma_int_t n,
-    float *dx, magma_int_t incx,
-    float *dy, magma_int_t incy,
+icla_crotm_v1(
+    icla_int_t n,
+    float *dx, icla_int_t incx,
+    float *dy, icla_int_t incy,
     const float *param )
 {
-    magma_crotm( n, dx, incx, dy, incy, param, magmablasGetQueue() );
+    icla_crotm( n, dx, incx, dy, incy, param, iclablasGetQueue() );
 }
 #endif // REAL
 
@@ -155,48 +155,48 @@ magma_crotm_v1(
 /******************************************************************************/
 #ifdef REAL
 extern "C" void
-magma_crotmg_v1(
+icla_crotmg_v1(
     float *d1, float       *d2,
     float *x1, const float *y1,
     float *param )
 {
-    magma_crotmg( d1, d2, x1, y1, param, magmablasGetQueue() );
+    icla_crotmg( d1, d2, x1, y1, param, iclablasGetQueue() );
 }
 #endif // REAL
 
 
 /******************************************************************************/
 extern "C" void
-magma_cscal_v1(
-    magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_ptr dx, magma_int_t incx )
+icla_cscal_v1(
+    icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_ptr dx, icla_int_t incx )
 {
-    magma_cscal( n, alpha, dx, incx, magmablasGetQueue() );
+    icla_cscal( n, alpha, dx, incx, iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
-magma_csscal_v1(
-    magma_int_t n,
+icla_csscal_v1(
+    icla_int_t n,
     float alpha,
-    magmaFloatComplex_ptr dx, magma_int_t incx )
+    iclaFloatComplex_ptr dx, icla_int_t incx )
 {
-    magma_csscal( n, alpha, dx, incx, magmablasGetQueue() );
+    icla_csscal( n, alpha, dx, incx, iclablasGetQueue() );
 }
 #endif // COMPLEX
 
 
 /******************************************************************************/
 extern "C" void
-magma_cswap_v1(
-    magma_int_t n,
-    magmaFloatComplex_ptr dx, magma_int_t incx,
-    magmaFloatComplex_ptr dy, magma_int_t incy )
+icla_cswap_v1(
+    icla_int_t n,
+    iclaFloatComplex_ptr dx, icla_int_t incx,
+    iclaFloatComplex_ptr dy, icla_int_t incy )
 {
-    magma_cswap( n, dx, incx, dy, incy, magmablasGetQueue() );
+    icla_cswap( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
 
@@ -205,153 +205,153 @@ magma_cswap_v1(
 
 /******************************************************************************/
 extern "C" void
-magma_cgemv_v1(
-    magma_trans_t transA,
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dy, magma_int_t incy )
+icla_cgemv_v1(
+    icla_trans_t transA,
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dy, icla_int_t incy )
 {
-    magma_cgemv(
+    icla_cgemv(
         transA,
         m, n,
         alpha, dA, ldda,
                dx, incx,
         beta,  dy, incy,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_cgerc_v1(
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_const_ptr dy, magma_int_t incy,
-    magmaFloatComplex_ptr       dA, magma_int_t ldda )
+icla_cgerc_v1(
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_const_ptr dy, icla_int_t incy,
+    iclaFloatComplex_ptr       dA, icla_int_t ldda )
 {
-    magma_cgerc(
+    icla_cgerc(
         m, n,
         alpha, dx, incx,
                dy, incy,
                dA, ldda,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
-magma_cgeru_v1(
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_const_ptr dy, magma_int_t incy,
-    magmaFloatComplex_ptr       dA, magma_int_t ldda )
+icla_cgeru_v1(
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_const_ptr dy, icla_int_t incy,
+    iclaFloatComplex_ptr       dA, icla_int_t ldda )
 {
-    magma_cgeru(
+    icla_cgeru(
         m, n,
         alpha, dx, incx,
                dy, incy,
                dA, ldda,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 #endif // COMPLEX
 
 
 /******************************************************************************/
 extern "C" void
-magma_chemv_v1(
-    magma_uplo_t uplo,
-    magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dy, magma_int_t incy )
+icla_chemv_v1(
+    icla_uplo_t uplo,
+    icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dy, icla_int_t incy )
 {
-    magma_chemv(
+    icla_chemv(
         uplo,
         n,
         alpha, dA, ldda,
                dx, incx,
         beta,  dy, incy,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_cher_v1(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_cher_v1(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_ptr       dA, magma_int_t ldda )
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_ptr       dA, icla_int_t ldda )
 {
-    magma_cher(
+    icla_cher(
         uplo,
         n,
         alpha, dx, incx,
                dA, ldda,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_cher2_v1(
-    magma_uplo_t uplo,
-    magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dx, magma_int_t incx,
-    magmaFloatComplex_const_ptr dy, magma_int_t incy,
-    magmaFloatComplex_ptr       dA, magma_int_t ldda )
+icla_cher2_v1(
+    icla_uplo_t uplo,
+    icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dx, icla_int_t incx,
+    iclaFloatComplex_const_ptr dy, icla_int_t incy,
+    iclaFloatComplex_ptr       dA, icla_int_t ldda )
 {
-    magma_cher2(
+    icla_cher2(
         uplo,
         n,
         alpha, dx, incx,
                dy, incy,
                dA, ldda,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_ctrmv_v1(
-    magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_ptr       dx, magma_int_t incx )
+icla_ctrmv_v1(
+    icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_ptr       dx, icla_int_t incx )
 {
-    magma_ctrmv(
+    icla_ctrmv(
         uplo, trans, diag,
         n,
         dA, ldda,
         dx, incx,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_ctrsv_v1(
-    magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t n,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_ptr       dx, magma_int_t incx )
+icla_ctrsv_v1(
+    icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t n,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_ptr       dx, icla_int_t incx )
 {
-    magma_ctrsv(
+    icla_ctrsv(
         uplo, trans, diag,
         n,
         dA, ldda,
         dx, incx,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
@@ -360,105 +360,105 @@ magma_ctrsv_v1(
 
 /******************************************************************************/
 extern "C" void
-magma_cgemm_v1(
-    magma_trans_t transA, magma_trans_t transB,
-    magma_int_t m, magma_int_t n, magma_int_t k,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dB, magma_int_t lddb,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+icla_cgemm_v1(
+    icla_trans_t transA, icla_trans_t transB,
+    icla_int_t m, icla_int_t n, icla_int_t k,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dB, icla_int_t lddb,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_cgemm(
+    icla_cgemm(
         transA, transB,
         m, n, k,
         alpha, dA, ldda,
                dB, lddb,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_csymm_v1(
-    magma_side_t side, magma_uplo_t uplo,
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dB, magma_int_t lddb,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+icla_csymm_v1(
+    icla_side_t side, icla_uplo_t uplo,
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dB, icla_int_t lddb,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_csymm(
+    icla_csymm(
         side, uplo,
         m, n,
         alpha, dA, ldda,
                dB, lddb,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_csyrk_v1(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+icla_csyrk_v1(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_csyrk(
+    icla_csyrk(
         uplo, trans,
         n, k,
         alpha, dA, ldda,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_csyr2k_v1(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dB, magma_int_t lddb,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+icla_csyr2k_v1(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dB, icla_int_t lddb,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_csyr2k(
+    icla_csyr2k(
         uplo, trans,
         n, k,
         alpha, dA, ldda,
                dB, lddb,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
-magma_chemm_v1(
-    magma_side_t side, magma_uplo_t uplo,
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dB, magma_int_t lddb,
-    magmaFloatComplex beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+icla_chemm_v1(
+    icla_side_t side, icla_uplo_t uplo,
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dB, icla_int_t lddb,
+    iclaFloatComplex beta,
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_chemm(
+    icla_chemm(
         side, uplo,
         m, n,
         alpha, dA, ldda,
                dB, lddb,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 #endif // COMPLEX
 
@@ -466,20 +466,20 @@ magma_chemm_v1(
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
-magma_cherk_v1(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
+icla_cherk_v1(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
     float alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
     float beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_cherk(
+    icla_cherk(
         uplo, trans,
         n, k,
         alpha, dA, ldda,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 #endif // COMPLEX
 
@@ -487,63 +487,63 @@ magma_cherk_v1(
 /******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
-magma_cher2k_v1(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_const_ptr dB, magma_int_t lddb,
+icla_cher2k_v1(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_const_ptr dB, icla_int_t lddb,
     float beta,
-    magmaFloatComplex_ptr       dC, magma_int_t lddc )
+    iclaFloatComplex_ptr       dC, icla_int_t lddc )
 {
-    magma_cher2k(
+    icla_cher2k(
         uplo, trans,
         n, k,
         alpha, dA, ldda,
                dB, lddb,
         beta,  dC, lddc,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 #endif // COMPLEX
 
 
 /******************************************************************************/
 extern "C" void
-magma_ctrmm_v1(
-    magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_ptr       dB, magma_int_t lddb )
+icla_ctrmm_v1(
+    icla_side_t side, icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_ptr       dB, icla_int_t lddb )
 {
-    magma_ctrmm(
+    icla_ctrmm(
         side, uplo, trans, diag,
         m, n,
         alpha, dA, ldda,
                dB, lddb,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
 
 /******************************************************************************/
 extern "C" void
-magma_ctrsm_v1(
-    magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t m, magma_int_t n,
-    magmaFloatComplex alpha,
-    magmaFloatComplex_const_ptr dA, magma_int_t ldda,
-    magmaFloatComplex_ptr       dB, magma_int_t lddb )
+icla_ctrsm_v1(
+    icla_side_t side, icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t m, icla_int_t n,
+    iclaFloatComplex alpha,
+    iclaFloatComplex_const_ptr dA, icla_int_t ldda,
+    iclaFloatComplex_ptr       dB, icla_int_t lddb )
 {
-    magma_ctrsm(
+    icla_ctrsm(
         side, uplo, trans, diag,
         m, n,
         alpha, dA, ldda,
                dB, lddb,
-        magmablasGetQueue() );
+        iclablasGetQueue() );
 }
 
-#endif // MAGMA_HAVE_CUDA
+#endif // ICLA_HAVE_CUDA
 
 #undef COMPLEX
 
-#endif // MAGMA_NO_V1
+#endif // ICLA_NO_V1

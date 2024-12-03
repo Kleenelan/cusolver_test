@@ -43,10 +43,11 @@ libinterface_cuda.a: $(OBJ_INTERFACE_CUDA)
 OPT_FLAGS_TEST := -g -O0 -Wall -ggdb -fno-inline
 CPP_FLAGS_TEST := $(OPT_FLAGS_TEST) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
 INC_TEST :=  -I/usr/local/cuda/include -I./include -I./testing/utils
-LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_magma/testSys_magma/tmp1/magma/lib \
--L/home/hipper/ex_magma/testSys_magma/OpenBLAS/local/lib -lopenblas \
+#LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_icla/testSys_icla/tmp1/icla/lib
+LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_icla/testSys_icla/OpenBLAS/local/lib \
+-L/home/hipper/ex_icla/testSys_icla/OpenBLAS/local/lib -lopenblas \
 -L/usr/local/cuda/lib64 -lcublas -lcusparse -lcusolver -lcudart -lcudadevrt
-# \-L/home/hipper/ex_magma/testSys_magma/tmp1/magma/lib  -lmagma
+# \-L/home/hipper/ex_icla/testSys_icla/tmp1/icla/lib  -licla
 
 %.cpp.o: %.cpp
 	g++ $(CPP_FLAGS_TEST) $(INC_TEST) -c -o $@ $<
