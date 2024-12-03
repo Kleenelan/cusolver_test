@@ -13,15 +13,6 @@ extern "C" {
 icla_int_t icla_init( void );
 icla_int_t icla_finalize( void );
 
-#ifdef ICLA_HAVE_OPENCL
-icla_int_t icla_init_opencl(
-    cl_platform_id platform,
-    cl_context context,
-    icla_int_t setup_clBlas );
-
-icla_int_t icla_finalize_opencl(
-    icla_int_t finalize_clBlas );
-#endif
 
 void icla_version( icla_int_t* major, icla_int_t* minor, icla_int_t* micro );
 void icla_print_environment();
@@ -207,14 +198,6 @@ icla_queue_create_from_hip_internal(
     hipblasHandle_t   hipblas,
     hipsparseHandle_t hipsparse,
     icla_queue_t*    queue_ptr,
-    const char* func, const char* file, int line );
-#endif
-
-#ifdef ICLA_HAVE_OPENCL
-icla_int_t
-icla_queue_create_from_opencl_internal(
-    icla_device_t   device,
-    cl_command_queue cl_queue,
     const char* func, const char* file, int line );
 #endif
 

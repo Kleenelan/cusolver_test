@@ -16,12 +16,6 @@
 #if   defined(ICLA_HAVE_CUDA)
     const char* g_platform_str = "cuBLAS";
 
-#elif defined(ICLA_HAVE_OPENCL)
-    const char* g_platform_str = "clBLAS";
-
-#elif defined(HAVE_MIC)
-    const char* g_platform_str = "Xeon Phi";
-
 #elif defined(ICLA_HAVE_HIP)
     const char* g_platform_str = "HIPBLAS";
 
