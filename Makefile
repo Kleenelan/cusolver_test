@@ -9,7 +9,7 @@ OBJ_TEST := $(SRC_TEST:.cpp=.cpp.o)
 
 EXE_TEST := $(OBJ_TEST:.cpp.o=.out)
 #EXT_TEST := testing/testing_zgemm
-all: libtest.a liblapacktest.a $(EXE_TEST)
+all: libtest.a $(EXE_TEST)
 
 
 OBJ_TOOL := $(SRC_TOOL:.cpp=.o)
@@ -48,14 +48,15 @@ liblapacktest.a: $(OBJ_FORT)
 OPT_FLAGS_TEST := -g -O0 -Wall -ggdb -fno-inline
 CPP_FLAGS_TEST := $(OPT_FLAGS_TEST) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
 INC_TEST :=  -I/usr/local/cuda/include -I./include -I./testing
-LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_magma/testSys_magma/tmp1/magma/lib -L. \
--ltest -L/home/hipper/ex_magma/testSys_magma/tmp1/magma/lib -lmagma -L./testing/lin -llapacktest \
--L/home/hipper/ex_magma/testSys_magma/OpenBLAS/local/lib -L/usr/local/cuda/lib64 -lopenblas -lcublas -lcusparse -lcudart -lcudadevrt -lcublas -lcudart
+LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_magma/testSys_magma/tmp1/magma/lib \
+-L/home/hipper/ex_magma/testSys_magma/tmp1/magma/lib -lmagma \
+-L/home/hipper/ex_magma/testSys_magma/OpenBLAS/local/lib -lopenblas \
+-L/usr/local/cuda/lib64 -lcublas -lcusparse -lcudart -lcudadevrt -lcublas -lcudart
 
 %.cpp.o: %.cpp
 	g++ $(CPP_FLAGS_TEST) $(INC_TEST) -c -o $@ $<
 
-%.out: %.cpp.o libtest.a liblapacktest.a
+%.out: %.cpp.o libtest.a
 	g++ -fPIC -fopenmp -o $@ $^ $(LD_FLAGS_TEST)
 
 
