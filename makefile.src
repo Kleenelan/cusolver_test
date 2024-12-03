@@ -2,18 +2,56 @@ SRC_TEST := \
 testing/testing_sgetrf.cpp
 
 
+
+#interface_cuda/connection_mgpu.c  \
+
+SRC_MATH_TOOL := \
+math_tool/cblas_c.cpp  \
+math_tool/cblas_d.cpp  \
+math_tool/cblas_s.cpp  \
+math_tool/cblas_z.cpp
+
+
+
+SRC_CONTROL := \
+control/magma_timer.cpp  \
+control/magma_threadsetting.cpp  \
+control/constants.cpp  \
+control/xerbla.cpp  \
+control/magma_dnan_inf.cpp  \
+control/auxiliary.cpp  \
+control/pthread_barrier.cpp
+
+SRC_INTERFACE_CUDA := $(SRC_CONTROL) $(SRC_MATH_TOOL)  \
+interface_cuda/alloc.cpp  \
+interface_cuda/blas_c_v1.cpp  \
+interface_cuda/blas_c_v2.cpp  \
+interface_cuda/blas_d_v1.cpp  \
+interface_cuda/blas_d_v2.cpp  \
+interface_cuda/blas_h_v2.cpp  \
+interface_cuda/blas_s_v1.cpp  \
+interface_cuda/blas_s_v2.cpp  \
+interface_cuda/blas_z_v1.cpp  \
+interface_cuda/blas_z_v2.cpp  \
+interface_cuda/copy_v1.cpp  \
+interface_cuda/copy_v2.cpp  \
+interface_cuda/error.cpp  \
+interface_cuda/interface.cpp  \
+interface_cuda/interface_v1.cpp
+
+
 SRC_TOOL :=   \
-testing/testing_zaxpy.cpp  \
-testing/magma_util.cpp  \
-testing/magma_zutil.cpp  \
-testing/magma_zgesvd_check.cpp  \
-testing/magma_generate.cpp  \
-testing/magma_cutil.cpp  \
-testing/magma_dutil.cpp  \
-testing/magma_sutil.cpp  \
-testing/magma_sgesvd_check.cpp  \
-testing/magma_dgesvd_check.cpp  \
-testing/magma_cgesvd_check.cpp
+testing/utils/testing_zaxpy.cpp  \
+testing/utils/magma_util.cpp  \
+testing/utils/magma_zutil.cpp  \
+testing/utils/magma_zgesvd_check.cpp  \
+testing/utils/magma_generate.cpp  \
+testing/utils/magma_cutil.cpp  \
+testing/utils/magma_dutil.cpp  \
+testing/utils/magma_sutil.cpp  \
+testing/utils/magma_sgesvd_check.cpp  \
+testing/utils/magma_dgesvd_check.cpp  \
+testing/utils/magma_cgesvd_check.cpp
 
 
 

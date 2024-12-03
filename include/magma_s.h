@@ -614,7 +614,8 @@ magma_sgetrf_recpanel_native(
     magma_int_t *dinfo, magma_int_t gbstep,
     magma_event_t events[2], magma_queue_t queue, magma_queue_t update_queue);
 
-magma_int_t
+//magma_int_t
+real_Double_t
 magma_sgetrf(
     magma_int_t m, magma_int_t n,
     float *A, magma_int_t lda,
@@ -691,7 +692,8 @@ magma_sgetrf2_mgpu(
     magma_int_t *info);
 
 // CUDA MAGMA only
-magma_int_t
+//magma_int_t
+real_Double_t
 magma_sgetrf_nopiv(
     magma_int_t m, magma_int_t n,
     float *A, magma_int_t lda,
