@@ -1,10 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_BULGE_H
 #define ICLA_BULGE_H
@@ -44,4 +37,5 @@ extern "C" {
 }
 #endif
 
-#endif  // ICLA_BULGE_H
+#endif
+

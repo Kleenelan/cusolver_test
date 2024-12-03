@@ -1,23 +1,12 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_CONFIG_H
 #define ICLA_CONFIG_H
 
-
-// CUDA settings
 #cmakedefine ICLA_HAVE_CUDA
 #cmakedefine ICLA_CUDA_ARCH "@ICLA_CUDA_ARCH@"
 #cmakedefine ICLA_CUDA_ARCH_MIN @ICLA_CUDA_ARCH_MIN@
 
-// HIP settings
 #cmakedefine ICLA_HAVE_HIP
 
+#endif
 
-
-#endif  // ICLA_CONFIG_H

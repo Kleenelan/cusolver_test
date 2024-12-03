@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @precisions normal z -> s d c
-*/
 
 #ifndef ICLABLAS_Z_H
 #define ICLABLAS_Z_H
@@ -20,9 +11,6 @@
 extern "C" {
 #endif
 
-  /*
-   * Transpose functions
-   */
 void
 iclablas_ztranspose_inplace(
     icla_int_t n,
@@ -65,9 +53,6 @@ iclablas_zsetmatrix_transpose(
     iclaDoubleComplex_ptr    dwork, icla_int_t lddw,
     icla_queue_t queues[2] );
 
-  /*
-   * RBT-related functions
-   */
 void
 iclablas_zprbt(
     icla_int_t n,
@@ -90,9 +75,6 @@ iclablas_zprbt_mtv(
     iclaDoubleComplex_ptr db, icla_int_t lddb,
     icla_queue_t queue );
 
-  /*
-   * Multi-GPU copy functions
-   */
 void
 icla_zgetmatrix_1D_col_bcyclic(
     icla_int_t ngpu,
@@ -143,8 +125,6 @@ iclablas_zsetmatrix_transpose_mgpu(
     iclaDoubleComplex_ptr    dwork[], icla_int_t lddw,
     icla_queue_t queues[][2] );
 
-// in src/zhetrd_mgpu.cpp
-// TODO rename zsetmatrix_sy or similar
 icla_int_t
 icla_zhtodhe(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -153,8 +133,6 @@ icla_zhtodhe(
     icla_queue_t queues[][10],
     icla_int_t *info );
 
-// in src/zpotrf3_mgpu.cpp
-// TODO same as icla_zhtodhe?
 icla_int_t
 icla_zhtodpo(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -164,8 +142,6 @@ icla_zhtodpo(
     icla_queue_t queues[][3],
     icla_int_t *info );
 
-// in src/zpotrf3_mgpu.cpp
-// TODO rename zgetmatrix_sy or similar
 icla_int_t
 icla_zdtohpo(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -175,10 +151,6 @@ icla_zdtohpo(
     icla_queue_t queues[][3],
     icla_int_t *info );
 
-
-  /*
-   * Multi-GPU BLAS functions (alphabetical order)
-   */
 void
 iclablas_zhemm_mgpu(
     icla_side_t side, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -188,8 +160,7 @@ iclablas_zhemm_mgpu(
     iclaDoubleComplex beta,
     iclaDoubleComplex_ptr dC[],    icla_int_t lddc,
     iclaDoubleComplex_ptr dwork[], icla_int_t dworksiz,
-    //iclaDoubleComplex    *C,       icla_int_t ldc,
-    //iclaDoubleComplex    *work[],  icla_int_t worksiz,
+
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue,
     icla_event_t events[][iclaMaxGPUs*iclaMaxGPUs+10], icla_int_t nevents,
@@ -234,7 +205,6 @@ icla_zhetrs_gpu(
     icla_int_t *info,
     icla_queue_t queue );
 
-// Ichi's version, in src/zhetrd_mgpu.cpp
 void
 icla_zher2k_mgpu(
     icla_int_t ngpu,
@@ -256,7 +226,6 @@ iclablas_zher2k_mgpu2(
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue );
 
-// in src/zpotrf_mgpu_right.cpp
 void
 icla_zherk_mgpu(
     icla_int_t ngpu,
@@ -267,7 +236,6 @@ icla_zherk_mgpu(
     iclaDoubleComplex_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
-// in src/zpotrf_mgpu_right.cpp
 void
 icla_zherk_mgpu2(
     icla_int_t ngpu,
@@ -278,10 +246,6 @@ icla_zherk_mgpu2(
     iclaDoubleComplex_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
-
-  /*
-   * LAPACK auxiliary functions (alphabetical order)
-   */
 icla_int_t
 iclablas_zdiinertia(
     icla_int_t n,
@@ -496,9 +460,6 @@ iclablas_ztrtri_diag(
     iclaDoubleComplex_ptr d_dinvA,
     icla_queue_t queue );
 
-  /*
-   * to cleanup (alphabetical order)
-   */
 icla_int_t
 icla_zlarfb_gpu(
     icla_side_t side, icla_trans_t trans, icla_direct_t direct, icla_storev_t storev,
@@ -573,9 +534,6 @@ icla_zlarfx_gpu(
     iclaDoubleComplex_ptr work,
     icla_queue_t queue );
 
-  /*
-   * Level 1 BLAS (alphabetical order)
-   */
 void
 iclablas_zaxpycp(
     icla_int_t m,
@@ -650,10 +608,6 @@ iclablas_dznrm2_row_check_adjust(
     iclaDouble_ptr dlsticc,
     icla_queue_t queue );
 
-  /*
-   * Level 2 BLAS (alphabetical order)
-   */
-// trsv were always queue versions
 void
 iclablas_ztrsv(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -662,7 +616,6 @@ iclablas_ztrsv(
     iclaDoubleComplex_ptr       db, icla_int_t incb,
     icla_queue_t queue );
 
-// todo: move flag before queue?
 void
 iclablas_ztrsv_outofplace(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -712,7 +665,6 @@ iclablas_zsymv(
     iclaDoubleComplex_ptr       dy, icla_int_t incy,
     icla_queue_t queue );
 
-// hemv/symv_work were always queue versions
 icla_int_t
 iclablas_zhemv_work(
     icla_uplo_t uplo, icla_int_t n,
@@ -735,9 +687,6 @@ iclablas_zsymv_work(
     iclaDoubleComplex_ptr       dwork, icla_int_t lwork,
     icla_queue_t queue );
 
-  /*
-   * Level 3 BLAS (alphabetical order)
-   */
 void
 iclablas_zgemm(
     icla_trans_t transA, icla_trans_t transB,
@@ -792,47 +741,21 @@ iclablas_ztrsm_work(
     iclaDoubleComplex_ptr d_dinvA, icla_int_t dinvA_length,
     icla_queue_t queue );
 
-
-  /*
-   * Wrappers for platform independence.
-   * These wrap CUBLAS or AMD OpenCL BLAS functions.
-   */
-
-// =============================================================================
-// copying vectors
-// set  copies host   to device
-// get  copies device to host
-// copy copies device to device
-// (with CUDA unified addressing, copy can be between same or different devices)
-// Add the function, file, and line for error-reporting purposes.
-
-/// Type-safe version of icla_setvector() for iclaDoubleComplex arrays.
-/// @ingroup icla_setvector
 #define icla_zsetvector(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_zsetvector_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getvector() for iclaDoubleComplex arrays.
-/// @ingroup icla_getvector
 #define icla_zgetvector(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_zgetvector_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copyvector() for iclaDoubleComplex arrays.
-/// @ingroup icla_copyvector
 #define icla_zcopyvector(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_zcopyvector_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_setvector_async() for iclaDoubleComplex arrays.
-/// @ingroup icla_setvector
 #define icla_zsetvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_zsetvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getvector_async() for iclaDoubleComplex arrays.
-/// @ingroup icla_getvector
 #define icla_zgetvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_zgetvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copyvector_async() for iclaDoubleComplex arrays.
-/// @ingroup icla_copyvector
 #define icla_zcopyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_zcopyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
@@ -920,37 +843,21 @@ icla_zcopyvector_async_internal(
                                      func, file, line );
 }
 
-
-// =============================================================================
-// copying sub-matrices (contiguous columns)
-
-/// Type-safe version of icla_setmatrix() for iclaDoubleComplex arrays.
-/// @ingroup icla_setmatrix
 #define icla_zsetmatrix(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_zsetmatrix_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getmatrix() for iclaDoubleComplex arrays.
-/// @ingroup icla_getmatrix
 #define icla_zgetmatrix(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_zgetmatrix_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copymatrix() for iclaDoubleComplex arrays.
-/// @ingroup icla_copymatrix
 #define icla_zcopymatrix(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_zcopymatrix_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_setmatrix_async() for iclaDoubleComplex arrays.
-/// @ingroup icla_setmatrix
 #define icla_zsetmatrix_async(           m, n, hA_src, lda, dB_dst, lddb, queue ) \
         icla_zsetmatrix_async_internal(  m, n, hA_src, lda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getmatrix_async() for iclaDoubleComplex arrays.
-/// @ingroup icla_getmatrix
 #define icla_zgetmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb, queue ) \
         icla_zgetmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copymatrix_async() for iclaDoubleComplex arrays.
-/// @ingroup icla_copymatrix
 #define icla_zcopymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_zcopymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
@@ -1037,10 +944,6 @@ icla_zcopymatrix_async_internal(
                                      dB_dst, lddb, queue,
                                      func, file, line );
 }
-
-
-// =============================================================================
-// Level 1 BLAS (alphabetical order)
 
 icla_int_t
 icla_izamax(
@@ -1143,7 +1046,7 @@ icla_zrotmg(
     iclaDouble_const_ptr y1,
     iclaDouble_ptr param,
     icla_queue_t queue );
-#endif  // ICLA_REAL
+#endif
 
 void
 icla_zscal(
@@ -1178,9 +1081,6 @@ icla_zswap_native(
     icla_int_t n, iclaDoubleComplex_ptr x, icla_int_t incx,
     icla_int_t step, icla_int_t* ipiv,
     icla_queue_t queue);
-
-// =============================================================================
-// Level 2 BLAS (alphabetical order)
 
 void
 icla_zgemv(
@@ -1241,7 +1141,7 @@ icla_zher2(
     iclaDoubleComplex_const_ptr dy, icla_int_t incy,
     iclaDoubleComplex_ptr       dA, icla_int_t ldda,
     icla_queue_t queue );
-#endif // ICLA_COMPLEX
+#endif
 
 void
 icla_zsymv(
@@ -1296,9 +1196,6 @@ icla_ztrsv(
     iclaDoubleComplex_const_ptr dA, icla_int_t ldda,
     iclaDoubleComplex_ptr       dx, icla_int_t incx,
     icla_queue_t queue );
-
-// =============================================================================
-// Level 3 BLAS (alphabetical order)
 
 void
 icla_zgemm(
@@ -1505,4 +1402,5 @@ icla_zpotf2_lpin(
 
 #undef ICLA_COMPLEX
 
-#endif // ICLABLAS_Z_H
+#endif
+

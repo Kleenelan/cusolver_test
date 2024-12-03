@@ -1,13 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Mark Gates
-       @generated from testing/icla_zgesvd_check.cpp, normal z -> d, Fri Nov 29 12:16:17 2024
-*/
 
 #include "icla_v2.h"
 #include "icla_lapack.h"
@@ -15,17 +5,6 @@
 
 #define REAL
 
-/**
-    Check the results following the LAPACK's [zcds]drvbd routine.
-    A is factored as A = U diag(S) VT and the following 4 tests computed:
-    (1)    | A - U diag(S) VT | / ( |A| max(m,n) )
-    (2)    | I - U^H U   | / ( m )
-    (3)    | I - VT VT^H | / ( n )
-    (4)    S contains min(m,n) nonnegative values in decreasing order.
-           (Return 0 if true, 1 if false.)
-
-    If check is false, skips (1) - (3), but always does (4).
-    ********************************************************************/
 extern "C"
 void check_dgesvd(
     icla_int_t check,
@@ -49,7 +28,6 @@ void check_dgesvd(
         VT = NULL;
     }
 
-    // -1 indicates check not done
     result[0] = -1;
     result[1] = -1;
     result[2] = -1;
@@ -64,8 +42,7 @@ void check_dgesvd(
     assert( ldv >= m_vt );
 
     if ( check ) {
-        // dbdt01 needs m+n
-        // dort01 prefers n*(n+1) to check U; m*(m+1) to check V
+
         icla_int_t lwork_err = m+n;
         if ( U != NULL ) {
             lwork_err = max( lwork_err, n_u*(n_u+1) );
@@ -76,12 +53,11 @@ void check_dgesvd(
         double *work_err;
         TESTING_CHECK( icla_dmalloc_cpu( &work_err, lwork_err ));
 
-        // dbdt01 and dort01 need max(m,n), depending
         double *rwork_err;
         TESTING_CHECK( icla_dmalloc_cpu( &rwork_err, max(m,n) ));
 
         if ( U != NULL && VT != NULL ) {
-            // since KD=0 (3rd arg), E is not referenced so pass unused (9th arg)
+
             lapackf77_dbdt01( &m, &n, &izero, A, &lda,
                               U, &ldu, S, unused, VT, &ldv,
                               work_err,
@@ -113,7 +89,6 @@ void check_dgesvd(
         icla_free_cpu( rwork_err );
     }
 
-    // check S is sorted
     result[3] = 0.;
     for (int j=0; j < min_mn-1; j++) {
         if ( S[j] < S[j+1] )

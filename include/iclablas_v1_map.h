@@ -1,10 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLABLAS_V1_MAP_H
 #define ICLABLAS_V1_MAP_H
@@ -12,9 +5,6 @@
 #ifdef ICLA_NO_V1
 #error "Since ICLA_NO_V1 is defined, icla.h is invalid; use icla_v2.h"
 #endif
-
-// =============================================================================
-// map function names to old v1 routines
 
 #include "iclablas_s_v1_map.h"
 #include "iclablas_d_v1_map.h"
@@ -69,4 +59,5 @@
 #define icla_index_getmatrix               icla_index_getmatrix_v1
 #define icla_index_copymatrix              icla_index_copymatrix_v1
 
-#endif // ICLABLAS_V1_MAP_H
+#endif
+

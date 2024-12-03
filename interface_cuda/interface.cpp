@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Mark Gates
-*/
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -14,7 +5,8 @@
 
 #include <map>
 
-#if __cplusplus >= 201103  // C++11 standard
+#if __cplusplus >= 201103
+
 #include <mutex>
 #endif
 
@@ -32,9 +24,6 @@
 
 #include <cuda_runtime.h>
 
-// defining ICLA_LAPACK_H is a hack to NOT include icla_lapack.h
-// via icla_internal.h here, since it conflicts with acml.h and we don't
-// need lapack here, but we want acml.h for the acmlversion() function.
 #define ICLA_LAPACK_H
 
 #include "icla_internal.h"
@@ -45,22 +34,15 @@
 #if defined(ICLA_HAVE_CUDA) || defined(ICLA_HAVE_HIP)
 
 #ifdef DEBUG_MEMORY
-// defined in alloc.cpp
+
 extern std::map< void*, size_t > g_pointers_dev;
 extern std::map< void*, size_t > g_pointers_cpu;
 extern std::map< void*, size_t > g_pointers_pin;
 #endif
 
-// -----------------------------------------------------------------------------
-// prototypes
 extern "C" void
 icla_warn_leaks( const std::map< void*, size_t >& pointers, const char* type );
 
-
-// -----------------------------------------------------------------------------
-// constants
-
-// bit flags
 enum {
     own_none     = 0x0000,
     own_stream   = 0x0001,
@@ -72,13 +54,11 @@ enum {
     own_hipsparse= 0x0040
 };
 
+#if __cplusplus >= 201103
 
-// -----------------------------------------------------------------------------
-// globals
-#if __cplusplus >= 201103  // C++11 standard
     static std::mutex g_mutex;
 #else
-    // without C++11, wrap pthread mutex
+
     class PthreadMutex {
     public:
         PthreadMutex()
@@ -120,7 +100,6 @@ enum {
     static PthreadMutex g_mutex;
 #endif
 
-// count of (init - finalize) calls
 static int g_init = 0;
 
 #ifndef ICLA_NO_V1
@@ -131,50 +110,29 @@ static int g_init = 0;
     #else
     icla_queue_t g_icla_queue = NULL;
     #endif
-#endif // ICLA_NO_V1
+#endif
 
-
-// -----------------------------------------------------------------------------
-// subset of the CUDA device properties, set by icla_init()
 struct icla_device_info
 {
     size_t memory;
-    size_t shmem_block;       // maximum shared memory per thread block in bytes
-    size_t shmem_block_optin; // maximum shared memory per thread block in bytes with opt-in
-    size_t shmem_multiproc;   // maximum shared memory per multiprocessor in bytes
+    size_t shmem_block;
+
+    size_t shmem_block_optin;
+
+    size_t shmem_multiproc;
+
     icla_int_t gpu_arch;
-    icla_int_t multiproc_count;        // number of multiprocessors
-    icla_int_t num_threads_block;      // max. #threads per block
-    icla_int_t num_threads_multiproc;  // max. #threads per sm
+    icla_int_t multiproc_count;
+
+    icla_int_t num_threads_block;
+
+    icla_int_t num_threads_multiproc;
+
 };
 
 int g_icla_devices_cnt = 0;
 struct icla_device_info* g_icla_devices = NULL;
 
-
-// =============================================================================
-// initialization
-
-/***************************************************************************//**
-    Initializes the ICLA library.
-    Caches information about available CUDA devices.
-
-    Every icla_init call must be paired with a icla_finalize call.
-    Only one thread needs to call icla_init and icla_finalize,
-    but every thread may call it. If n threads call icla_init,
-    the n-th call to icla_finalize will release resources.
-
-    When renumbering CUDA devices, call cudaSetValidDevices before calling icla_init.
-    When setting CUDA device flags, call cudaSetDeviceFlags before calling icla_init.
-
-    @retval ICLA_SUCCESS
-    @retval ICLA_ERR_UNKNOWN
-    @retval ICLA_ERR_HOST_ALLOC
-
-    @see icla_finalize
-
-    @ingroup icla_init
-*******************************************************************************/
 extern "C" icla_int_t
 icla_init()
 {
@@ -183,7 +141,7 @@ icla_init()
     g_mutex.lock();
     {
         if ( g_init == 0 ) {
-            // query number of devices
+
             cudaError_t err;
             g_icla_devices_cnt = 0;
             err = cudaGetDeviceCount( &g_icla_devices_cnt );
@@ -192,7 +150,6 @@ icla_init()
                 goto cleanup;
             }
 
-            // allocate list of devices
             size_t size;
             size = max( 1, g_icla_devices_cnt ) * sizeof(struct icla_device_info);
             icla_malloc_cpu( (void**) &g_icla_devices, size );
@@ -202,7 +159,6 @@ icla_init()
             }
             memset( g_icla_devices, 0, size );
 
-            // query each device
             for( int dev=0; dev < g_icla_devices_cnt; ++dev ) {
                 cudaDeviceProp prop;
                 err = cudaGetDeviceProperties( &prop, dev );
@@ -219,7 +175,7 @@ icla_init()
                     g_icla_devices[dev].gpu_arch          = prop.major*100 + prop.minor*10;
                     #ifdef ICLA_HAVE_CUDA
                     g_icla_devices[dev].shmem_multiproc   = prop.sharedMemPerMultiprocessor;
-                    // dynamic shared memory in CUDA has a special opt-in since CUDA 9
+
                     #if CUDA_VERSION >= 9000
                     g_icla_devices[dev].shmem_block_optin = prop.sharedMemPerBlockOptin;
                     #else
@@ -235,9 +191,7 @@ icla_init()
 
             #ifndef ICLA_NO_V1
                 #ifdef HAVE_PTHREAD_KEY
-                    // create thread-specific key
-                    // currently, this is needed only for ICLA v1 compatability
-                    // see icla_init, iclablas(Set|Get)KernelStream, iclaGetQueue
+
                     info = pthread_key_create( &g_icla_queue_key, NULL );
                     if ( info != 0 ) {
                         info = ICLA_ERR_UNKNOWN;
@@ -245,8 +199,6 @@ icla_init()
                     }
                 #endif
 
-                // ----- queues with NULL streams (for backwards compatability with ICLA 1.x)
-                // allocate array of queues with NULL stream
                 size = max( 1, g_icla_devices_cnt ) * sizeof(icla_queue_t);
                 icla_malloc_cpu( (void**) &g_null_queues, size );
                 if ( g_null_queues == NULL ) {
@@ -254,23 +206,18 @@ icla_init()
                     goto cleanup;
                 }
                 memset( g_null_queues, 0, size );
-            #endif // ICLA_NO_V1
+            #endif
+
         }
 cleanup:
-        g_init += 1;  // increment (init - finalize) count
+        g_init += 1;
+
     }
     g_mutex.unlock();
 
     return info;
 }
 
-
-/***************************************************************************//**
-    Frees information used by the ICLA library.
-    @see icla_init
-
-    @ingroup icla_init
-*******************************************************************************/
 extern "C" icla_int_t
 icla_finalize()
 {
@@ -282,7 +229,8 @@ icla_finalize()
             info = ICLA_ERR_NOT_INITIALIZED;
         }
         else {
-            g_init -= 1;  // decrement (init - finalize) count
+            g_init -= 1;
+
             if ( g_init == 0 ) {
                 info = 0;
 
@@ -304,7 +252,7 @@ icla_finalize()
                 #ifdef HAVE_PTHREAD_KEY
                     pthread_key_delete( g_icla_queue_key );
                 #endif
-                #endif // ICLA_NO_V1
+                #endif
 
                 #ifdef DEBUG_MEMORY
                 icla_warn_leaks( g_pointers_dev, "device" );
@@ -319,24 +267,8 @@ icla_finalize()
     return info;
 }
 
-
-// =============================================================================
-// testing and debugging support
-
 #ifdef DEBUG_MEMORY
-/***************************************************************************//**
-    If DEBUG_MEMORY is defined at compile time, prints warnings when
-    icla_finalize() is called for any GPU device, CPU, or CPU pinned
-    allocations that were not freed.
 
-    @param[in]
-    pointers    Hash table mapping allocated pointers to size.
-
-    @param[in]
-    type        String describing type of pointers (GPU, CPU, etc.)
-
-    @ingroup icla_testing
-*******************************************************************************/
 extern "C" void
 icla_warn_leaks( const std::map< void*, size_t >& pointers, const char* type )
 {
@@ -351,13 +283,6 @@ icla_warn_leaks( const std::map< void*, size_t >& pointers, const char* type )
 }
 #endif
 
-
-/***************************************************************************//**
-    Print ICLA version, CUDA version, LAPACK/BLAS library version,
-    available GPU devices, number of threads, date, etc.
-    Used in testing.
-    @ingroup icla_testing
-*******************************************************************************/
 extern "C" void
 icla_print_environment()
 {
@@ -370,13 +295,10 @@ icla_print_environment()
             (long long) (8*sizeof(icla_int_t)),
             (long long) (8*sizeof(void*)) );
 
-/* CUDA */
-
 #if defined(ICLA_HAVE_CUDA)
 
     printf( "%% Compiled for CUDA architectures %s\n", ICLA_CUDA_ARCH );
 
-    // CUDA, OpenCL, OpenMP, MKL, ACML versions all printed on same line
     int cuda_runtime=0, cuda_driver=0;
     cudaError_t err;
     err = cudaDriverGetVersion( &cuda_driver );
@@ -389,10 +311,7 @@ icla_print_environment()
 
 #endif
 
-/* HIP */
-
 #if defined(ICLA_HAVE_HIP)
-    // TODO: add more specifics here
 
     int hip_runtime=0, hip_driver=0;
     hipError_t err;
@@ -405,9 +324,6 @@ icla_print_environment()
 
     printf("%% HIP runtime %d, driver %d. ", hip_runtime, hip_driver );
 #endif
-
-
-/* OpenMP */
 
 #if defined(_OPENMP)
     int omp_threads = 0;
@@ -431,7 +347,7 @@ icla_print_environment()
 #endif
 
 #if defined(ICLA_WITH_ACML)
-    // ACML 4 doesn't have acml_build parameter
+
     int acml_major, acml_minor, acml_patch, acml_build;
     acmlversion( &acml_major, &acml_minor, &acml_patch, &acml_build );
     printf( "ACML %d.%d.%d.%d ", acml_major, acml_minor, acml_patch, acml_build );
@@ -439,7 +355,6 @@ icla_print_environment()
 
     printf( "\n" );
 
-    // print devices
     int ndevices = 0;
     err = cudaGetDeviceCount( &ndevices );
     if ( err != cudaErrorNoDevice ) {
@@ -491,31 +406,14 @@ icla_print_environment()
 #define icla_memoryType() memoryType
 #endif
 
-/***************************************************************************//**
-    For debugging purposes, determines whether a pointer points to CPU or GPU memory.
-
-    On CUDA architecture 2.0 cards with unified addressing, CUDA can tell if
-    it is a device pointer or pinned host pointer.
-    For malloc'd host pointers, cudaPointerGetAttributes returns error,
-    implying it is a (non-pinned) host pointer.
-
-    On older cards, this cannot determine if it is CPU or GPU memory.
-
-    @param[in] A    pointer to test
-
-    @return  1:  if A is a device pointer (definitely),
-    @return  0:  if A is a host   pointer (definitely or inferred from error),
-    @return -1:  if unknown.
-
-    @ingroup icla_util
-*******************************************************************************/
 extern "C" icla_int_t
 icla_is_devptr( const void* A )
 {
     cudaError_t err;
     cudaDeviceProp prop;
     cudaPointerAttributes attr;
-    int dev;  // must be int
+    int dev;
+
     err = cudaGetDevice( &dev );
     if ( ! err ) {
         err = cudaGetDeviceProperties( &prop, dev );
@@ -523,15 +421,13 @@ icla_is_devptr( const void* A )
         #ifdef ICLA_HAVE_CUDA
         if ( ! err && prop.unifiedAddressing ) {
         #elif defined(ICLA_HAVE_HIP)
-        // in HIP, assume all can.
-        // There's no corresponding property, and examples show no need to check any properties
+
         if ( ! err ) {
         #endif
 
-            // I think the cudaPointerGetAttributes prototype is wrong, missing const (mgates)
             err = cudaPointerGetAttributes( &attr, const_cast<void*>( A ));
             if ( ! err ) {
-                // definitely know type
+
                 #ifdef ICLA_HAVE_CUDA
                   #if CUDA_VERSION >= 11000
                     return (attr.type == cudaMemoryTypeDevice);
@@ -548,33 +444,19 @@ icla_is_devptr( const void* A )
                 #endif
             }
             else if ( err == cudaErrorInvalidValue ) {
-                // clear error; see http://icl.cs.utk.edu/icla/forum/viewtopic.php?f=2&t=529
+
                 cudaGetLastError();
-                // infer as host pointer
+
                 return 0;
             }
         }
     }
-    // clear error
+
     cudaGetLastError();
-    // unknown, e.g., device doesn't support unified addressing
+
     return -1;
 }
 
-
-// =============================================================================
-// device support
-
-/***************************************************************************//**
-    Returns CUDA architecture capability for the current device.
-    This requires icla_init() to be called first to cache the information.
-    Version is an integer xyz, where x is major, y is minor, and z is micro,
-    the same as __CUDA_ARCH__. Thus for architecture 1.3.0 it returns 130.
-
-    @return CUDA_ARCH for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" icla_int_t
 icla_getdevice_arch()
 {
@@ -590,24 +472,6 @@ icla_getdevice_arch()
     return g_icla_devices[dev].gpu_arch;
 }
 
-
-/***************************************************************************//**
-    Fills in devices array with the available devices.
-    (This makes much more sense in OpenCL than in CUDA.)
-
-    @param[out]
-    devices     Array of dimension (size).
-                On output, devices[0, ..., num_dev-1] contain device IDs.
-                Entries >= num_dev are not touched.
-
-    @param[in]
-    size        Dimension of the array devices.
-
-    @param[out]
-    num_dev     Number of devices, limited to size.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" void
 icla_getdevices(
     icla_device_t* devices,
@@ -627,16 +491,6 @@ icla_getdevices(
     *num_dev = cnt;
 }
 
-
-/***************************************************************************//**
-    Get the current device.
-
-    @param[out]
-    device      On output, device ID of the current device.
-                Each thread has its own current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" void
 icla_getdevice( icla_device_t* device )
 {
@@ -648,16 +502,6 @@ icla_getdevice( icla_device_t* device )
     ICLA_UNUSED( err );
 }
 
-
-/***************************************************************************//**
-    Set the current device.
-
-    @param[in]
-    device      Device ID to set as the current device.
-                Each thread has its own current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" void
 icla_setdevice( icla_device_t device )
 {
@@ -667,14 +511,6 @@ icla_setdevice( icla_device_t device )
     ICLA_UNUSED( err );
 }
 
-/***************************************************************************//**
-    Returns the multiprocessor count for the current device.
-    This requires icla_init() to be called first to cache the information.
-
-    @return the multiprocessor count for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" icla_int_t
 icla_getdevice_multiprocessor_count()
 {
@@ -690,14 +526,6 @@ icla_getdevice_multiprocessor_count()
     return g_icla_devices[dev].multiproc_count;
 }
 
-/***************************************************************************//**
-    Returns the maximum number of threads per block for the current device.
-    This requires icla_init() to be called first to cache the information.
-
-    @return the maximum number of threads per block for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" icla_int_t
 icla_getdevice_num_threads_block()
 {
@@ -713,14 +541,6 @@ icla_getdevice_num_threads_block()
     return g_icla_devices[dev].num_threads_block;
 }
 
-/***************************************************************************//**
-    Returns the maximum number of threads per multiprocessor for the current device.
-    This requires icla_init() to be called first to cache the information.
-
-    @return the maximum number of threads per multiprocessor for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" icla_int_t
 icla_getdevice_num_threads_multiprocessor()
 {
@@ -736,14 +556,6 @@ icla_getdevice_num_threads_multiprocessor()
     return g_icla_devices[dev].num_threads_multiproc;
 }
 
-/***************************************************************************//**
-    Returns the maximum shared memory per block (in bytes) for the current device.
-    This requires icla_init() to be called first to cache the information.
-
-    @return the maximum shared memory per block (in bytes) for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" size_t
 icla_getdevice_shmem_block()
 {
@@ -759,16 +571,6 @@ icla_getdevice_shmem_block()
     return g_icla_devices[dev].shmem_block;
 }
 
-/***************************************************************************//**
-    Returns the maximum shared memory per block (in bytes) with a special opt-in
-    for the current device.
-    This requires icla_init() to be called first to cache the information.
-
-    @return the maximum shared memory per block (in bytes) with a special opt-in
-    for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" size_t
 icla_getdevice_shmem_block_optin()
 {
@@ -784,14 +586,6 @@ icla_getdevice_shmem_block_optin()
     return g_icla_devices[dev].shmem_block_optin;
 }
 
-/***************************************************************************//**
-    Returns the maximum shared memory multiprocessor (in bytes) for the current device.
-    This requires icla_init() to be called first to cache the information.
-
-    @return the maximum shared memory per multiprocessor (in bytes) for the current device.
-
-    @ingroup icla_device
-*******************************************************************************/
 extern "C" size_t
 icla_getdevice_shmem_multiprocessor()
 {
@@ -807,20 +601,10 @@ icla_getdevice_shmem_multiprocessor()
     return g_icla_devices[dev].shmem_multiproc;
 }
 
-
-/***************************************************************************//**
-    @param[in]
-    queue           Queue to query.
-
-    @return         Amount of free memory in bytes available on the device
-                    associated with the queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C" size_t
 icla_mem_size( icla_queue_t queue )
 {
-    // CUDA would only need a device ID, but OpenCL requires a queue.
+
     size_t freeMem, totalMem;
     icla_device_t orig_dev;
     icla_getdevice( &orig_dev );
@@ -832,18 +616,6 @@ icla_mem_size( icla_queue_t queue )
     return freeMem;
 }
 
-
-// =============================================================================
-// queue support
-
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
-
-    @return Device ID associated with the ICLA queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C"
 icla_int_t
 icla_queue_get_device( icla_queue_t queue )
@@ -851,33 +623,14 @@ icla_queue_get_device( icla_queue_t queue )
     return queue->device();
 }
 
-
 #ifdef ICLA_HAVE_CUDA
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
 
-    @return CUDA stream associated with the ICLA queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C"
 cudaStream_t
 icla_queue_get_cuda_stream( icla_queue_t queue )
 {
     return queue->cuda_stream();
 }
-
-
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
-
-    @return cuBLAS handle associated with the ICLA queue.
-            ICLA assumes the handle's stream will not be modified.
-
-    @ingroup icla_queue
-*******************************************************************************/
 
 extern "C"
 cublasHandle_t
@@ -886,15 +639,6 @@ icla_queue_get_cublas_handle( icla_queue_t queue )
     return queue->cublas_handle();
 }
 
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
-
-    @return cuSparse handle associated with the ICLA queue.
-            ICLA assumes the handle's stream will not be modified.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C"
 cusparseHandle_t
 icla_queue_get_cusparse_handle( icla_queue_t queue )
@@ -904,31 +648,12 @@ icla_queue_get_cusparse_handle( icla_queue_t queue )
 
 #elif defined(ICLA_HAVE_HIP)
 
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
-
-    @return HIP stream associated with the ICLA queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C"
 hipStream_t
 icla_queue_get_hip_stream( icla_queue_t queue )
 {
     return queue->hip_stream();
 }
-
-
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
-
-    @return hipBLAS handle associated with the ICLA queue.
-            ICLA assumes the handle's stream will not be modified.
-
-    @ingroup icla_queue
-*******************************************************************************/
 
 extern "C"
 hipblasHandle_t
@@ -937,15 +662,6 @@ icla_queue_get_hipblas_handle( icla_queue_t queue )
     return queue->hipblas_handle();
 }
 
-/***************************************************************************//**
-    @param[in]
-    queue       Queue to query.
-
-    @return hipSparse handle associated with the ICLA queue.
-            ICLA assumes the handle's stream will not be modified.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C"
 cusparseHandle_t
 icla_queue_get_hipsparse_handle( icla_queue_t queue )
@@ -953,31 +669,8 @@ icla_queue_get_hipsparse_handle( icla_queue_t queue )
     return queue->hipsparse_handle();
 }
 
-
-
 #endif
 
-
-
-/***************************************************************************//**
-    @fn icla_queue_create( device, queue_ptr )
-
-    icla_queue_create( device, queue_ptr ) is the preferred alias to this
-    function.
-
-    Creates a new ICLA queue, with associated CUDA stream, cuBLAS handle,
-    and cuSparse handle.
-
-    This is the ICLA v2 version which takes a device ID.
-
-    @param[in]
-    device          Device to create queue on.
-
-    @param[out]
-    queue_ptr       On output, the newly created queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C" void
 icla_queue_create_internal(
     icla_device_t device, icla_queue_t* queue_ptr,
@@ -1049,37 +742,6 @@ icla_queue_create_internal(
     ICLA_UNUSED( stat2 );
 }
 
-
-/***************************************************************************//**
-    @fn icla_queue_create_from_cuda( device, cuda_stream, cublas_handle, cusparse_handle, queue_ptr )
-
-    Warning: non-portable outside of CUDA. Use with discretion.
-
-    Creates a new ICLA queue, using the given CUDA stream, cuBLAS handle, and
-    cuSparse handle. The caller retains ownership of the given stream and
-    handles, so must free them after destroying the queue;
-    see icla_queue_destroy().
-
-    ICLA sets the stream on the cuBLAS and cuSparse handles, and assumes
-    it will not be changed while ICLA is running.
-
-    @param[in]
-    device          Device to create queue on.
-
-    @param[in]
-    cuda_stream     CUDA stream to use, even if NULL (the so-called default stream).
-
-    @param[in]
-    cublas_handle   cuBLAS handle to use. If NULL, a new handle is created.
-
-    @param[in]
-    cusparse_handle cuSparse handle to use. If NULL, a new handle is created.
-
-    @param[out]
-    queue_ptr       On output, the newly created queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 #ifdef ICLA_HAVE_CUDA
 extern "C" void
 icla_queue_create_from_cuda_internal(
@@ -1108,10 +770,8 @@ icla_queue_create_from_cuda_internal(
 
     icla_setdevice( device );
 
-    // stream can be NULL
     queue->stream__ = cuda_stream;
 
-    // allocate cublas handle if given as NULL
     cublasStatus_t stat;
     if ( cublas_handle == NULL ) {
         stat  = cublasCreate( &cublas_handle );
@@ -1122,7 +782,6 @@ icla_queue_create_from_cuda_internal(
     stat  = cublasSetStream( queue->cublas__, queue->stream__ );
     check_xerror( stat, func, file, line );
 
-    // allocate cusparse handle if given as NULL
     cusparseStatus_t stat2;
     if ( cusparse_handle == NULL ) {
         stat2 = cusparseCreate( &cusparse_handle );
@@ -1139,37 +798,6 @@ icla_queue_create_from_cuda_internal(
 }
 #endif
 
-
-/***************************************************************************//**
-    @fn icla_queue_create_from_hip( device, hip_stream, hipblas_handle, hipsparse_handle, queue_ptr )
-
-    Warning: non-portable outside of CUDA. Use with discretion.
-
-    Creates a new ICLA queue, using the given CUDA stream, cuBLAS handle, and
-    cuSparse handle. The caller retains ownership of the given stream and
-    handles, so must free them after destroying the queue;
-    see icla_queue_destroy().
-
-    ICLA sets the stream on the cuBLAS and cuSparse handles, and assumes
-    it will not be changed while ICLA is running.
-
-    @param[in]
-    device          Device to create queue on.
-
-    @param[in]
-    cuda_stream     CUDA stream to use, even if NULL (the so-called default stream).
-
-    @param[in]
-    cublas_handle   cuBLAS handle to use. If NULL, a new handle is created.
-
-    @param[in]
-    cusparse_handle cuSparse handle to use. If NULL, a new handle is created.
-
-    @param[out]
-    queue_ptr       On output, the newly created queue.
-
-    @ingroup icla_queue
-*******************************************************************************/
 #ifdef ICLA_HAVE_HIP
 extern "C" void
 icla_queue_create_from_hip_internal(
@@ -1200,10 +828,8 @@ icla_queue_create_from_hip_internal(
 
     icla_setdevice( device );
 
-    // stream can be NULL
     queue->stream__ = hip_stream;
 
-    // allocate cublas handle if given as NULL
     hipblasStatus_t stat;
     if ( hipblas_handle == NULL ) {
         stat  = hipblasCreate( &hipblas_handle );
@@ -1214,7 +840,6 @@ icla_queue_create_from_hip_internal(
     stat  = hipblasSetStream( queue->hipblas__, queue->stream__ );
     check_xerror( stat, func, file, line );
 
-    // allocate cusparse handle if given as NULL
     hipsparseStatus_t stat2;
     if ( hipsparse_handle == NULL ) {
         stat2 = hipsparseCreate( &hipsparse_handle );
@@ -1230,23 +855,6 @@ icla_queue_create_from_hip_internal(
 }
 #endif
 
-
-
-/***************************************************************************//**
-    @fn icla_queue_destroy( queue )
-
-    Destroys a queue, freeing its resources.
-
-    If the queue was created with icla_queue_create_from_cuda(), the CUDA
-    stream, cuBLAS handle, and cuSparse handle given there are NOT freed -- the
-    caller retains ownership. However, if ICLA allocated the handles, ICLA
-    will free them here.
-
-    @param[in]
-    queue           Queue to destroy.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C" void
 icla_queue_destroy_internal(
     icla_queue_t queue,
@@ -1305,18 +913,6 @@ icla_queue_destroy_internal(
     }
 }
 
-
-/***************************************************************************//**
-    @fn icla_queue_sync( queue )
-
-    Synchronizes with a queue. The CPU blocks until all operations on the queue
-    are finished.
-
-    @param[in]
-    queue           Queue to synchronize.
-
-    @ingroup icla_queue
-*******************************************************************************/
 extern "C" void
 icla_queue_sync_internal(
     icla_queue_t queue,
@@ -1333,18 +929,6 @@ icla_queue_sync_internal(
     ICLA_UNUSED( err );
 }
 
-
-// =============================================================================
-// event support
-
-/***************************************************************************//**
-    Creates a GPU event.
-
-    @param[in]
-    event           On output, the newly created event.
-
-    @ingroup icla_event
-*******************************************************************************/
 extern "C" void
 icla_event_create( icla_event_t* event )
 {
@@ -1354,15 +938,6 @@ icla_event_create( icla_event_t* event )
     ICLA_UNUSED( err );
 }
 
-
-/***************************************************************************//**
-    Creates a GPU event, without timing support. May improve performance
-
-    @param[in]
-    event           On output, the newly created event.
-
-    @ingroup icla_event
-*******************************************************************************/
 extern "C" void
 icla_event_create_untimed( icla_event_t* event )
 {
@@ -1372,16 +947,6 @@ icla_event_create_untimed( icla_event_t* event )
     ICLA_UNUSED( err );
 }
 
-
-
-/***************************************************************************//*
-    Destroys a GPU event, freeing its resources.
-
-    @param[in]
-    event           Event to destroy.
-
-    @ingroup icla_event
-*******************************************************************************/
 extern "C" void
 icla_event_destroy( icla_event_t event )
 {
@@ -1393,19 +958,6 @@ icla_event_destroy( icla_event_t event )
     }
 }
 
-
-/***************************************************************************//**
-    Records an event into the queue's execution stream.
-    The event will trigger when all previous operations on this queue finish.
-
-    @param[in]
-    event           Event to record.
-
-    @param[in]
-    queue           Queue to execute in.
-
-    @ingroup icla_event
-*******************************************************************************/
 extern "C" void
 icla_event_record( icla_event_t event, icla_queue_t queue )
 {
@@ -1415,15 +967,6 @@ icla_event_record( icla_event_t event, icla_queue_t queue )
     ICLA_UNUSED( err );
 }
 
-
-/***************************************************************************//**
-    Synchronizes with an event. The CPU blocks until the event triggers.
-
-    @param[in]
-    event           Event to synchronize with.
-
-    @ingroup icla_event
-*******************************************************************************/
 extern "C" void
 icla_event_sync( icla_event_t event )
 {
@@ -1433,19 +976,6 @@ icla_event_sync( icla_event_t event )
     ICLA_UNUSED( err );
 }
 
-
-/***************************************************************************//**
-    Synchronizes a queue with an event. The queue blocks until the event
-    triggers. The CPU does not block.
-
-    @param[in]
-    event           Event to synchronize with.
-
-    @param[in]
-    queue           Queue to synchronize.
-
-    @ingroup icla_event
-*******************************************************************************/
 extern "C" void
 icla_queue_wait_event( icla_queue_t queue, icla_event_t event )
 {
@@ -1455,4 +985,5 @@ icla_queue_wait_event( icla_queue_t queue, icla_event_t event )
     ICLA_UNUSED( err );
 }
 
-#endif // ICLA_HAVE_CUDA or ICLA_HAVE_HIP
+#endif
+

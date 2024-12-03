@@ -1,57 +1,14 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
 
-       @author Mark Gates
-*/
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "icla_internal.h"
 
-/***************************************************************************//**
-    Purpose
-    -------
-    icla_xerbla is an error handler for the ICLA routines.
-    It is called by a ICLA routine if an input parameter has an
-    invalid value. It prints an error message.
-
-    Installers may consider modifying it to
-    call system-specific exception-handling facilities.
-
-    Arguments
-    ---------
-    @param[in]
-    srname  CHAR*
-            The name of the subroutine that called XERBLA.
-            In C/C++ it is convenient to use "__func__".
-
-    @param[in]
-    neg_info INTEGER
-            Error code.
-            Note neg_info's sign is opposite info's normal sign.
-
-            Normally:
-            - neg_info > 0: The position of the invalid parameter
-                         in the parameter list of the calling routine.
-
-            The conditions below are also reported, but normally code should not
-            call xerbla for these runtime errors:
-            - neg_info <  0:          Function-specific error.
-            - neg_info >= -ICLA_ERR: Pre-defined ICLA error, such as malloc failure.
-            - neg_info == 0:          No error.
-
-    @ingroup icla_error
-*******************************************************************************/
 extern "C"
 void icla_xerbla(const char *srname, icla_int_t neg_info)
 {
-    // the first 3 cases are unusual for calling xerbla;
-    // normally runtime errors are passed back in info.
+
     if ( neg_info < 0 ) {
         fprintf( stderr, "Error in %s, function-specific error (info = %lld)\n",
                  srname, (long long) -neg_info );
@@ -65,8 +22,7 @@ void icla_xerbla(const char *srname, icla_int_t neg_info)
                  srname, icla_strerror(-neg_info), (long long) -neg_info );
     }
     else {
-        // this is the normal case for calling xerbla;
-        // invalid parameter values are usually logic errors, not runtime errors.
+
         fprintf( stderr, "On entry to %s, parameter %lld had an illegal value (info = %lld)\n",
                  srname, (long long) neg_info, (long long) -neg_info );
     }

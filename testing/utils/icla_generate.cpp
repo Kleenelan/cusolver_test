@@ -1,14 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Mark Gates
-
-       Test matrix generation.
-*/
 
 #include <exception>
 #include <string>
@@ -16,29 +5,29 @@
 #include <limits>
 
 #include "icla_v2.h"
-#include "icla_lapack.hpp"  // experimental C++ bindings
+#include "icla_lapack.hpp"
+
 #include "icla_operators.h"
 
 #include "icla_matrix.hpp"
 
-// last (defines macros that conflict with std headers)
 #include "testings.h"
 #undef max
 #undef min
 using std::max;
 using std::min;
 
-/******************************************************************************/
-// constants
-
 const icla_int_t idist_rand  = 1;
 const icla_int_t idist_rands = 2;
 const icla_int_t idist_randn = 3;
 
 enum class MatrixType {
-    rand      = 1,  // maps to larnv idist
-    rands     = 2,  // maps to larnv idist
-    randn     = 3,  // maps to larnv idist
+    rand      = 1,
+
+    rands     = 2,
+
+    randn     = 3,
+
     zero,
     ones,
     identity,
@@ -53,9 +42,12 @@ enum class MatrixType {
 };
 
 enum class Dist {
-    rand      = 1,  // maps to larnv idist
-    rands     = 2,  // maps to larnv idist
-    randn     = 3,  // maps to larnv idist
+    rand      = 1,
+
+    rands     = 2,
+
+    randn     = 3,
+
     arith,
     geo,
     cluster0,
@@ -68,37 +60,27 @@ enum class Dist {
     specified,
 };
 
-/******************************************************************************/
-// ANSI color codes
 const char *ansi_esc    = "\x1b[";
 const char *ansi_red    = "\x1b[31m";
 const char *ansi_bold   = "\x1b[1m";
 const char *ansi_normal = "\x1b[0m";
 
-/******************************************************************************/
-// random number in (0, max_]
 template< typename FloatT >
 inline FloatT rand( FloatT max_ )
 {
     return max_ * rand() / FloatT(RAND_MAX);
 }
 
-/******************************************************************************/
-// true if str begins with prefix
 inline bool begins( std::string const &str, std::string const &prefix )
 {
     return (str.compare( 0, prefix.size(), prefix) == 0);
 }
 
-/******************************************************************************/
-// true if str contains pattern
 inline bool contains( std::string const &str, std::string const &pattern )
 {
     return (str.find( pattern ) != std::string::npos);
 }
 
-
-/******************************************************************************/
 template< typename FloatT >
 void icla_generate_sigma(
     icla_opts& opts,
@@ -110,10 +92,8 @@ void icla_generate_sigma(
 {
     typedef typename blas::traits<FloatT>::real_t real_t;
 
-    // constants
     const FloatT c_zero = blas::traits<FloatT>::make( 0, 0 );
 
-    // locals
     icla_int_t minmn = min( A.m, A.n );
     assert( minmn == sigma.n );
 
@@ -176,7 +156,7 @@ void icla_generate_sigma(
             for (icla_int_t i = 0; i < minmn; ++i) {
                 sigma[i] = exp( sigma[i] * range );
             }
-            // make cond exact
+
             if (minmn >= 2) {
                 sigma[0] = 1;
                 sigma[1] = 1/cond;
@@ -193,7 +173,7 @@ void icla_generate_sigma(
         }
 
         case Dist::specified:
-            // user-specified sigma values; don't modify
+
             sigma_max = 1;
             rand_sign = false;
             break;
@@ -204,7 +184,7 @@ void icla_generate_sigma(
     }
 
     if (rand_sign) {
-        // apply random signs
+
         for (icla_int_t i = 0; i < minmn; ++i) {
             if (rand() > RAND_MAX/2) {
                 sigma[i] = -sigma[i];
@@ -212,24 +192,15 @@ void icla_generate_sigma(
         }
     }
 
-    // copy sigma => A
     lapack::laset( "general", A.m, A.n, c_zero, c_zero, A(0,0), A.ld );
     for (icla_int_t i = 0; i < minmn; ++i) {
         *A(i,i) = blas::traits<FloatT>::make( sigma[i], 0 );
     }
 }
 
-
-/***************************************************************************//**
-    Given A with singular values such that sum(sigma_i^2) = n,
-    returns A with columns of unit norm, with the same condition number.
-    see: Davies and Higham, 2000, Numerically stable generation of correlation
-    matrices and their factors.
-*******************************************************************************/
 template< typename FloatT >
 void icla_generate_correlation_factor( Matrix<FloatT>& A )
 {
-    //const FloatT eps = std::numeric_limits<FloatT>::epsilon();
 
     Vector<FloatT> x( A.n );
     for (icla_int_t j = 0; j < A.n; ++j) {
@@ -247,11 +218,7 @@ void icla_generate_correlation_factor( Matrix<FloatT>& A )
                 s = c*t;
                 blas::rot( A.m, A(0,i), 1, A(0,j), 1, c, -s );
                 x[i] = blas::dot( A.m, A(0,i), 1, A(0,i), 1 );
-                //if (x[i] - 1 > 30*eps) {
-                //    printf( "i %d, x[i] %.6f, x[i] - 1 %.6e, 30*eps %.6e\n",
-                //            i, x[i], x[i] - 1, 30*eps );
-                //}
-                //assert( x[i] - 1 < 30*eps );
+
                 x[i] = 1;
                 x[j] = blas::dot( A.m, A(0,j), 1, A(0,j), 1 );
                 break;
@@ -260,10 +227,6 @@ void icla_generate_correlation_factor( Matrix<FloatT>& A )
     }
 }
 
-
-/******************************************************************************/
-// specialization to complex
-// can't use Higham's algorithm in complex
 template<>
 void icla_generate_correlation_factor( Matrix<iclaFloatComplex>& A )
 {
@@ -276,8 +239,6 @@ void icla_generate_correlation_factor( Matrix<iclaDoubleComplex>& A )
     assert( false );
 }
 
-
-/******************************************************************************/
 template< typename FloatT >
 void icla_generate_svd(
     icla_opts& opts,
@@ -290,7 +251,6 @@ void icla_generate_svd(
 {
     typedef typename blas::traits<FloatT>::real_t real_t;
 
-    // locals
     FloatT tmp;
     icla_int_t m = A.m;
     icla_int_t n = A.n;
@@ -301,7 +261,6 @@ void icla_generate_svd(
     Matrix<FloatT> U( maxmn, minmn );
     Vector<FloatT> tau( minmn );
 
-    // query for workspace
     icla_int_t lwork = -1;
     lapack::unmqr( "Left", "NoTrans", A.m, A.n, minmn,
                    U(0,0), U.ld, tau(0), A(0,0), A.ld,
@@ -317,24 +276,18 @@ void icla_generate_svd(
     lwork = max( lwork, lwork2 );
     Vector<FloatT> work( lwork );
 
-    // ----------
     icla_generate_sigma( opts, dist, false, cond, sigma_max, A, sigma );
 
-    // for generate correlation factor, need sum sigma_i^2 = n
-    // scaling doesn't change cond
     if (condD != 1) {
         real_t sum_sq = blas::dot( sigma.n, sigma(0), 1, sigma(0), 1 );
         real_t scale = sqrt( sigma.n / sum_sq );
         blas::scal( sigma.n, scale, sigma(0), 1 );
-        // copy sigma to diag(A)
+
         for (icla_int_t i = 0; i < sigma.n; ++i) {
             *A(i,i) = blas::traits<FloatT>::make( *sigma(i), 0 );
         }
     }
 
-    // random U, m-by-minmn
-    // just make each random column into a Householder vector;
-    // no need to update subsequent columns (as in geqrf).
     sizeU = U.size();
     lapack::larnv( idist_randn, opts.iseed, sizeU, U(0,0) );
     for (icla_int_t j = 0; j < minmn; ++j) {
@@ -342,38 +295,33 @@ void icla_generate_svd(
         lapack::larfg( mj, U(j,j), U(j+1,j), 1, tau(j) );
     }
 
-    // A = U*A
     lapack::unmqr( "Left", "NoTrans", A.m, A.n, minmn,
                    U(0,0), U.ld, tau(0), A(0,0), A.ld,
                    work(0), lwork, &info );
     assert( info == 0 );
 
-    // random V, n-by-minmn (stored column-wise in U)
     lapack::larnv( idist_randn, opts.iseed, sizeU, U(0,0) );
     for (icla_int_t j = 0; j < minmn; ++j) {
         icla_int_t nj = n - j;
         lapack::larfg( nj, U(j,j), U(j+1,j), 1, tau(j) );
     }
 
-    // A = A*V^H
     lapack::unmqr( "Right", "ConjTrans", A.m, A.n, minmn,
                    U(0,0), U.ld, tau(0), A(0,0), A.ld,
                    work(0), lwork, &info );
     assert( info == 0 );
 
     if (condD != 1) {
-        // A = A*W, W orthogonal, such that A has unit column norms
-        // i.e., A'*A is a correlation matrix with unit diagonal
+
         icla_generate_correlation_factor( A );
 
-        // A = A*D col scaling
         Vector<real_t> D( A.n );
         real_t range = log( condD );
         lapack::larnv( idist_rand, opts.iseed, D.n, D(0) );
         for (icla_int_t i = 0; i < D.n; ++i) {
             D[i] = exp( D[i] * range );
         }
-        // TODO: add argument to return D to caller?
+
         if (opts.verbose) {
             printf( "D = [" );
             for (icla_int_t i = 0; i < D.n; ++i) {
@@ -389,7 +337,6 @@ void icla_generate_svd(
     }
 }
 
-/******************************************************************************/
 template< typename FloatT >
 void icla_generate_heev(
     icla_opts& opts,
@@ -402,10 +349,8 @@ void icla_generate_heev(
 {
     typedef typename blas::traits<FloatT>::real_t real_t;
 
-    // check inputs
     assert( A.m == A.n );
 
-    // locals
     FloatT tmp;
     icla_int_t n = A.n;
     icla_int_t sizeU;
@@ -413,7 +358,6 @@ void icla_generate_heev(
     Matrix<FloatT> U( n, n );
     Vector<FloatT> tau( n );
 
-    // query for workspace
     icla_int_t lwork = -1;
     lapack::unmqr( "Left", "NoTrans", n, n, n,
                    U(0,0), U.ld, tau(0), A(0,0), A.ld,
@@ -429,12 +373,8 @@ void icla_generate_heev(
     lwork = max( lwork, lwork2 );
     Vector<FloatT> work( lwork );
 
-    // ----------
     icla_generate_sigma( opts, dist, rand_sign, cond, sigma_max, A, sigma );
 
-    // random U, n-by-n
-    // just make each random column into a Householder vector;
-    // no need to update subsequent columns (as in geqrf).
     sizeU = U.size();
     lapack::larnv( idist_randn, opts.iseed, sizeU, U(0,0) );
     for (icla_int_t j = 0; j < n; ++j) {
@@ -442,26 +382,22 @@ void icla_generate_heev(
         lapack::larfg( nj, U(j,j), U(j+1,j), 1, tau(j) );
     }
 
-    // A = U*A
     lapack::unmqr( "Left", "NoTrans", n, n, n,
                    U(0,0), U.ld, tau(0), A(0,0), A.ld,
                    work(0), lwork, &info );
     assert( info == 0 );
 
-    // A = A*U^H
     lapack::unmqr( "Right", "ConjTrans", n, n, n,
                    U(0,0), U.ld, tau(0), A(0,0), A.ld,
                    work(0), lwork, &info );
     assert( info == 0 );
 
-    // make diagonal real
-    // usually LAPACK ignores imaginary part anyway, but Matlab doesn't
     for (int i = 0; i < n; ++i) {
         *A(i,i) = blas::traits<FloatT>::make( real( *A(i,i) ), 0 );
     }
 
     if (condD != 1) {
-        // A = D*A*D row & column scaling
+
         Vector<real_t> D( n );
         real_t range = log( condD );
         lapack::larnv( idist_rand, opts.iseed, n, D(0) );
@@ -476,7 +412,6 @@ void icla_generate_heev(
     }
 }
 
-/******************************************************************************/
 template< typename FloatT >
 void icla_generate_geev(
     icla_opts& opts,
@@ -487,10 +422,10 @@ void icla_generate_geev(
     Matrix<FloatT>& A,
     Vector< typename blas::traits<FloatT>::real_t >& sigma )
 {
-    throw std::exception();  // not implemented
+    throw std::exception();
+
 }
 
-/******************************************************************************/
 template< typename FloatT >
 void icla_generate_geevx(
     icla_opts& opts,
@@ -501,158 +436,10 @@ void icla_generate_geevx(
     Matrix<FloatT>& A,
     Vector< typename blas::traits<FloatT>::real_t >& sigma )
 {
-    throw std::exception();  // not implemented
+    throw std::exception();
+
 }
 
-/***************************************************************************//**
-    Purpose
-    -------
-    Generate an m-by-n test matrix A.
-    Similar to but does not use LAPACK's libtmg.
-
-    Arguments
-    ---------
-    @param[in]
-    opts    ICLA options. Uses matrix, cond, condD; see further details.
-
-    @param[out]
-    A       Complex array, dimension (lda, n).
-            On output, the m-by-n test matrix A in an lda-by-n array.
-
-    @param[in,out]
-    sigma   Real array, dimension (min(m,n))
-            For matrix with "_specified", on input contains user-specified
-            singular or eigenvalues.
-            On output, contains singular or eigenvalues, if known,
-            else set to NaN. sigma is not necesarily sorted.
-
-    Further Details
-    ---------------
-    The `--matrix` command line option specifies the matrix name according to the
-    tables below. Where indicated, names take an optional distribution suffix (%)
-    and an optional scaling suffix (^). The default distribution is `rand`.
-
-    The `--cond` and `--condD` command line options specify condition numbers as
-    described below. By default, cond = sqrt( 1/eps ) = 6.7e7 for double.
-    condD is for specialized eigenvalue and SVD tests; by default, condD = 1.
-
-    Examples:
-
-        ./testing_zgemm --matrix rand_small
-        ./testing_zgemm --matrix svd_arith --cond 1e6
-        ./testing_zgemm --matrix svd_logrand_ufl --cond 1e6
-
-    In descriptions below:
-    - $\Sigma$ is a diagonal matrix with entries $\sigma_i$,
-      for $i = 1, ..., n$;
-    - $\Lambda$ is a diagonal matrix with entries $ \lambda_i = \pm \sigma_i $
-      with random sign, for $i = 1, ..., n$;
-    - $U$ and $V$ are random orthogonal matrices from the Haar distribution
-      (See: Stewart, The efficient generation of random orthogonal matrices
-       with an application to condition estimators, 1980);
-    - $X$ is a random matrix.
-
-    See LAPACK Working Note (LAWN) 41:
-    - Table  5: Test matrices for the nonsymmetric eigenvalue problem
-    - Table 10: Test matrices for the symmetric eigenvalue problem
-    - Table 11: Test matrices for the singular value decomposition
-
-    Matrix types
-    ----------------------------
-    Matrix        |  Description
-    --------------|-------------
-    `zero      `  |  all entries are 0
-    `ones      `  |  all entries are 1
-    `identity  `  |  diagonal entries are 1
-    `jordan    `  |  diagonal and first subdiagonal entries are 1
-    `kronecker `  |  $A_{ij} = 1 + (m/cond) \delta_{ij} $
-    -- -- --      |  -- -- --
-    `rand^     `  |  matrix entries random uniform on (0, 1)          [note 1]
-    `rands^    `  |  matrix entries random uniform on (-1, 1)         [note 1]
-    `randn^    `  |  matrix entries random normal with mean 0, std 1  [note 1,2]
-    -- -- --      |  -- -- --
-    `diag%^    `  |  $A = \Sigma       $
-    `svd%^     `  |  $A = U \Sigma V^H $
-    `poev%^    `  |  $A = V \Sigma V^H $ (eigenvalues positive [note 3], i.e., matrix SPD)
-    `spd%^     `  |  alias for poev
-    `heev%^    `  |  $A = V \Lambda V^H$ (eigenvalues mixed signs)
-    `syev%^    `  |  alias for heev
-    `geev%^    `  |  $A = V T V^H,     $ with Schur-form $T$, $V$ orthogonal      [not yet implemented]
-    `geevx%^   `  |  $A = X T X^{-1},  $ with Schur-form $T$, $X$ ill-conditioned [not yet implemented]
-
-    [1] rand, rands, randn do not use cond, so the condition number is arbitrary.
-
-    [2] For randn, $Expected( \log( cond ) ) = \log( 4.65 n )$ [Edelman, 1988].
-
-
-    [%] optional distribution suffix for Sigma or Lambda
-    ----------------------------
-    Suffix        |  Description
-    --------------|-------------
-    `_rand     `  |  $\sigma_i$ random uniform on (0, 1)          [default]
-    `_rands    `  |  $\sigma_i$ random uniform on (-1, 1);        [note 3]
-    `_randn    `  |  $\sigma_i$ random normal with mean 0, std 1; [note 3]
-    -- -- --      |  -- -- --
-    `_logrand  `  |  $\log( \sigma_i )$ uniform on $(\log(1/cond), \log(1))$
-    `_arith    `  |  $\sigma_i = 1 - (i - 1)/(n - 1)(1 - 1/cond); \sigma_{i+1} - \sigma_i $ is constant
-    `_geo      `  |  $\sigma_i = (cond)^{ -(i-1)/(n-1) };         \sigma_{i+1} / \sigma_i $ is constant
-    `_cluster0 `  |  $\sigma = [ 1, 1/cond, ..., 1/cond ]; $ has 1 unit value, $n-1$ small values
-    `_cluster1 `  |  $\sigma = [ 1, ..., 1, 1/cond ];      $ has $n-1$ unit values, 1 small value
-    `_rarith   `  |  `_arith`,    reversed order
-    `_rgeo     `  |  `_geo`,      reversed order
-    `_rcluster0`  |  `_cluster0`, reversed order
-    `_rcluster1`  |  `_cluster1`, reversed order
-    `_specified`  |  user specified $\Sigma$ on input
-
-    [3] For `_rands`, `_randn`, $\Sigma$ contains negative values.
-
-
-    [^] optional scaling & modifier suffix
-    ----------------------------
-    Suffix        |  Description
-    --------------|-------------
-    `_ufl      `  |  scale near underflow         = 1e-308 for double
-    `_ofl      `  |  scale near overflow          = 2e+308 for double
-    `_small    `  |  scale near sqrt( underflow ) = 1e-154 for double
-    `_large    `  |  scale near sqrt( overflow  ) = 6e+153 for double
-    `_dominant `  |  diagonally dominant
-
-    For `_dominant`, set diagonal entries to row or column sum:
-    \[
-        A_{ii} = \max( \sum_j | A_{ij} |, \sum_k | A_{ki} | ).
-    \]
-    Note `_dominant` changes the singular or eigenvalues, and cond.
-
-
-    condD scaling
-    ----------------------------
-    Here, scaling by $D$ is implemented, scaling by $K$ is not yet implemented.
-    If condD != 1, then:
-    For SVD,
-    \[
-        A_0 = U \Sigma V^H, \\
-        A = A_0 K D,
-    \]
-    where
-    $K$ is diagonal such that columns of $U \Sigma V^H K$ have unit norm,
-    hence $A^T A$ has unit diagonal,
-    and $D$ has log-random entries in $( \log(1/condD), \log(1) )$.
-
-    For heev,
-    \[
-        A_0 = U \Lambda U^H, \\
-        A = D K A_0 K D,
-    \]
-    where
-    $K$ is diagonal such that $K A_0 K$ has unit diagonal, and $D$ is as above.
-
-    Note using condD changes the singular or eigenvalues; on output, $\Sigma$
-    contains the singular or eigenvalues of $A_0$, not of $A$.
-
-    See: Demmel and Veselic, Jacobi's method is more accurate than QR, 1992.
-
-    @ingroup icla_testing
-*******************************************************************************/
 template< typename FloatT >
 void icla_generate_matrix(
     icla_opts& opts,
@@ -661,17 +448,18 @@ void icla_generate_matrix(
 {
     typedef typename blas::traits<FloatT>::real_t real_t;
 
-    // constants
     const real_t nan = std::numeric_limits<real_t>::quiet_NaN();
     const real_t d_zero = ICLA_D_ZERO;
     const real_t d_one  = ICLA_D_ONE;
-    const real_t ufl = std::numeric_limits< real_t >::min();      // == lamch("safe min")  ==  1e-38 or  2e-308
-    const real_t ofl = 1 / ufl;                                   //                            8e37 or   4e307
-    const real_t eps = std::numeric_limits< real_t >::epsilon();  // == lamch("precision") == 1.2e-7 or 2.2e-16
+    const real_t ufl = std::numeric_limits< real_t >::min();
+
+    const real_t ofl = 1 / ufl;
+
+    const real_t eps = std::numeric_limits< real_t >::epsilon();
+
     const FloatT c_zero = blas::traits<FloatT>::make( 0, 0 );
     const FloatT c_one  = blas::traits<FloatT>::make( 1, 0 );
 
-    // locals
     std::string name = opts.matrix;
     real_t cond = opts.cond;
     if (cond == 0) {
@@ -681,11 +469,8 @@ void icla_generate_matrix(
     real_t sigma_max = 1;
     icla_int_t minmn = min( A.m, A.n );
 
-    // ----------
-    // set sigma to unknown (nan)
     lapack::laset( "general", sigma.n, 1, nan, nan, sigma(0), sigma.n );
 
-    // ----- decode matrix type
     MatrixType type = MatrixType::identity;
     if      (name == "zero"
           || name == "zeros")         { type = MatrixType::zero;      }
@@ -732,11 +517,11 @@ void icla_generate_matrix(
                  ansi_red, name.c_str(), opts.cond, ansi_normal );
     }
 
-    // ----- decode distribution
     Dist dist = Dist::rand;
     if      (contains( name, "_randn"     )) { dist = Dist::randn;     }
     else if (contains( name, "_rands"     )) { dist = Dist::rands;     }
-    else if (contains( name, "_rand"      )) { dist = Dist::rand;      } // after randn, rands
+    else if (contains( name, "_rand"      )) { dist = Dist::rand;      }
+
     else if (contains( name, "_logrand"   )) { dist = Dist::logrand;   }
     else if (contains( name, "_arith"     )) { dist = Dist::arith;     }
     else if (contains( name, "_geo"       )) { dist = Dist::geo;       }
@@ -767,13 +552,11 @@ void icla_generate_matrix(
                  ansi_red, name.c_str(), ansi_normal );
     }
 
-    // ----- decode scaling
     if      (contains( name, "_small"  )) { sigma_max = sqrt( ufl ); }
     else if (contains( name, "_large"  )) { sigma_max = sqrt( ofl ); }
     else if (contains( name, "_ufl"    )) { sigma_max = ufl; }
     else if (contains( name, "_ofl"    )) { sigma_max = ofl; }
 
-    // ----- generate matrix
     switch (type) {
         case MatrixType::zero:
             lapack::laset( "general", A.m, A.n, c_zero, c_zero, A(0,0), A.ld );
@@ -791,8 +574,10 @@ void icla_generate_matrix(
 
         case MatrixType::jordan: {
             icla_int_t n1 = A.n - 1;
-            lapack::laset( "upper", A.n, A.n, c_zero, c_one, A(0,0), A.ld );  // ones on diagonal
-            lapack::laset( "lower", n1,  n1,  c_zero, c_one, A(1,0), A.ld );  // ones on sub-diagonal
+            lapack::laset( "upper", A.n, A.n, c_zero, c_one, A(0,0), A.ld );
+
+            lapack::laset( "lower", n1,  n1,  c_zero, c_one, A(1,0), A.ld );
+
             break;
         }
 
@@ -841,31 +626,29 @@ void icla_generate_matrix(
     }
 
     if (contains( name, "_dominant" )) {
-        // make diagonally dominant; strict unless diagonal has zeros
+
         for (int i = 0; i < minmn; ++i) {
-            real_t sum = max( blas::asum( A.m, A(0,i), 1    ),    // i-th col
-                              blas::asum( A.n, A(i,0), A.ld ) );  // i-th row
+            real_t sum = max( blas::asum( A.m, A(0,i), 1    ),
+
+                              blas::asum( A.n, A(i,0), A.ld ) );
+
             *A(i,i) = blas::traits<FloatT>::make( sum, 0 );
         }
-        // reset sigma to unknown (nan)
+
         lapack::laset( "general", sigma.n, 1, nan, nan, sigma(0), sigma.n );
     }
 }
 
-
-/******************************************************************************/
-// traditional interface with m, n, lda
 template< typename FloatT >
 void icla_generate_matrix(
     icla_opts& opts,
     icla_int_t m, icla_int_t n,
     FloatT* A_ptr, icla_int_t lda,
-    typename blas::traits<FloatT>::real_t* sigma_ptr /* =nullptr */ )
+    typename blas::traits<FloatT>::real_t* sigma_ptr
+ )
 {
     typedef typename blas::traits<FloatT>::real_t real_t;
 
-    // vector & matrix wrappers
-    // if sigma is null, create new vector; data is discarded later
     Vector<real_t> sigma( sigma_ptr, min(m,n) );
     if (sigma_ptr == nullptr) {
         sigma = Vector<real_t>( min(m,n) );
@@ -874,9 +657,6 @@ void icla_generate_matrix(
     icla_generate_matrix( opts, A, sigma );
 }
 
-
-/******************************************************************************/
-// explicit instantiations
 template
 void icla_generate_matrix(
     icla_opts& opts,

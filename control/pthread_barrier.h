@@ -1,8 +1,6 @@
 #ifndef PTHREAD_BARRIER_H
 #define PTHREAD_BARRIER_H
 
-// MacOS doesn't provide pthread_barrier
-// icla_winthread.c doesn't provide pthread_barrier
 #if (defined( _WIN32 ) || defined( _WIN64 ) || defined( __APPLE__ )) && ! defined( __MINGW32__ )
 
 #if defined( _WIN32 ) || defined( _WIN64 )
@@ -15,9 +13,6 @@
 extern "C" {
 #endif
 
-// from http://stackoverflow.com/questions/3640853/performance-test-sem-t-v-s-dispatch-semaphore-t-and-pthread-once-t-v-s-dispat
-
-// *sigh* OSX does not have pthread_barrier
 typedef int pthread_barrierattr_t;
 typedef struct {
     pthread_mutex_t mutex;
@@ -39,6 +34,7 @@ int pthread_barrier_wait( pthread_barrier_t *barrier );
 }
 #endif
 
-#endif        // (_WIN32 || _WIN64 || __APPLE__) && ! __MINGW32__
+#endif
 
-#endif        //  #ifndef PTHREAD_BARRIER_H
+#endif
+

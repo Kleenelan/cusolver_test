@@ -1,8 +1,6 @@
 SRC_TEST := \
 testing/testing_sgetrf.cpp
 
-
-
 #interface_cuda/connection_mgpu.c  \
 
 SRC_MATH_TOOL := \
@@ -10,8 +8,6 @@ math_tool/cblas_c.cpp  \
 math_tool/cblas_d.cpp  \
 math_tool/cblas_s.cpp  \
 math_tool/cblas_z.cpp
-
-
 
 SRC_CONTROL := \
 control/icla_timer.cpp  \
@@ -39,7 +35,6 @@ interface_cuda/error.cpp  \
 interface_cuda/interface.cpp  \
 interface_cuda/interface_v1.cpp
 
-
 SRC_TOOL :=   \
 testing/utils/testing_zaxpy.cpp  \
 testing/utils/icla_util.cpp  \
@@ -52,9 +47,6 @@ testing/utils/icla_sutil.cpp  \
 testing/utils/icla_sgesvd_check.cpp  \
 testing/utils/icla_dgesvd_check.cpp  \
 testing/utils/icla_cgesvd_check.cpp
-
-
-
 
 SRC_FORT :=  \
 testing/lin/zbdt01.f  \

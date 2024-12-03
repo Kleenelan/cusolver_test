@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/icla_zbulgeinc.h, normal z -> c, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLA_CBULGEINC_H
 #define ICLA_CBULGEINC_H
@@ -17,11 +8,6 @@
 extern "C" {
 #endif
 
-
-// =============================================================================
-// Configuration
-
-// maximum contexts
 #define MAX_THREADS_BLG         256
 
 void findVTpos(
@@ -68,12 +54,11 @@ struct gbstrct_blg {
     volatile int *ss_prog;
 };
 
-// declare globals here; defined in chetrd_bhe2trc.cpp
 extern struct gbstrct_blg core_in_all;
-
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* ICLA_CBULGEINC_H */
+#endif
+

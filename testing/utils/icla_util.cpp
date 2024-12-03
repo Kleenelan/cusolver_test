@@ -1,14 +1,4 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
 
-       @author Mark Gates
-
-       Utilities for testing.
-*/
 #include <stdarg.h>
 #include <string.h>
 #include <assert.h>
@@ -21,10 +11,8 @@
 #include "icla_v2.h"
 #include "testings.h"
 
-#include "../control/icla_threadsetting.h"  // internal header
+#include "../control/icla_threadsetting.h"
 
-// --------------------
-// global variable
 #if   defined(ICLA_HAVE_CUDA)
     const char* g_platform_str = "cuBLAS";
 
@@ -41,10 +29,6 @@
     #error "unknown platform"
 #endif
 
-
-// --------------------
-// If condition is false, print error message and exit.
-// Error message is formatted using printf, using any additional arguments.
 extern "C"
 void icla_assert( bool condition, const char* msg, ... )
 {
@@ -59,9 +43,6 @@ void icla_assert( bool condition, const char* msg, ... )
     }
 }
 
-// --------------------
-// If condition is false, print warning message; does not exit.
-// Warning message is formatted using printf, using any additional arguments.
 extern "C"
 void icla_assert_warn( bool condition, const char* msg, ... )
 {
@@ -75,8 +56,6 @@ void icla_assert_warn( bool condition, const char* msg, ... )
     }
 }
 
-
-// --------------------
 const char *usage_short =
 "%% Usage: %s [options] [-h|--help]\n\n";
 
@@ -156,18 +135,17 @@ const char *usage =
 "\n"
 "                   * default values\n";
 
-
-// constructor fills in default values
 icla_opts::icla_opts( icla_opts_t flag )
 {
     int nt = icla_get_lapack_numthreads();
 
-    // fill in default values
     this->batchcount = 300;
     this->device   = 0;
-    this->cache    = 2*1024*1024 * nt;  // assume 2 MiB per core
+    this->cache    = 2*1024*1024 * nt;
+
     this->align    = 32;
-    this->nb       = 0;  // auto
+    this->nb       = 0;
+
     this->nrhs     = 1;
     this->nqueue   = 1;
     this->ngpu     = icla_num_gpus();
@@ -195,17 +173,25 @@ icla_opts::icla_opts( icla_opts_t flag )
     this->lapack    = (getenv("ICLA_RUN_LAPACK")     != NULL);
     this->warmup    = (getenv("ICLA_WARMUP")         != NULL);
 
-    this->uplo      = iclaLower;      // potrf, etc.
-    this->transA    = iclaNoTrans;    // gemm, etc.
-    this->transB    = iclaNoTrans;    // gemm
-    this->side      = iclaLeft;       // trsm, etc.
-    this->diag      = iclaNonUnit;    // trsm, etc.
-    this->jobz      = iclaNoVec;  // heev:  no eigen vectors
-    this->jobvr     = iclaNoVec;  // geev:  no right eigen vectors
-    this->jobvl     = iclaNoVec;  // geev:  no left  eigen vectors
+    this->uplo      = iclaLower;
+
+    this->transA    = iclaNoTrans;
+
+    this->transB    = iclaNoTrans;
+
+    this->side      = iclaLeft;
+
+    this->diag      = iclaNonUnit;
+
+    this->jobz      = iclaNoVec;
+
+    this->jobvr     = iclaNoVec;
+
+    this->jobvl     = iclaNoVec;
 
     this->matrix    = "rand";
-    this->cond      = 0;  // zero means cond = sqrt( 1/eps ), which varies by precision
+    this->cond      = 0;
+
     this->condD     = 1;
 
     this->iseed[0]  = 0;
@@ -214,31 +200,27 @@ icla_opts::icla_opts( icla_opts_t flag )
     this->iseed[3]  = 1;
 
     if ( flag == iclaOptsBatched ) {
-        // 32, 64, ..., 512
+
         this->default_nstart = 32;
         this->default_nstep  = 32;
         this->default_nend   = 512;
     }
     else {
-        // 1K + 64, 2K + 64, ..., 10K + 64
+
         this->default_nstart = 1024 + 64;
         this->default_nstep  = 1024;
         this->default_nend   = 10304;
     }
 }
 
-
-// Given pointer to a string, scans the string for a comma,
-// and advances the string to after the comma.
-// Returns true if comma found, otherwise false.
 bool scan_comma( char** handle )
 {
     char* ptr = *handle;
-    // scan past whitespace
+
     while( *ptr == ' ' ) {
         ptr += 1;
     }
-    // scan comma
+
     if ( *ptr == ',' ) {
         *handle = ptr + 1;
         return true;
@@ -248,15 +230,6 @@ bool scan_comma( char** handle )
     }
 }
 
-
-// Given pointer to a string, scans the string for a range "%d:%d:%d" or a number "%d".
-// If range,  then start, end, step are set accordingly.
-// If number, then start = end and step = 0.
-// Advances the string to after the range or number.
-// Ensures start, end >= 0.
-// If step >= 0, ensures start <= end;
-// if step <  0, ensures start >= end.
-// Returns true if found valid range or number, otherwise false.
 bool scan_range( char** handle, int* start, int* end, int* step )
 {
     int bytes1, bytes3, cnt;
@@ -277,8 +250,6 @@ bool scan_range( char** handle, int* start, int* end, int* step )
     }
 }
 
-
-// parse values from command line
 void icla_opts::parse_opts( int argc, char** argv )
 {
     printf( usage_short, argv[0] );
@@ -289,8 +260,7 @@ void icla_opts::parse_opts( int argc, char** argv )
 
     this->ntest = 0;
     for( int i = 1; i < argc; ++i ) {
-        // ----- problem size
-        // -n or -N or --range fill in single size or range of sizes, and update ntest
+
         if ( (strcmp("-n",      argv[i]) == 0 ||
               strcmp("-N",      argv[i]) == 0 ||
               strcmp("--range", argv[i]) == 0) && i+1 < argc )
@@ -325,7 +295,7 @@ void icla_opts::parse_opts( int argc, char** argv )
 
             icla_assert( valid, "error: '%s %s' is not valid, expected (m|m_start:m_end:m_step)[,(n|n_start:n_end:n_step)[,(k|k_start:k_end:k_step)]]\n",
                           argv[i-1], argv[i] );
-            // if all zero steps, just give start point
+
             if ( m_step == 0 && n_step == 0 && k_step == 0 ) {
                 icla_assert( this->ntest < MAX_NTEST, "error: %s %s exceeded maximum number of tests (%d).\n",
                               argv[i-1], argv[i], MAX_NTEST );
@@ -351,7 +321,6 @@ void icla_opts::parse_opts( int argc, char** argv )
             }
         }
 
-        // ----- scalar arguments
         else if ( strcmp("--dev", argv[i]) == 0 && i+1 < argc ) {
             this->device = atoi( argv[++i] );
             icla_assert( this->device >= 0 && this->device < ndevices,
@@ -384,11 +353,12 @@ void icla_opts::parse_opts( int argc, char** argv )
                           "error: --ngpu %s exceeds iclaMaxGPUs, %d.\n", argv[i], iclaMaxGPUs );
             icla_assert( this->ngpu <= ndevices,
                           "error: --ngpu %s exceeds number of CUDA or OpenCL devices, %d.\n", argv[i], ndevices );
-            // allow ngpu == -1, which forces multi-GPU code with 1 GPU. see testing_zhegvd, etc.
+
             icla_assert( this->ngpu > 0 || this->ngpu == -1,
                           "error: --ngpu %s is invalid; ensure ngpu != 0.\n", argv[i] );
-            // save in environment variable, so icla_num_gpus() picks it up
-            char env_num_gpus[20];  // space for "ICLA_NUM_GPUS=", 4 digits, and nil
+
+            char env_num_gpus[20];
+
             #if defined( _WIN32 ) || defined( _WIN64 )
                 snprintf( env_num_gpus, sizeof(env_num_gpus), "ICLA_NUM_GPUS=%lld", (long long) abs(this->ngpu) );
                 putenv( env_num_gpus );
@@ -487,8 +457,6 @@ void icla_opts::parse_opts( int argc, char** argv )
                           "error: --ku %s is invalid; ensure ku >= 0.\n", argv[i] );
         }
 
-        // ----- boolean arguments
-        // check results
         else if ( strcmp("-c",         argv[i]) == 0 ||
                   strcmp("--check",    argv[i]) == 0 ) { this->check  = 1; }
         else if ( strcmp("-c2",        argv[i]) == 0 ||
@@ -505,13 +473,9 @@ void icla_opts::parse_opts( int argc, char** argv )
         else if ( strcmp("--warmup",   argv[i]) == 0 ) { this->warmup = true;  }
         else if ( strcmp("--nowarmup", argv[i]) == 0 ) { this->warmup = false; }
 
-        //else if ( strcmp("--all",      argv[i]) == 0 ) { this->all    = true;  }
-        //else if ( strcmp("--notall",   argv[i]) == 0 ) { this->all    = false; }
-
         else if ( strcmp("-v",         argv[i]) == 0 ||
                   strcmp("--verbose",  argv[i]) == 0 ) { this->verbose += 1;  }
 
-        // ----- lapack options
         else if ( strcmp("-L",  argv[i]) == 0 ) { this->uplo = iclaLower; }
         else if ( strcmp("-U",  argv[i]) == 0 ) { this->uplo = iclaUpper; }
         else if ( strcmp("-F",  argv[i]) == 0 ) { this->uplo = iclaFull; }
@@ -543,7 +507,6 @@ void icla_opts::parse_opts( int argc, char** argv )
         else if ( strcmp("-RN", argv[i]) == 0 ) { this->jobvr = iclaNoVec; }
         else if ( strcmp("-RV", argv[i]) == 0 ) { this->jobvr = iclaVec;   }
 
-        // ----- vectors of options
         else if ( strcmp("--svd-work", argv[i]) == 0 && i+1 < argc ) {
             i += 1;
             char *token;
@@ -552,7 +515,8 @@ void icla_opts::parse_opts( int argc, char** argv )
                  token != NULL;
                  token = strtok( NULL, ", " ))
             {
-                if ( *token == '\0' ) { /* ignore empty tokens */ }
+                if ( *token == '\0' ) {
+ }
                 else if ( strcmp( token, "all"       ) == 0 ) { this->svd_work.push_back( iclaSVD_all        ); }
                 else if ( strcmp( token, "query"     ) == 0 ) { this->svd_work.push_back( iclaSVD_query      ); }
                 else if ( strcmp( token, "doc"       ) == 0 ) { this->svd_work.push_back( iclaSVD_doc        ); }
@@ -596,7 +560,6 @@ void icla_opts::parse_opts( int argc, char** argv )
             }
         }
 
-        // ----- test matrix
         else if ( strcmp("--matrix", argv[i]) == 0 && i+1 < argc) {
             i += 1;
             this->matrix = argv[i];
@@ -614,7 +577,6 @@ void icla_opts::parse_opts( int argc, char** argv )
                           "error: --condD %s is invalid; ensure condD >= 1.\n", argv[i] );
         }
 
-        // ----- usage
         else if ( strcmp("-h",     argv[i]) == 0 ||
                   strcmp("--help", argv[i]) == 0 ) {
             fprintf( stderr, usage, argv[0], MAX_NTEST );
@@ -626,7 +588,6 @@ void icla_opts::parse_opts( int argc, char** argv )
         }
     }
 
-    // default values
     if ( this->svd_work.size() == 0 ) {
         this->svd_work.push_back( iclaSVD_query );
     }
@@ -637,14 +598,15 @@ void icla_opts::parse_opts( int argc, char** argv )
         this->jobv.push_back( iclaNoVec );
     }
 
-    // if -N or --range not given, use default range
     if ( this->ntest == 0 ) {
-        icla_int_t n2 = this->default_nstart;  //1024 + 64;
+        icla_int_t n2 = this->default_nstart;
+
         while( n2 <= this->default_nend && this->ntest < MAX_NTEST ) {
             this->msize[ this->ntest ] = n2;
             this->nsize[ this->ntest ] = n2;
             this->ksize[ this->ntest ] = n2;
-            n2 += this->default_nstep;  //1024;
+            n2 += this->default_nstep;
+
             this->ntest++;
         }
     }
@@ -654,8 +616,6 @@ void icla_opts::parse_opts( int argc, char** argv )
     icla_setdevice( this->device );
     #endif
 
-    // create queues on this device
-    // 2 queues + 1 extra NULL entry to catch errors
     icla_queue_create( devices[ this->device ], &this->queues2[ 0 ] );
     icla_queue_create( devices[ this->device ], &this->queues2[ 1 ] );
     this->queues2[ 2 ] = NULL;
@@ -663,19 +623,16 @@ void icla_opts::parse_opts( int argc, char** argv )
     this->queue = this->queues2[ 0 ];
 
     #if defined(ICLA_HAVE_HIP)
-        // handle for directly calling hipblas
+
         this->handle = icla_queue_get_hipblas_handle( this->queue );
     #elif defined(ICLA_HAVE_CUDA)
-        // handle for directly calling cublas
+
         this->handle = icla_queue_get_cublas_handle( this->queue );
     #else
         #error "unknown platform"
     #endif
 }
-// end parse_opts
 
-
-// -----------------------------------------------------------------------------
 void icla_opts::get_range(
     icla_int_t n, icla_range_t* range,
     double* vl, double* vu,
@@ -708,8 +665,6 @@ void icla_opts::get_range(
     }
 }
 
-
-// -----------------------------------------------------------------------------
 void icla_opts::get_range(
     icla_int_t n, icla_range_t* range,
     float* vl, float* vu,
@@ -721,8 +676,6 @@ void icla_opts::get_range(
     *vu = float(dvu);
 }
 
-
-// -----------------------------------------------------------------------------
 void icla_opts::cleanup()
 {
     this->queue = NULL;
@@ -736,17 +689,13 @@ void icla_opts::cleanup()
     #endif
 }
 
-
-// ------------------------------------------------------------
-// Initialize PAPI events set to measure flops.
-// Note flops counters are inaccurate on Sandy Bridge, and don't exist on Haswell.
-// See http://icl.cs.utk.edu/projects/papi/wiki/PAPITopics:SandyFlops
 #ifdef HAVE_PAPI
 #include <papi.h>
-#include <string.h>  // memset
-#endif  // HAVE_PAPI
+#include <string.h>
 
-int gPAPI_flops_set = -1;  // i.e., PAPI_NULL
+#endif
+
+int gPAPI_flops_set = -1;
 
 extern "C"
 void flops_init()
@@ -758,7 +707,6 @@ void flops_init()
                  PAPI_strerror(err), err );
     }
 
-    // read flops
     err = PAPI_create_eventset( &gPAPI_flops_set );
     if ( err != PAPI_OK ) {
         fprintf( stderr, "Error: PAPI_create_eventset failed\n" );
@@ -791,12 +739,10 @@ void flops_init()
         fprintf( stderr, "Error: PAPI_start failed: %s (%d)\n",
                  PAPI_strerror(err), err );
     }
-    #endif  // HAVE_PAPI
+    #endif
+
 }
 
-
-// -----------------------------------------------------------------------------
-// Flushes cache by allocating buffer of 2*cache size, and writing it in parallel.
 void icla_flush_cache( size_t cache_size )
 {
     unsigned char* buf = (unsigned char*) malloc( 2 * cache_size );

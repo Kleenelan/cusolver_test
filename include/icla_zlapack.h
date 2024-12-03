@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @precisions normal z -> s d c
-*/
 
 #ifndef ICLA_ZLAPACK_H
 #define ICLA_ZLAPACK_H
@@ -20,9 +11,6 @@
 extern "C" {
 #endif
 
-/* ////////////////////////////////////////////////////////////////////////////
-   -- BLAS and LAPACK functions (alphabetical order)
-*/
 #define blasf77_izamax     FORTRAN_NAME( izamax, IZAMAX )
 #define blasf77_zaxpy      FORTRAN_NAME( zaxpy,  ZAXPY  )
 #define blasf77_zcopy      FORTRAN_NAME( zcopy,  ZCOPY  )
@@ -160,12 +148,10 @@ extern "C" {
 #define lapackf77_zunmrq   FORTRAN_NAME( zunmrq, ZUNMRQ )
 #define lapackf77_zunmtr   FORTRAN_NAME( zunmtr, ZUNMTR )
 
-/* batch routines */
 #ifdef ICLA_WITH_MKL
 #define lapackf77_zgetrf_batch   FORTRAN_NAME( zgetrf_batch, ZGETRF_BATCH )
 #endif
 
-/* testing functions (alphabetical order) */
 #define lapackf77_zbdt01   FORTRAN_NAME( zbdt01, ZBDT01 )
 #define lapackf77_zget22   FORTRAN_NAME( zget22, ZGET22 )
 #define lapackf77_zhet21   FORTRAN_NAME( zhet21, ZHET21 )
@@ -178,9 +164,6 @@ extern "C" {
 #define lapackf77_zstt21   FORTRAN_NAME( zstt21, ZSTT21 )
 #define lapackf77_zunt01   FORTRAN_NAME( zunt01, ZUNT01 )
 
-/*
- * BLAS functions (alphabetical order)
- */
 icla_int_t blasf77_izamax(
                      const icla_int_t *n,
                      const iclaDoubleComplex *x, const icla_int_t *incx );
@@ -287,7 +270,6 @@ void blasf77_zswap(  const icla_int_t *n,
                      iclaDoubleComplex *x, const icla_int_t *incx,
                      iclaDoubleComplex *y, const icla_int_t *incy );
 
-/* complex-symmetric (non-Hermitian) routines */
 void blasf77_zsymm(  const char *side, const char *uplo,
                      const icla_int_t *m, const icla_int_t *n,
                      const iclaDoubleComplex *alpha,
@@ -346,12 +328,6 @@ void blasf77_ztrsv(  const char *uplo, const char *transa, const char *diag,
                      const iclaDoubleComplex *A, const icla_int_t *lda,
                            iclaDoubleComplex *x, const icla_int_t *incx );
 
-/* ////////////////////////////////////////////////////////////////////////////
- -- ICLA wrappers around BLAS functions (alphabetical order)
-    The Fortran interface for these is not portable, so we
-    provide a C interface identical to the Fortran interface.
-*/
-
 double icla_cblas_dzasum(
     icla_int_t n,
     const iclaDoubleComplex *x, icla_int_t incx );
@@ -370,10 +346,6 @@ iclaDoubleComplex icla_cblas_zdotu(
     const iclaDoubleComplex *x, icla_int_t incx,
     const iclaDoubleComplex *y, icla_int_t incy );
 
-
-/*
- * LAPACK functions (alphabetical order)
- */
 #ifdef ICLA_REAL
 void   lapackf77_dbdsdc( const char *uplo, const char *compq,
                          const icla_int_t *n,
@@ -383,7 +355,7 @@ void   lapackf77_dbdsdc( const char *uplo, const char *compq,
                          double *Q, icla_int_t *IQ,
                          double *work, icla_int_t *iwork,
                          icla_int_t *info );
-#endif  // ICLA_REAL
+#endif
 
 void   lapackf77_zbdsqr( const char *uplo,
                          const icla_int_t *n, const icla_int_t *ncvt, const icla_int_t *nru,  const icla_int_t *ncc,
@@ -771,7 +743,8 @@ void   lapackf77_zlacrm( const icla_int_t *m, const icla_int_t *n,
 void   lapackf77_zladiv( iclaDoubleComplex *ret_val,
                          const iclaDoubleComplex *x,
                          const iclaDoubleComplex *y );
-#else // ICLA_REAL
+#else
+
 void   lapackf77_zladiv( const double *a, const double *b,
                          const double *c, const double *d,
                          double *p, double *q );
@@ -999,15 +972,15 @@ void   lapackf77_zsysv(  const char *uplo,
                          iclaDoubleComplex *work, const icla_int_t *lwork,
                          icla_int_t *info );
 
-#endif  // ICLA_COMPLEX
+#endif
 
 void   lapackf77_ztrevc( const char *side, const char *howmny,
-                         // select is [in] for complex; [in,out] for real
+
                          #ifdef ICLA_COMPLEX
                          const
                          #endif
                          icla_int_t *select, const icla_int_t *n,
-                         // T is modified but restored in complex; const for real
+
                          #ifdef ICLA_REAL
                          const
                          #endif
@@ -1140,9 +1113,6 @@ void   lapackf77_zunmtr( const char *side, const char *uplo, const char *trans,
                          iclaDoubleComplex *work, const icla_int_t *lwork,
                          icla_int_t *info );
 
-/*
- * Real precision extras
- */
 void   lapackf77_dstebz( const char *range, const char *order,
                          const icla_int_t *n,
                          const double *vl, const double *vu,
@@ -1197,9 +1167,6 @@ void   lapackf77_dlaed4( const icla_int_t *n, const icla_int_t *i,
 void   lapackf77_dlasrt( const char *id, const icla_int_t *n, double *d,
                          icla_int_t *info );
 
-/*
- * Testing functions
- */
 void   lapackf77_zbdt01( const icla_int_t *m, const icla_int_t *n, const icla_int_t *kd,
                          iclaDoubleComplex *A, const icla_int_t *lda,
                          iclaDoubleComplex *Q, const icla_int_t *ldq,
@@ -1329,4 +1296,5 @@ void   lapackf77_zgetrf_batch(
 
 #undef ICLA_COMPLEX
 
-#endif /* ICLA_ZLAPACK_H */
+#endif
+

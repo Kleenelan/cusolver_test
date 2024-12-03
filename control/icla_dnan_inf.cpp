@@ -1,20 +1,9 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
 
-       @author Mark Gates
-       @generated from control/icla_znan_inf.cpp, normal z -> d, Fri Nov 29 12:16:14 2024
-
-*/
 #include <limits>
 
 #include "icla_internal.h"
 
 #define REAL
-
 
 const double ICLA_D_NAN
     = ICLA_D_MAKE( std::numeric_limits<double>::quiet_NaN(),
@@ -24,12 +13,6 @@ const double ICLA_D_INF
     = ICLA_D_MAKE( std::numeric_limits<double>::infinity(),
                     std::numeric_limits<double>::infinity() );
 
-
-/***************************************************************************//**
-    @param[in] x    Scalar to test.
-    @return true if either real(x) or imag(x) is NAN.
-    @ingroup icla_nan_inf
-*******************************************************************************/
 int icla_d_isnan( double x )
 {
 #ifdef COMPLEX
@@ -40,12 +23,6 @@ int icla_d_isnan( double x )
 #endif
 }
 
-
-/***************************************************************************//**
-    @param[in] x    Scalar to test.
-    @return true if either real(x) or imag(x) is INF.
-    @ingroup icla_nan_inf
-*******************************************************************************/
 int icla_d_isinf( double x )
 {
 #ifdef COMPLEX
@@ -56,12 +33,6 @@ int icla_d_isinf( double x )
 #endif
 }
 
-
-/***************************************************************************//**
-    @param[in] x    Scalar to test.
-    @return true if either real(x) or imag(x) is NAN or INF.
-    @ingroup icla_nan_inf
-*******************************************************************************/
 int icla_d_isnan_inf( double x )
 {
 #ifdef COMPLEX
@@ -74,56 +45,6 @@ int icla_d_isnan_inf( double x )
 #endif
 }
 
-
-/***************************************************************************//**
-    Purpose
-    -------
-    icla_dnan_inf checks a matrix that is located on the CPU host
-    for NAN (not-a-number) and INF (infinity) values.
-
-    NAN is created by 0/0 and similar.
-    INF is created by x/0 and similar, where x != 0.
-
-    Arguments
-    ---------
-    @param[in]
-    uplo    icla_uplo_t
-            Specifies what part of the matrix A to check.
-      -     = iclaUpper:  Upper triangular part of A
-      -     = iclaLower:  Lower triangular part of A
-      -     = iclaFull:   All of A
-
-    @param[in]
-    m       INTEGER
-            The number of rows of the matrix A. m >= 0.
-
-    @param[in]
-    n       INTEGER
-            The number of columns of the matrix A. n >= 0.
-
-    @param[in]
-    A       DOUBLE PRECISION array, dimension (lda,n), on the CPU host.
-            The m-by-n matrix to be printed.
-
-    @param[in]
-    lda     INTEGER
-            The leading dimension of the array A. lda >= m.
-
-    @param[out]
-    cnt_nan INTEGER*
-            If non-NULL, on exit contains the number of NAN values in A.
-
-    @param[out]
-    cnt_inf INTEGER*
-            If non-NULL, on exit contains the number of INF values in A.
-
-    @return
-      -     >= 0:  Returns number of NAN + number of INF values.
-      -     <  0:  If it returns -i, the i-th argument had an illegal value,
-                   or another error occured, such as memory allocation failed.
-
-    @ingroup icla_nan_inf
-*******************************************************************************/
 extern "C"
 icla_int_t icla_dnan_inf(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -153,7 +74,8 @@ icla_int_t icla_dnan_inf(
 
     if (uplo == iclaLower) {
         for (int j = 0; j < n; ++j) {
-            for (int i = j; i < m; ++i) {  // i >= j
+            for (int i = j; i < m; ++i) {
+
                 if      (icla_d_isnan( *A(i,j) )) { c_nan++; }
                 else if (icla_d_isinf( *A(i,j) )) { c_inf++; }
             }
@@ -161,7 +83,8 @@ icla_int_t icla_dnan_inf(
     }
     else if (uplo == iclaUpper) {
         for (int j = 0; j < n; ++j) {
-            for (int i = 0; i < m && i <= j; ++i) {  // i <= j
+            for (int i = 0; i < m && i <= j; ++i) {
+
                 if      (icla_d_isnan( *A(i,j) )) { c_nan++; }
                 else if (icla_d_isinf( *A(i,j) )) { c_inf++; }
             }
@@ -182,60 +105,6 @@ icla_int_t icla_dnan_inf(
     return (c_nan + c_inf);
 }
 
-
-/***************************************************************************//**
-    Purpose
-    -------
-    icla_dnan_inf checks a matrix that is located on the CPU host
-    for NAN (not-a-number) and INF (infinity) values.
-
-    NAN is created by 0/0 and similar.
-    INF is created by x/0 and similar, where x != 0.
-
-    Arguments
-    ---------
-    @param[in]
-    uplo    icla_uplo_t
-            Specifies what part of the matrix A to check.
-      -     = iclaUpper:  Upper triangular part of A
-      -     = iclaLower:  Lower triangular part of A
-      -     = iclaFull:   All of A
-
-    @param[in]
-    m       INTEGER
-            The number of rows of the matrix A. m >= 0.
-
-    @param[in]
-    n       INTEGER
-            The number of columns of the matrix A. n >= 0.
-
-    @param[in]
-    dA      DOUBLE PRECISION array, dimension (ldda,n), on the GPU device.
-            The m-by-n matrix to be printed.
-
-    @param[in]
-    ldda    INTEGER
-            The leading dimension of the array A. ldda >= m.
-
-    @param[out]
-    cnt_nan INTEGER*
-            If non-NULL, on exit contains the number of NAN values in A.
-
-    @param[out]
-    cnt_inf INTEGER*
-            If non-NULL, on exit contains the number of INF values in A.
-
-    @param[in]
-    queue   icla_queue_t
-            Queue to execute in.
-
-    @return
-      -     >= 0:  Returns number of NAN + number of INF values.
-      -     <  0:  If it returns -i, the i-th argument had an illegal value,
-                   or another error occured, such as memory allocation failed.
-
-    @ingroup icla_nan_inf
-*******************************************************************************/
 extern "C"
 icla_int_t icla_dnan_inf_gpu(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,

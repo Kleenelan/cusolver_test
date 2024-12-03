@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/iclablas_z.h, normal z -> s, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLABLAS_S_H
 #define ICLABLAS_S_H
@@ -20,9 +11,6 @@
 extern "C" {
 #endif
 
-  /*
-   * Transpose functions
-   */
 void
 iclablas_stranspose_inplace(
     icla_int_t n,
@@ -65,9 +53,6 @@ iclablas_ssetmatrix_transpose(
     iclaFloat_ptr    dwork, icla_int_t lddw,
     icla_queue_t queues[2] );
 
-  /*
-   * RBT-related functions
-   */
 void
 iclablas_sprbt(
     icla_int_t n,
@@ -90,9 +75,6 @@ iclablas_sprbt_mtv(
     iclaFloat_ptr db, icla_int_t lddb,
     icla_queue_t queue );
 
-  /*
-   * Multi-GPU copy functions
-   */
 void
 icla_sgetmatrix_1D_col_bcyclic(
     icla_int_t ngpu,
@@ -143,8 +125,6 @@ iclablas_ssetmatrix_transpose_mgpu(
     iclaFloat_ptr    dwork[], icla_int_t lddw,
     icla_queue_t queues[][2] );
 
-// in src/ssytrd_mgpu.cpp
-// TODO rename ssetmatrix_sy or similar
 icla_int_t
 icla_shtodhe(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -153,8 +133,6 @@ icla_shtodhe(
     icla_queue_t queues[][10],
     icla_int_t *info );
 
-// in src/spotrf3_mgpu.cpp
-// TODO same as icla_shtodhe?
 icla_int_t
 icla_shtodpo(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -164,8 +142,6 @@ icla_shtodpo(
     icla_queue_t queues[][3],
     icla_int_t *info );
 
-// in src/spotrf3_mgpu.cpp
-// TODO rename sgetmatrix_sy or similar
 icla_int_t
 icla_sdtohpo(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -175,10 +151,6 @@ icla_sdtohpo(
     icla_queue_t queues[][3],
     icla_int_t *info );
 
-
-  /*
-   * Multi-GPU BLAS functions (alphabetical order)
-   */
 void
 iclablas_ssymm_mgpu(
     icla_side_t side, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -188,8 +160,7 @@ iclablas_ssymm_mgpu(
     float beta,
     iclaFloat_ptr dC[],    icla_int_t lddc,
     iclaFloat_ptr dwork[], icla_int_t dworksiz,
-    //float    *C,       icla_int_t ldc,
-    //float    *work[],  icla_int_t worksiz,
+
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue,
     icla_event_t events[][iclaMaxGPUs*iclaMaxGPUs+10], icla_int_t nevents,
@@ -234,7 +205,6 @@ icla_ssytrs_gpu(
     icla_int_t *info,
     icla_queue_t queue );
 
-// Ichi's version, in src/ssytrd_mgpu.cpp
 void
 icla_ssyr2k_mgpu(
     icla_int_t ngpu,
@@ -256,7 +226,6 @@ iclablas_ssyr2k_mgpu2(
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue );
 
-// in src/spotrf_mgpu_right.cpp
 void
 icla_ssyrk_mgpu(
     icla_int_t ngpu,
@@ -267,7 +236,6 @@ icla_ssyrk_mgpu(
     iclaFloat_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
-// in src/spotrf_mgpu_right.cpp
 void
 icla_ssyrk_mgpu2(
     icla_int_t ngpu,
@@ -278,10 +246,6 @@ icla_ssyrk_mgpu2(
     iclaFloat_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
-
-  /*
-   * LAPACK auxiliary functions (alphabetical order)
-   */
 icla_int_t
 iclablas_sdiinertia(
     icla_int_t n,
@@ -496,9 +460,6 @@ iclablas_strtri_diag(
     iclaFloat_ptr d_dinvA,
     icla_queue_t queue );
 
-  /*
-   * to cleanup (alphabetical order)
-   */
 icla_int_t
 icla_slarfb_gpu(
     icla_side_t side, icla_trans_t trans, icla_direct_t direct, icla_storev_t storev,
@@ -573,9 +534,6 @@ icla_slarfx_gpu(
     iclaFloat_ptr work,
     icla_queue_t queue );
 
-  /*
-   * Level 1 BLAS (alphabetical order)
-   */
 void
 iclablas_saxpycp(
     icla_int_t m,
@@ -650,10 +608,6 @@ iclablas_snrm2_row_check_adjust(
     iclaFloat_ptr dlsticc,
     icla_queue_t queue );
 
-  /*
-   * Level 2 BLAS (alphabetical order)
-   */
-// trsv were always queue versions
 void
 iclablas_strsv(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -662,7 +616,6 @@ iclablas_strsv(
     iclaFloat_ptr       db, icla_int_t incb,
     icla_queue_t queue );
 
-// todo: move flag before queue?
 void
 iclablas_strsv_outofplace(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -712,7 +665,6 @@ iclablas_ssymv(
     iclaFloat_ptr       dy, icla_int_t incy,
     icla_queue_t queue );
 
-// hemv/symv_work were always queue versions
 icla_int_t
 iclablas_ssymv_work(
     icla_uplo_t uplo, icla_int_t n,
@@ -735,9 +687,6 @@ iclablas_ssymv_work(
     iclaFloat_ptr       dwork, icla_int_t lwork,
     icla_queue_t queue );
 
-  /*
-   * Level 3 BLAS (alphabetical order)
-   */
 void
 iclablas_sgemm(
     icla_trans_t transA, icla_trans_t transB,
@@ -792,47 +741,21 @@ iclablas_strsm_work(
     iclaFloat_ptr d_dinvA, icla_int_t dinvA_length,
     icla_queue_t queue );
 
-
-  /*
-   * Wrappers for platform independence.
-   * These wrap CUBLAS or AMD OpenCL BLAS functions.
-   */
-
-// =============================================================================
-// copying vectors
-// set  copies host   to device
-// get  copies device to host
-// copy copies device to device
-// (with CUDA unified addressing, copy can be between same or different devices)
-// Add the function, file, and line for error-reporting purposes.
-
-/// Type-safe version of icla_setvector() for float arrays.
-/// @ingroup icla_setvector
 #define icla_ssetvector(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_ssetvector_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getvector() for float arrays.
-/// @ingroup icla_getvector
 #define icla_sgetvector(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_sgetvector_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copyvector() for float arrays.
-/// @ingroup icla_copyvector
 #define icla_scopyvector(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_scopyvector_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_setvector_async() for float arrays.
-/// @ingroup icla_setvector
 #define icla_ssetvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_ssetvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getvector_async() for float arrays.
-/// @ingroup icla_getvector
 #define icla_sgetvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_sgetvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copyvector_async() for float arrays.
-/// @ingroup icla_copyvector
 #define icla_scopyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_scopyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
@@ -920,37 +843,21 @@ icla_scopyvector_async_internal(
                                      func, file, line );
 }
 
-
-// =============================================================================
-// copying sub-matrices (contiguous columns)
-
-/// Type-safe version of icla_setmatrix() for float arrays.
-/// @ingroup icla_setmatrix
 #define icla_ssetmatrix(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_ssetmatrix_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getmatrix() for float arrays.
-/// @ingroup icla_getmatrix
 #define icla_sgetmatrix(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_sgetmatrix_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copymatrix() for float arrays.
-/// @ingroup icla_copymatrix
 #define icla_scopymatrix(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_scopymatrix_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_setmatrix_async() for float arrays.
-/// @ingroup icla_setmatrix
 #define icla_ssetmatrix_async(           m, n, hA_src, lda, dB_dst, lddb, queue ) \
         icla_ssetmatrix_async_internal(  m, n, hA_src, lda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_getmatrix_async() for float arrays.
-/// @ingroup icla_getmatrix
 #define icla_sgetmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb, queue ) \
         icla_sgetmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb, queue, __func__, __FILE__, __LINE__ )
 
-/// Type-safe version of icla_copymatrix_async() for float arrays.
-/// @ingroup icla_copymatrix
 #define icla_scopymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_scopymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
@@ -1037,10 +944,6 @@ icla_scopymatrix_async_internal(
                                      dB_dst, lddb, queue,
                                      func, file, line );
 }
-
-
-// =============================================================================
-// Level 1 BLAS (alphabetical order)
 
 icla_int_t
 icla_isamax(
@@ -1143,7 +1046,7 @@ icla_srotmg(
     iclaFloat_const_ptr y1,
     iclaFloat_ptr param,
     icla_queue_t queue );
-#endif  // ICLA_REAL
+#endif
 
 void
 icla_sscal(
@@ -1178,9 +1081,6 @@ icla_sswap_native(
     icla_int_t n, iclaFloat_ptr x, icla_int_t incx,
     icla_int_t step, icla_int_t* ipiv,
     icla_queue_t queue);
-
-// =============================================================================
-// Level 2 BLAS (alphabetical order)
 
 void
 icla_sgemv(
@@ -1241,7 +1141,7 @@ icla_ssyr2(
     iclaFloat_const_ptr dy, icla_int_t incy,
     iclaFloat_ptr       dA, icla_int_t ldda,
     icla_queue_t queue );
-#endif // ICLA_COMPLEX
+#endif
 
 void
 icla_ssymv(
@@ -1296,9 +1196,6 @@ icla_strsv(
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr       dx, icla_int_t incx,
     icla_queue_t queue );
-
-// =============================================================================
-// Level 3 BLAS (alphabetical order)
 
 void
 icla_sgemm(
@@ -1505,4 +1402,5 @@ icla_spotf2_lpin(
 
 #undef ICLA_REAL
 
-#endif // ICLABLAS_S_H
+#endif
+

@@ -1,10 +1,9 @@
-// includes, system
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 
-// includes, project
 #include "flops.h"
 #include "icla_v2.h"
 #include "icla_lapack.h"
@@ -14,11 +13,6 @@
 #include "cublas_v2.h"
 #include "cusolverDn.h"
 
-
-// cusolverStatus_t cusolverDnSgetrf_bufferSize(cusolverDnHandle_t handle, int m, int n, float *A, int lda, int *Lwork );
-// cusolverStatus_t cusolverDnSgetrf(cusolverDnHandle_t handle, int m, int n, float *A, int lda, float *Workspace, int *devIpiv, int *devInfo );
-
-// icla_sgetrf( M, N, h_A, lda, ipiv, &info );
 real_Double_t icla_sgetrf( icla_int_t _M, icla_int_t _N, float* _h_A, icla_int_t _lda, icla_int_t* _ipiv, icla_int_t* _info )
 {
 #if defined(ICLA_HAVE_CUDA)
@@ -85,12 +79,11 @@ real_Double_t icla_sgetrf_nopiv( icla_int_t _M, icla_int_t _N, float* _h_A, icla
     int Lwork = 0;
     cusolverDnSgetrf_bufferSize(handle, M, N, A_d, lda, &Lwork);
     cudaMalloc((void**)&A_d, lda*N*sizeof(float));
-    //cudaMalloc((void**)&devIpiv, mn_min*sizeof(float));
+
     cudaMalloc((void**)&devInfo, sizeof(int));
     cudaMalloc((void**)&Workspace, Lwork*sizeof(float));
 
     cudaMemcpy(A_d, _h_A, lda*N*sizeof(float), cudaMemcpyHostToDevice);
-
 
     cudaEvent_t start, end;
     cudaEventCreate(&start);
@@ -104,12 +97,12 @@ real_Double_t icla_sgetrf_nopiv( icla_int_t _M, icla_int_t _N, float* _h_A, icla
     cudaEventElapsedTime(&time_ms, start, end);
 
     cudaMemcpy(_h_A, A_d, lda*N*sizeof(float), cudaMemcpyDeviceToHost);
-    //cudaMemcpy(_ipiv, devIpiv, mn_min*sizeof(int), cudaMemcpyDeviceToHost);
+
     cudaMemcpy(_info, devInfo, sizeof(int), cudaMemcpyDeviceToHost);
 
     cudaFree(A_d);
     A_d = nullptr;
-    //cudaFree(devIpiv);
+
     devIpiv = nullptr;
     cudaFree(devInfo);
     devInfo = nullptr;
@@ -119,11 +112,6 @@ real_Double_t icla_sgetrf_nopiv( icla_int_t _M, icla_int_t _N, float* _h_A, icla
     return time_ms;
 }
 
-
-
-// Initialize matrix to random.
-// This ensures the same ISEED is always used,
-// so we can re-generate the identical matrix.
 void init_matrix(
     icla_opts &opts,
     icla_int_t m, icla_int_t n,
@@ -136,18 +124,11 @@ void init_matrix(
 
     icla_generate_matrix( opts, m, n, A, lda );
 
-    // restore iseed
     for (icla_int_t i = 0; i < 4; ++i) {
         opts.iseed[i] = iseed_save[i];
     }
 }
 
-
-// On input, A and ipiv is LU factorization of A. On output, A is overwritten.
-// Requires m == n.
-// Uses init_matrix() to re-generate original A as needed.
-// Generates random RHS b and solves Ax=b.
-// Returns residual, |Ax - b| / (n |A| |x|).
 float get_residual(
     icla_opts &opts,
     icla_int_t m, icla_int_t n,
@@ -163,52 +144,36 @@ float get_residual(
     const float c_neg_one = ICLA_S_NEG_ONE;
     const icla_int_t ione = 1;
 
-    // this seed should be DIFFERENT than used in init_matrix
-    // (else x is column of A, so residual can be exactly zero)
     icla_int_t ISEED[4] = {0,0,0,1};
     icla_int_t info = 0;
     float *x, *b;
 
-    // initialize RHS
     TESTING_CHECK( icla_smalloc_cpu( &x, n ));
     TESTING_CHECK( icla_smalloc_cpu( &b, n ));
     lapackf77_slarnv( &ione, ISEED, &n, b );
     blasf77_scopy( &n, b, &ione, x, &ione );
 
-    // solve Ax = b
     lapackf77_sgetrs( "Notrans", &n, &ione, A, &lda, ipiv, x, &n, &info );
     if (info != 0) {
         printf("lapackf77_sgetrs returned error %lld: %s.\n",
                (long long) info, icla_strerror( info ));
     }
 
-    // reset to original A
     init_matrix( opts, m, n, A, lda );
 
-    // compute r = Ax - b, saved in b
     blasf77_sgemv( "Notrans", &m, &n, &c_one, A, &lda, x, &ione, &c_neg_one, b, &ione );
 
-    // compute residual |Ax - b| / (n*|A|*|x|)
     float norm_x, norm_A, norm_r, work[1];
     norm_A = lapackf77_slange( "F", &m, &n, A, &lda, work );
     norm_r = lapackf77_slange( "F", &n, &ione, b, &n, work );
     norm_x = lapackf77_slange( "F", &n, &ione, x, &n, work );
 
-    //printf( "r=\n" ); icla_sprint( 1, n, b, 1 );
-
     icla_free_cpu( x );
     icla_free_cpu( b );
 
-    //printf( "r=%.2e, A=%.2e, x=%.2e, n=%lld\n", norm_r, norm_A, norm_x, (long long) n );
     return norm_r / (n * norm_A * norm_x);
 }
 
-
-// On input, LU and ipiv is LU factorization of A. On output, LU is overwritten.
-// Works for any m, n.
-// Uses init_matrix() to re-generate original A as needed.
-// Returns error in factorization, |PA - LU| / (n |A|)
-// This allocates 3 more matrices to store A, L, and U.
 float get_LU_error(
     icla_opts &opts,
     icla_int_t M, icla_int_t N,
@@ -229,11 +194,9 @@ float get_LU_error(
     memset( L, 0, M*min_mn*sizeof(float) );
     memset( U, 0, min_mn*N*sizeof(float) );
 
-    // set to original A
     init_matrix( opts, M, N, A, lda );
     lapackf77_slaswp( &N, A, &lda, &ione, &min_mn, ipiv, &ione);
 
-    // copy LU to L and U, and set diagonal to 1
     lapackf77_slacpy( iclaLowerStr, &M, &min_mn, LU, &lda, L, &M      );
     lapackf77_slacpy( iclaUpperStr, &min_mn, &N, LU, &lda, U, &min_mn );
     for (j=0; j < min_mn; j++)
@@ -258,10 +221,6 @@ float get_LU_error(
     return residual / (matnorm * N);
 }
 
-
-/* ////////////////////////////////////////////////////////////////////////////
-   -- Testing sgetrf
-*/
 int main( int argc, char** argv)
 {
     TESTING_CHECK( icla_init() );
@@ -299,9 +258,6 @@ int main( int argc, char** argv)
             TESTING_CHECK( icla_imalloc_cpu( &ipiv, min_mn ));
             TESTING_CHECK( icla_smalloc_pinned( &h_A,  n2 ));
 
-            /* =====================================================================
-               Performs operation using LAPACK
-               =================================================================== */
             if ( opts.lapack ) {
                 init_matrix( opts, M, N, h_A, lda );
 
@@ -315,34 +271,27 @@ int main( int argc, char** argv)
                 }
             }
 
-            /* ====================================================================
-               Performs operation using ICLA
-               =================================================================== */
             init_matrix( opts, M, N, h_A, lda );
             if ( opts.version == 2 || opts.version == 3 ) {
-                // no pivoting versions, so set ipiv to identity
+
                 for (icla_int_t i=0; i < min_mn; ++i ) {
                     ipiv[i] = i+1;
                 }
             }
 
-            //gpu_time = icla_wtime();
             if ( opts.version == 1 ) {
                 gpu_time = icla_sgetrf( M, N, h_A, lda, ipiv, &info );
             }
             else if ( opts.version == 2 ) {
                 gpu_time = icla_sgetrf_nopiv( M, N, h_A, lda, &info );
             }
-            //gpu_time = icla_wtime() - gpu_time;
+
             gpu_perf = gflops / gpu_time;
             if (info != 0) {
                 printf("icla_sgetrf returned error %lld: %s.\n",
                        (long long) info, icla_strerror( info ));
             }
 
-            /* =====================================================================
-               Check the factorization
-               =================================================================== */
             if ( opts.lapack ) {
                 printf("%5lld %5lld   %7.2f (%7.2f)   %7.2f (%7.2f)",
                        (long long) M, (long long) N, cpu_perf, cpu_time, gpu_perf, gpu_time );

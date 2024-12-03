@@ -1,30 +1,15 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
 
-       @author Mark Gates
-*/
 #ifndef ICLA_NO_V1
 
 #include "icla_internal.h"
-#include "iclablas_v1.h"  // includes v1 prototypes; does NOT map routine names
+#include "iclablas_v1.h"
+
 #include "error.h"
 
 #include <cuda_runtime.h>
 
 #if defined(ICLA_HAVE_CUDA) || defined(ICLA_HAVE_HIP)
 
-// These ICLA v1 routines are all deprecated.
-// See copy_v2.cpp for documentation.
-
-// Generic, type-independent routines to copy data.
-// Type-safe versions which avoid the user needing sizeof(...) are in headers;
-// see icla_{s,d,c,z,i,index_}{set,get,copy}{matrix,vector}
-
-/******************************************************************************/
 extern "C" void
 icla_setvector_v1_internal(
     icla_int_t n, icla_int_t elemSize,
@@ -40,8 +25,6 @@ icla_setvector_v1_internal(
         func, file, line );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_getvector_v1_internal(
     icla_int_t n, icla_int_t elemSize,
@@ -57,8 +40,6 @@ icla_getvector_v1_internal(
         func, file, line );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_copyvector_v1_internal(
     icla_int_t n, icla_int_t elemSize,
@@ -74,8 +55,6 @@ icla_copyvector_v1_internal(
         func, file, line );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_setmatrix_v1_internal(
     icla_int_t m, icla_int_t n, icla_int_t elemSize,
@@ -92,8 +71,6 @@ icla_setmatrix_v1_internal(
     ICLA_UNUSED( status );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_getmatrix_v1_internal(
     icla_int_t m, icla_int_t n, icla_int_t elemSize,
@@ -110,8 +87,6 @@ icla_getmatrix_v1_internal(
     ICLA_UNUSED( status );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_copymatrix_v1_internal(
     icla_int_t m, icla_int_t n, icla_int_t elemSize,
@@ -128,6 +103,7 @@ icla_copymatrix_v1_internal(
     ICLA_UNUSED( status );
 }
 
-#endif // ICLA_HAVE_CUDA
+#endif
 
-#endif // ICLA_NO_V1
+#endif
+

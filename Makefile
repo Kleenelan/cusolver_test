@@ -8,7 +8,6 @@ EXE_TEST := $(OBJ_TEST:.cpp.o=.out)
 #EXT_TEST := testing/testing_zgemm
 all: libtest.a $(EXE_TEST) libinterface_cuda.a
 
-
 OBJ_TOOL := $(SRC_TOOL:.cpp=.o)
 
 OPT_FLAGS1 :=  -g -O0 -Wall -ggdb -fno-inline
@@ -32,13 +31,8 @@ libinterface_cuda.a: $(OBJ_INTERFACE_CUDA)
 	ar cr $@ $^
 	ranlib $@
 
-
-
 #########################################################################################
 #########################################################################################
-
-
-
 
 OPT_FLAGS_TEST := -g -O0 -Wall -ggdb -fno-inline
 CPP_FLAGS_TEST := $(OPT_FLAGS_TEST) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
@@ -54,12 +48,6 @@ LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_icla/testSys_icla/OpenBLAS/local/lib
 
 %.out: %.cpp.o libtest.a libinterface_cuda.a
 	g++ -fPIC -fopenmp -o $@ $^ $(LD_FLAGS_TEST)
-
-
-
-
-
-
 
 .PHONY: clean
 clean:

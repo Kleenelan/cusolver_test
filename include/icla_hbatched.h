@@ -1,10 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_HBATCHED_H
 #define ICLA_HBATCHED_H
@@ -39,5 +32,5 @@ iclablas_hgemm_batched(
 }
 #endif
 
+#endif
 
-#endif /* ICLA_HBATCHED_H */

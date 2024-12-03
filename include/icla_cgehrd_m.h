@@ -1,13 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/icla_zgehrd_m.h, normal z -> c, Fri Nov 29 12:16:14 2024
-       @author Mark Gates
-*/
 
 #ifndef ICLA_CGEHRD_H
 #define ICLA_CGEHRD_H
@@ -18,19 +8,6 @@
 extern "C" {
 #endif
 
-/***************************************************************************//**
-    Structure containing matrices for multi-GPU cgehrd.
-
-    - dA  is distributed column block-cyclic across GPUs.
-    - dV  is duplicated on all GPUs.
-    - dVd is distributed row block-cyclic across GPUs (TODO: verify).
-    - dY  is partial results on each GPU in clahr2,
-          then complete results are duplicated on all GPUs for clahru.
-    - dW  is local to each GPU (workspace).
-    - dTi is duplicated on all GPUs.
-
-    @ingroup icla_gehrd
-*******************************************************************************/
 struct cgehrd_data
 {
     icla_int_t ngpu;
@@ -39,12 +16,17 @@ struct cgehrd_data
     icla_int_t ldv;
     icla_int_t ldvd;
 
-    iclaFloatComplex_ptr dA [ iclaMaxGPUs ];  // ldda*nlocal
-    iclaFloatComplex_ptr dV [ iclaMaxGPUs ];  // ldv *nb, whole panel
-    iclaFloatComplex_ptr dVd[ iclaMaxGPUs ];  // ldvd*nb, block-cyclic
-    iclaFloatComplex_ptr dY [ iclaMaxGPUs ];  // ldda*nb
-    iclaFloatComplex_ptr dW [ iclaMaxGPUs ];  // ldda*nb
-    iclaFloatComplex_ptr dTi[ iclaMaxGPUs ];  // nb*nb
+    iclaFloatComplex_ptr dA [ iclaMaxGPUs ];
+
+    iclaFloatComplex_ptr dV [ iclaMaxGPUs ];
+
+    iclaFloatComplex_ptr dVd[ iclaMaxGPUs ];
+
+    iclaFloatComplex_ptr dY [ iclaMaxGPUs ];
+
+    iclaFloatComplex_ptr dW [ iclaMaxGPUs ];
+
+    iclaFloatComplex_ptr dTi[ iclaMaxGPUs ];
 
     icla_queue_t queues[ iclaMaxGPUs ];
 };
@@ -53,4 +35,5 @@ struct cgehrd_data
 }
 #endif
 
-#endif        //  #ifndef ICLA_CGEHRD_H
+#endif
+

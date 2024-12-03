@@ -1,39 +1,21 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_TYPES_H
 #define ICLA_TYPES_H
 
-//// ICLA config
 #include "icla_config.h"
-
 
 #include <stdint.h>
 #include <assert.h>
 
-
-// for backwards compatability
 #ifdef HAVE_clAmdBlas
 #define ICLA_HAVE_OPENCL
 #endif
 
-
-// each implementation of ICLA defines HAVE_* appropriately.
 #if ! defined(ICLA_HAVE_CUDA) && ! defined(ICLA_HAVE_OPENCL) && ! defined(HAVE_MIC) && ! defined(ICLA_HAVE_HIP)
-// Pytorch requires that the error commented out below is not produced and that ICLA_HAVE_CUDA is defined:
-// #error No 'HAVE_*' macros were set! (defaulting to CUBLAS)
+
 #define ICLA_HAVE_CUDA
 #endif
 
-
-// =============================================================================
-// C99 standard defines __func__. Some older compilers use __FUNCTION__.
-// Note __func__ in C99 is not a macro, so ifndef __func__ doesn't work.
 #if __STDC_VERSION__ < 199901L
   #ifndef __func__
     #if __GNUC__ >= 2 || _MSC_VER >= 1300
@@ -44,12 +26,9 @@
   #endif
 #endif
 
-
-// =============================================================================
-// To use int64_t, link with mkl_intel_ilp64 or similar (instead of mkl_intel_lp64).
-// Similar to icla_int_t we declare icla_index_t used for row/column indices in sparse
 #if defined(ICLA_ILP64) || defined(MKL_ILP64)
-typedef long long int icla_int_t;  // MKL uses long long int, not int64_t
+typedef long long int icla_int_t;
+
 #else
 typedef int icla_int_t;
 #endif
@@ -57,18 +36,13 @@ typedef int icla_int_t;
 typedef int icla_index_t;
 typedef unsigned int icla_uindex_t;
 
-// Define new type that the precision generator will not change (matches PLASMA)
 typedef double real_Double_t;
 
-
-// =============================================================================
-// define types specific to implementation (CUDA, OpenCL, MIC)
-// define macros to deal with complex numbers
-// Pytorch does not define ICLA_HAVE_CUDA. However ICLA_HAVE_CUDA must be defined:
 #if defined(ICLA_HAVE_CUDA)
-    // include cublas_v2.h, unless cublas.h has already been included, e.g., via icla.h
+
     #ifndef CUBLAS_H_
-    #include <cuda.h>    // for CUDA_VERSION
+    #include <cuda.h>
+
     #include <cublas_v2.h>
     #endif
 
@@ -78,21 +52,18 @@ typedef double real_Double_t;
     extern "C" {
     #endif
 
-    // opaque queue structure
     struct icla_queue;
     typedef struct icla_queue* icla_queue_t;
     typedef cudaEvent_t    icla_event_t;
     typedef icla_int_t    icla_device_t;
 
-    // Half precision in CUDA
     #if defined(__cplusplus) && CUDA_VERSION >= 7500
     #include <cuda_fp16.h>
     typedef __half           iclaHalf;
     #else
-    // use short for cuda older than 7.5
-    // corresponding routines would not work anyway since there is no half precision
+
     typedef short            iclaHalf;
-    #endif    // CUDA_VERSION >= 7500
+    #endif
 
     typedef cuDoubleComplex iclaDoubleComplex;
     typedef cuFloatComplex  iclaFloatComplex;
@@ -101,19 +72,25 @@ typedef double real_Double_t;
     cublasHandle_t   icla_queue_get_cublas_handle  ( icla_queue_t queue );
     cusparseHandle_t icla_queue_get_cusparse_handle( icla_queue_t queue );
 
-    /// @addtogroup icla_complex
-    /// @{
+    #define ICLA_Z_MAKE(r,i)     make_cuDoubleComplex(r, i)
 
-    #define ICLA_Z_MAKE(r,i)     make_cuDoubleComplex(r, i)    ///< @return complex number r + i*sqrt(-1).
-    #define ICLA_Z_REAL(a)       (a).x                         ///< @return real component of a.
-    #define ICLA_Z_IMAG(a)       (a).y                         ///< @return imaginary component of a.
-    #define ICLA_Z_ADD(a, b)     cuCadd(a, b)                  ///< @return (a + b).
-    #define ICLA_Z_SUB(a, b)     cuCsub(a, b)                  ///< @return (a - b).
-    #define ICLA_Z_MUL(a, b)     cuCmul(a, b)                  ///< @return (a * b).
-    #define ICLA_Z_DIV(a, b)     cuCdiv(a, b)                  ///< @return (a / b).
-    #define ICLA_Z_ABS(a)        cuCabs(a)                     ///< @return absolute value, |a| = sqrt( real(a)^2 + imag(a)^2 ).
-    #define ICLA_Z_ABS1(a)       (fabs((a).x) + fabs((a).y))   ///< @return 1-norm absolute value, | real(a) | + | imag(a) |.
-    #define ICLA_Z_CONJ(a)       cuConj(a)                     ///< @return conjugate of a.
+    #define ICLA_Z_REAL(a)       (a).x
+
+    #define ICLA_Z_IMAG(a)       (a).y
+
+    #define ICLA_Z_ADD(a, b)     cuCadd(a, b)
+
+    #define ICLA_Z_SUB(a, b)     cuCsub(a, b)
+
+    #define ICLA_Z_MUL(a, b)     cuCmul(a, b)
+
+    #define ICLA_Z_DIV(a, b)     cuCdiv(a, b)
+
+    #define ICLA_Z_ABS(a)        cuCabs(a)
+
+    #define ICLA_Z_ABS1(a)       (fabs((a).x) + fabs((a).y))
+
+    #define ICLA_Z_CONJ(a)       cuConj(a)
 
     #define ICLA_C_MAKE(r,i)     make_cuFloatComplex(r, i)
     #define ICLA_C_REAL(a)       (a).x
@@ -129,15 +106,11 @@ typedef double real_Double_t;
     #define iclaCfma cuCfma
     #define iclaCfmaf cuCfmaf
 
-    /// @}
-    // end group icla_complex
-
     #ifdef __cplusplus
     }
     #endif
 #elif defined(ICLA_HAVE_HIP)
 
-    // default to HCC
     #if !defined(__HIP_PLATFORM_AMD__) && !defined(__HIP_PLATFORM_NVCC)
       #define __HIP_PLATFORM_AMD__
     #endif
@@ -145,7 +118,6 @@ typedef double real_Double_t;
     #include <hip/hip_version.h>
     #include <hip/hip_runtime.h>
 
-    // hipblas/hipsparse headers
     #if HIP_VERSION >= 50200000
     #include <hipblas/hipblas.h>
     #include <hipsparse/hipsparse.h>
@@ -154,39 +126,9 @@ typedef double real_Double_t;
     #include <hipsparse.h>
     #endif
 
-    // this macro allows you to define an unsupported function (primarily from hipBLAS)
-    // which will become a NOOP, and print an error message
     #ifndef icla_unsupported
     #define icla_unsupported(fname) ((hipblasStatus_t)(fprintf(stderr, "ICLA: Unsupported function '" #fname "'\n"), HIPBLAS_STATUS_NOT_SUPPORTED))
     #endif
-
-    /* hipBLAS has not yet implemented some async variants of {Get,Set}{Vector,Matrix},
-     * So instead, we just do them synchronously. This will, of course, be slower & blocking
-     * But, it will still have the same effect, and so the result will still be correct
-     * TODO: Perhaps also emit a warning?
-     */
-    //#define hipblasGetVectorAsync(a, b, c, d, e, f, stream) hipblasGetVector(a, b, c, d, e, f)
-    //#define hipblasSetVectorAsync(a, b, c, d, e, f, stream) hipblasSetVector(a, b, c, d, e, f)
-    //#define hipblasGetMatrixAsync(a, b, c, d, e, f, g, stream) hipblasGetMatrix(a, b, c ,d, e, f, g)
-    //#define hipblasSetMatrixAsync(a, b, c, d, e, f, g, stream) hipblasSetMatrix(a, b, c, d, e, f, g)
-
-    /* Unsupported hipBLAS functionality
-     * Everything here is currently unsupported by hipBLAS, and as such, is a no-op,
-     * and an error message is printed out to stderr
-     *
-     * To generate a list of these, first remove all these macro definitions, run a `make clean`
-     * to clear caches, and then start running:
-     * $ make lib/libicla.so -j64 2>&1 \
-     *     | grep "use of undeclared identifier" \
-     *     | awk '{gsub("'"'"'", "", $7) ; gsub(";", "", $7) ; print $7}'
-     *
-     * This should try and compile icla and print out any undeclared identifiers, which (
-     * assuming no other problems in the system), should be exactly the undefined hipBLAS
-     * functions. I know this is a little messy (the awk has 6 quote characters, to deal with
-     * multiple levels of shell escaping, for instance), but our build doesn't rely on this,
-     * its just a one time run to figure out which are undefined, then write a simple script
-     * to turn them into the macro #define s you see below:
-     */
 
     #include <hip/hip_fp16.h>
 
@@ -194,7 +136,6 @@ typedef double real_Double_t;
     extern "C" {
     #endif
 
-    // opaque queue struct type
     struct icla_queue;
     typedef struct icla_queue* icla_queue_t;
     typedef hipEvent_t  icla_event_t;
@@ -203,7 +144,7 @@ typedef double real_Double_t;
     #ifdef __cplusplus
     typedef __half           iclaHalf;
     #else
-    // just define a half precision as a short, since they should be the same byte-size
+
     typedef short            iclaHalf;
     #endif
 
@@ -211,19 +152,12 @@ typedef double real_Double_t;
     hipblasHandle_t   icla_queue_get_hipblas_handle  ( icla_queue_t queue );
     hipsparseHandle_t icla_queue_get_hipsparse_handle( icla_queue_t queue );
 
-    /* double complex */
-
-    //typedef hipblasDoubleComplex iclaDoubleComplex;
-
-    /* simple double complex definition that should be binary compatible with hipBLAS */
     typedef struct {
 
-        // real, imag components
         double x, y;
 
     } iclaDoubleComplex;
 
-    /* functionality macros */
     #define ICLA_Z_MAKE(r, i)   ((iclaDoubleComplex){(double)(r), (double)(i)})
     #define ICLA_Z_REAL(a) (a).x
     #define ICLA_Z_IMAG(a) (a).y
@@ -235,7 +169,6 @@ typedef double real_Double_t;
     #define ICLA_Z_ABS1(a) (fabs(ICLA_Z_REAL(a)) + fabs(ICLA_Z_IMAG(a)))
     #define ICLA_Z_CONJ(a) iclaConj(a)
 
-    /* basic arithmetic functions */
     __host__ __device__ static inline iclaDoubleComplex iclaCadd(iclaDoubleComplex a, iclaDoubleComplex b) {
         return ICLA_Z_MAKE(a.x+b.x, a.y+b.y);
     }
@@ -259,20 +192,12 @@ typedef double real_Double_t;
         return iclaCadd(iclaCmul(a, b), c);
     }
 
-    /* float complex */
-
-    //typedef hipComplex iclaFloatComplex;
-    //typedef hipblasComplex iclaFloatComplex;
-
-    /* basic definition of float complex that should be binary compatible with hipBLAS */
     typedef struct {
 
-        // real, imag components
         float x, y;
 
     } iclaFloatComplex;
 
-    /* functionality macros */
     #define ICLA_C_MAKE(r, i)   ((iclaFloatComplex){(float)(r), (float)(i)})
     #define ICLA_C_REAL(a) (a).x
     #define ICLA_C_IMAG(a) (a).y
@@ -284,7 +209,6 @@ typedef double real_Double_t;
     #define ICLA_C_ABS1(a) (fabsf(ICLA_C_REAL(a)) + fabs(ICLA_C_IMAG(a)))
     #define ICLA_C_CONJ(a) iclaConjf(a)
 
-    /* basic arithmetic functions */
     __host__ __device__ static inline iclaFloatComplex iclaCaddf(iclaFloatComplex a, iclaFloatComplex b) {
         return ICLA_C_MAKE(a.x+b.x, a.y+b.y);
     }
@@ -308,7 +232,6 @@ typedef double real_Double_t;
         return iclaCaddf(iclaCmulf(a, b), c);
     }
 
-
     #ifdef __cplusplus
     }
     #endif
@@ -324,7 +247,8 @@ typedef double real_Double_t;
     typedef cl_event          icla_event_t;
     typedef cl_device_id      icla_device_t;
 
-    typedef short         iclaHalf;    // placeholder until FP16 is supported
+    typedef short         iclaHalf;
+
     typedef DoubleComplex iclaDoubleComplex;
     typedef FloatComplex  iclaFloatComplex;
 
@@ -366,7 +290,8 @@ typedef double real_Double_t;
     typedef int   icla_event_t;
     typedef int   icla_device_t;
 
-    typedef short                 iclaHalf;    // placeholder until FP16 is supported
+    typedef short                 iclaHalf;
+
     typedef std::complex<float>   iclaFloatComplex;
     typedef std::complex<double>  iclaDoubleComplex;
 
@@ -463,12 +388,11 @@ extern "C" {
 #define CBLAS_SADDR(a)  &(a)
 #endif
 
-// for ICLA_[CZ]_ABS
 double icla_cabs ( iclaDoubleComplex x );
 float  icla_cabsf( iclaFloatComplex  x );
 
 #if defined(ICLA_HAVE_OPENCL)
-    // OpenCL uses opaque memory references on GPU
+
     typedef cl_mem icla_ptr;
     typedef cl_mem iclaInt_ptr;
     typedef cl_mem iclaIndex_ptr;
@@ -485,7 +409,7 @@ float  icla_cabsf( iclaFloatComplex  x );
     typedef cl_mem iclaFloatComplex_const_ptr;
     typedef cl_mem iclaDoubleComplex_const_ptr;
 #else
-    // MIC and CUDA use regular pointers on GPU
+
     typedef void               *icla_ptr;
     typedef icla_int_t        *iclaInt_ptr;
     typedef icla_index_t      *iclaIndex_ptr;
@@ -507,64 +431,64 @@ float  icla_cabsf( iclaFloatComplex  x );
     typedef iclaHalf          const *iclaHalf_const_ptr;
 #endif
 
-
-// =============================================================================
-// ICLA constants
-
-// -----------------------------------------------------------------------------
 #define ICLA_VERSION_MAJOR 1
 #define ICLA_VERSION_MINOR 0
 #define ICLA_VERSION_MICRO 0
 
-// stage is "svn", "beta#", "rc#" (release candidate), or blank ("") for final release
 #define ICLA_VERSION_STAGE "svn"
 
 #define iclaMaxGPUs 8
 #define iclaMaxAccelerators 8
 #define iclaMaxSubs 16
 
-// trsv template parameter
 #define iclaBigTileSize 1000000
 
+#define ICLA_SUCCESS               0
 
-// -----------------------------------------------------------------------------
-// Return codes
-// LAPACK argument errors are < 0 but > ICLA_ERR.
-// ICLA errors are < ICLA_ERR.
-/// @addtogroup icla_error_codes
-/// @{
+#define ICLA_ERR                  -100
 
-#define ICLA_SUCCESS               0       ///< operation was successful
-#define ICLA_ERR                  -100     ///< unspecified error
-#define ICLA_ERR_NOT_INITIALIZED  -101     ///< icla_init() was not called
-#define ICLA_ERR_REINITIALIZED    -102     // unused
-#define ICLA_ERR_NOT_SUPPORTED    -103     ///< not supported on this GPU
-#define ICLA_ERR_ILLEGAL_VALUE    -104     // unused
-#define ICLA_ERR_NOT_FOUND        -105     ///< file not found
-#define ICLA_ERR_ALLOCATION       -106     // unused
-#define ICLA_ERR_INTERNAL_LIMIT   -107     // unused
-#define ICLA_ERR_UNALLOCATED      -108     // unused
-#define ICLA_ERR_FILESYSTEM       -109     // unused
-#define ICLA_ERR_UNEXPECTED       -110     // unused
-#define ICLA_ERR_SEQUENCE_FLUSHED -111     // unused
-#define ICLA_ERR_HOST_ALLOC       -112     ///< could not malloc CPU host memory
-#define ICLA_ERR_DEVICE_ALLOC     -113     ///< could not malloc GPU device memory
-#define ICLA_ERR_CUDASTREAM       -114     // unused
-#define ICLA_ERR_INVALID_PTR      -115     ///< can't free invalid pointer
-#define ICLA_ERR_UNKNOWN          -116     ///< unspecified error
-#define ICLA_ERR_NOT_IMPLEMENTED  -117     ///< not implemented yet
-#define ICLA_ERR_NAN              -118     ///< NaN (not-a-number) detected
+#define ICLA_ERR_NOT_INITIALIZED  -101
 
-// some ICLA-sparse errors
+#define ICLA_ERR_REINITIALIZED    -102
+
+#define ICLA_ERR_NOT_SUPPORTED    -103
+
+#define ICLA_ERR_ILLEGAL_VALUE    -104
+
+#define ICLA_ERR_NOT_FOUND        -105
+
+#define ICLA_ERR_ALLOCATION       -106
+
+#define ICLA_ERR_INTERNAL_LIMIT   -107
+
+#define ICLA_ERR_UNALLOCATED      -108
+
+#define ICLA_ERR_FILESYSTEM       -109
+
+#define ICLA_ERR_UNEXPECTED       -110
+
+#define ICLA_ERR_SEQUENCE_FLUSHED -111
+
+#define ICLA_ERR_HOST_ALLOC       -112
+
+#define ICLA_ERR_DEVICE_ALLOC     -113
+
+#define ICLA_ERR_CUDASTREAM       -114
+
+#define ICLA_ERR_INVALID_PTR      -115
+
+#define ICLA_ERR_UNKNOWN          -116
+
+#define ICLA_ERR_NOT_IMPLEMENTED  -117
+
+#define ICLA_ERR_NAN              -118
+
 #define ICLA_SLOW_CONVERGENCE     -201
 #define ICLA_DIVERGENCE           -202
 #define ICLA_NONSPD               -203
 #define ICLA_ERR_BADPRECOND       -204
 #define ICLA_NOTCONVERGED         -205
 
-// When adding error codes, please add to interface_cuda/error.cpp
-
-// map cusparse errors to icla errors
 #define ICLA_ERR_CUSPARSE                            -3000
 #define ICLA_ERR_CUSPARSE_NOT_INITIALIZED            -3001
 #define ICLA_ERR_CUSPARSE_ALLOC_FAILED               -3002
@@ -576,15 +500,6 @@ float  icla_cabsf( iclaFloatComplex  x );
 #define ICLA_ERR_CUSPARSE_MATRIX_TYPE_NOT_SUPPORTED  -3008
 #define ICLA_ERR_CUSPARSE_ZERO_PIVOT                 -3009
 
-/// @}
-// end group icla_error_codes
-
-
-// -----------------------------------------------------------------------------
-// parameter constants
-// numbering is consistent with CBLAS and PLASMA; see plasma/include/plasma.h
-// also with lapack_cwrapper/include/lapack_enum.h
-// see http://www.netlib.org/lapack/lapwrapc/
 typedef enum {
     iclaFalse         = 0,
     iclaTrue          = 1
@@ -595,8 +510,6 @@ typedef enum {
     iclaColMajor      = 102
 } icla_order_t;
 
-// icla_ConjTrans is an alias for those rare occasions (zlarfb, zun*, zher*k)
-// where we want icla_ConjTrans to convert to iclaTrans in precision generation.
 typedef enum {
     iclaNoTrans       = 111,
     iclaTrans         = 112,
@@ -607,11 +520,13 @@ typedef enum {
 typedef enum {
     iclaUpper         = 121,
     iclaLower         = 122,
-    iclaFull          = 123,  /* lascl, laset */
-    iclaHessenberg    = 124   /* lascl */
+    iclaFull          = 123,
+
+    iclaHessenberg    = 124
+
 } icla_uplo_t;
 
-typedef icla_uplo_t icla_type_t;  /* lascl */
+typedef icla_uplo_t icla_type_t;
 
 typedef enum {
     iclaNonUnit       = 131,
@@ -621,11 +536,13 @@ typedef enum {
 typedef enum {
     iclaLeft          = 141,
     iclaRight         = 142,
-    iclaBothSides     = 143   /* trevc */
+    iclaBothSides     = 143
+
 } icla_side_t;
 
 typedef enum {
-    iclaOneNorm       = 171,  /* lange, lanhe */
+    iclaOneNorm       = 171,
+
     iclaRealOneNorm   = 172,
     iclaTwoNorm       = 173,
     iclaFrobeniusNorm = 174,
@@ -636,20 +553,23 @@ typedef enum {
 } icla_norm_t;
 
 typedef enum {
-    iclaDistUniform   = 201,  /* latms */
+    iclaDistUniform   = 201,
+
     iclaDistSymmetric = 202,
     iclaDistNormal    = 203
 } icla_dist_t;
 
 typedef enum {
-    iclaHermGeev      = 241,  /* latms */
+    iclaHermGeev      = 241,
+
     iclaHermPoev      = 242,
     iclaNonsymPosv    = 243,
     iclaSymPosv       = 244
 } icla_sym_t;
 
 typedef enum {
-    iclaNoPacking     = 291,  /* latms */
+    iclaNoPacking     = 291,
+
     iclaPackSubdiag   = 292,
     iclaPackSupdiag   = 293,
     iclaPackColumn    = 294,
@@ -660,33 +580,44 @@ typedef enum {
 } icla_pack_t;
 
 typedef enum {
-    iclaNoVec         = 301,  /* geev, syev, gesvd */
-    iclaVec           = 302,  /* geev, syev */
-    iclaIVec          = 303,  /* stedc */
-    iclaAllVec        = 304,  /* gesvd, trevc */
-    iclaSomeVec       = 305,  /* gesvd, trevc */
-    iclaOverwriteVec  = 306,  /* gesvd */
-    iclaBacktransVec  = 307   /* trevc */
+    iclaNoVec         = 301,
+
+    iclaVec           = 302,
+
+    iclaIVec          = 303,
+
+    iclaAllVec        = 304,
+
+    iclaSomeVec       = 305,
+
+    iclaOverwriteVec  = 306,
+
+    iclaBacktransVec  = 307
+
 } icla_vec_t;
 
 typedef enum {
-    iclaRangeAll      = 311,  /* syevx, etc. */
+    iclaRangeAll      = 311,
+
     iclaRangeV        = 312,
     iclaRangeI        = 313
 } icla_range_t;
 
 typedef enum {
-    iclaQ             = 322,  /* unmbr, ungbr */
+    iclaQ             = 322,
+
     iclaP             = 323
 } icla_vect_t;
 
 typedef enum {
-    iclaForward       = 391,  /* larfb */
+    iclaForward       = 391,
+
     iclaBackward      = 392
 } icla_direct_t;
 
 typedef enum {
-    iclaColumnwise    = 401,  /* larfb */
+    iclaColumnwise    = 401,
+
     iclaRowwise       = 402
 } icla_storev_t;
 
@@ -694,8 +625,7 @@ typedef enum {
     iclaHybrid        = 701,
     iclaNative        = 702
 } icla_mode_t;
-// -----------------------------------------------------------------------------
-// sparse
+
 typedef enum {
     icla_CSR          = 611,
     icla_ELLPACKT     = 612,
@@ -718,7 +648,6 @@ typedef enum {
     icla_COOLIST      = 631,
     icla_CSR5         = 632
 } icla_storage_t;
-
 
 typedef enum {
     icla_CG           = 431,
@@ -816,10 +745,11 @@ typedef enum {
     icla_UNITROW      = 512,
     icla_UNITDIAG     = 513,
     icla_UNITCOL      = 514,
-    icla_UNITROWCOL   = 515, // to be deprecated
-    icla_UNITDIAGCOL  = 516, // to be deprecated
-} icla_scale_t;
+    icla_UNITROWCOL   = 515,
 
+    icla_UNITDIAGCOL  = 516,
+
+} icla_scale_t;
 
 typedef enum {
     icla_SOLVE        = 801,
@@ -890,18 +820,10 @@ typedef enum {
 
 } icla_mp_type_t;
 
-// When adding constants, remember to do these steps as appropriate:
-// 1)  add icla_xxxx_const()  converter below and in control/constants.cpp
-// 2a) add to icla2lapack_constants[] in control/constants.cpp
-// 2b) update min & max here, which are used to check bounds for icla2lapack_constants[]
-// 2c) add lapack_xxxx_const() converter below and in control/constants.cpp
-#define icla2lapack_Min  iclaFalse     // 0
-#define icla2lapack_Max  iclaRowwise   // 402
+#define icla2lapack_Min  iclaFalse
 
+#define icla2lapack_Max  iclaRowwise
 
-// -----------------------------------------------------------------------------
-// string constants for calling Fortran BLAS and LAPACK
-// todo: use translators instead? lapack_const_str( iclaUpper )
 #define iclaRowMajorStr      "Row"
 #define iclaColMajorStr      "Col"
 
@@ -940,11 +862,6 @@ typedef enum {
 #define iclaSomeVecStr       "Some"
 #define iclaOverwriteVecStr  "Overwrite"
 
-
-// -----------------------------------------------------------------------------
-// Convert LAPACK character constants to ICLA constants.
-// This is a one-to-many mapping, requiring multiple translators
-// (e.g., "N" can be NoTrans or NonUnit or NoVec).
 icla_bool_t   icla_bool_const  ( char lapack_char );
 icla_order_t  icla_order_const ( char lapack_char );
 icla_trans_t  icla_trans_const ( char lapack_char );
@@ -960,16 +877,6 @@ icla_range_t  icla_range_const ( char lapack_char );
 icla_vect_t   icla_vect_const  ( char lapack_char );
 icla_direct_t icla_direct_const( char lapack_char );
 icla_storev_t icla_storev_const( char lapack_char );
-
-
-// -----------------------------------------------------------------------------
-// Convert ICLA constants to LAPACK(E) constants.
-// The generic lapack_const_str works for all cases, but the specific routines
-// (e.g., lapack_trans_const) do better error checking.
-
-// icla  defines lapack_const_str, which returns char* to call lapack (Fortran interface).
-// plasma defines lapack_const, which is roughly the same as ICLA's lapacke_const
-// (returns a char instead of char*) to call lapacke (C interface).
 
 const char* lapack_const_str   ( int            icla_const );
 const char* lapack_bool_const  ( icla_bool_t   icla_const );
@@ -1005,9 +912,6 @@ static inline char lapacke_vect_const  ( icla_vect_t   icla_const ) { return *la
 static inline char lapacke_direct_const( icla_direct_t icla_const ) { return *lapack_direct_const( icla_const ); }
 static inline char lapacke_storev_const( icla_storev_t icla_const ) { return *lapack_storev_const( icla_const ); }
 
-
-// -----------------------------------------------------------------------------
-// Convert ICLA constants to clBLAS constants.
 #if defined(ICLA_HAVE_OPENCL)
 clblasOrder          clblas_order_const( icla_order_t order );
 clblasTranspose      clblas_trans_const( icla_trans_t trans );
@@ -1016,9 +920,6 @@ clblasDiag           clblas_diag_const ( icla_diag_t  diag  );
 clblasSide           clblas_side_const ( icla_side_t  side  );
 #endif
 
-
-// -----------------------------------------------------------------------------
-// Convert ICLA constants to CUBLAS constants.
 #if defined(CUBLAS_V2_H_)
 cublasOperation_t    cublas_trans_const ( icla_trans_t trans );
 cublasFillMode_t     cublas_uplo_const  ( icla_uplo_t  uplo  );
@@ -1031,9 +932,6 @@ cublasSideMode_t     cublas_side_const  ( icla_side_t  side  );
 #define icla_backend_side_const cublas_side_const
 #endif
 
-
-// -----------------------------------------------------------------------------
-// Convert ICLA constants to hipBLAS constants
 #if defined(ICLA_HAVE_HIP)
 hipblasOperation_t   hipblas_trans_const( icla_trans_t trans );
 hipblasFillMode_t    hipblas_uplo_const (icla_uplo_t uplo    );
@@ -1046,9 +944,6 @@ hipblasSideMode_t    hipblas_side_const (icla_side_t side    );
 #define icla_backend_side_const hipblas_side_const
 #endif
 
-
-// -----------------------------------------------------------------------------
-// Convert ICLA constants to CBLAS constants.
 #if defined(HAVE_CBLAS)
 #include <cblas.h>
 enum CBLAS_ORDER     cblas_order_const  ( icla_order_t order );
@@ -1058,9 +953,9 @@ enum CBLAS_DIAG      cblas_diag_const   ( icla_diag_t  diag  );
 enum CBLAS_SIDE      cblas_side_const   ( icla_side_t  side  );
 #endif
 
-
 #ifdef __cplusplus
 }
 #endif
 
-#endif // ICLA_TYPES_H
+#endif
+

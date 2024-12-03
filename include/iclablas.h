@@ -1,10 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLABLAS_H
 #define ICLABLAS_H
@@ -18,4 +11,5 @@
 #include "iclablas_ds.h"
 #include "iclablas_h.h"
 
-#endif // ICLABLAS_H
+#endif
+

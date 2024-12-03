@@ -1,19 +1,11 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Mark Gates
-*/
 
 #include <stdlib.h>
 #include <stdio.h>
 
 #ifdef DEBUG_MEMORY
 #include <map>
-#include <mutex>  // requires C++11
+#include <mutex>
+
 #endif
 
 #include <cuda_runtime.h>
@@ -22,45 +14,18 @@
 #include "icla_internal.h"
 #include "error.h"
 
-//#ifdef ICLA_HAVE_CUDA
-
-
 #ifdef DEBUG_MEMORY
-std::mutex                g_pointers_mutex;  // requires C++11
+std::mutex                g_pointers_mutex;
+
 std::map< void*, size_t > g_pointers_dev;
 std::map< void*, size_t > g_pointers_cpu;
 std::map< void*, size_t > g_pointers_pin;
 #endif
 
-
-/***************************************************************************//**
-    Allocates memory on the GPU. CUDA imposes a synchronization.
-    Use icla_free() to free this memory.
-
-    @param[out]
-    ptrPtr  On output, set to the pointer that was allocated.
-            NULL on failure.
-
-    @param[in]
-    size    Size in bytes to allocate. If size = 0, allocates some minimal size.
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_DEVICE_ALLOC on failure
-
-    Type-safe versions avoid the need for a (void**) cast and explicit sizeof.
-    @see icla_smalloc
-    @see icla_dmalloc
-    @see icla_cmalloc
-    @see icla_zmalloc
-    @see icla_imalloc
-    @see icla_index_malloc
-
-    @ingroup icla_malloc
-*******************************************************************************/
 extern "C" icla_int_t
 icla_malloc( icla_ptr* ptrPtr, size_t size )
 {
-    // malloc and free sometimes don't work for size=0, so allocate some minimal size
+
     if ( size == 0 )
         size = sizeof(iclaDoubleComplex);
     if ( cudaSuccess != cudaMalloc( ptrPtr, size )) {
@@ -76,20 +41,6 @@ icla_malloc( icla_ptr* ptrPtr, size_t size )
     return ICLA_SUCCESS;
 }
 
-
-/***************************************************************************//**
-    @fn icla_free( ptr )
-
-    Frees GPU memory previously allocated by icla_malloc().
-
-    @param[in]
-    ptr     Pointer to free.
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_INVALID_PTR on failure
-
-    @ingroup icla_malloc
-*******************************************************************************/
 extern "C" icla_int_t
 icla_free_internal( icla_ptr ptr,
     const char* func, const char* file, int line )
@@ -113,39 +64,10 @@ icla_free_internal( icla_ptr ptr,
     return ICLA_SUCCESS;
 }
 
-
-/***************************************************************************//**
-    Allocate size bytes on CPU.
-    The purpose of using this instead of malloc is to properly align arrays
-    for vector (SSE, AVX) instructions. The default implementation uses
-    posix_memalign (on Linux, MacOS, etc.) or _aligned_malloc (on Windows)
-    to align memory to a 64 byte boundary (typical cache line size).
-    Use icla_free_cpu() to free this memory.
-
-    @param[out]
-    ptrPtr  On output, set to the pointer that was allocated.
-            NULL on failure.
-
-    @param[in]
-    size    Size in bytes to allocate. If size = 0, allocates some minimal size.
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_HOST_ALLOC on failure
-
-    Type-safe versions avoid the need for a (void**) cast and explicit sizeof.
-    @see icla_smalloc_cpu
-    @see icla_dmalloc_cpu
-    @see icla_cmalloc_cpu
-    @see icla_zmalloc_cpu
-    @see icla_imalloc_cpu
-    @see icla_index_malloc_cpu
-
-    @ingroup icla_malloc_cpu
-*******************************************************************************/
 extern "C" icla_int_t
 icla_malloc_cpu( void** ptrPtr, size_t size )
 {
-    // malloc and free sometimes don't work for size=0, so allocate some minimal size
+
     if ( size == 0 )
         size = sizeof(iclaDoubleComplex);
 #if 1
@@ -177,21 +99,6 @@ icla_malloc_cpu( void** ptrPtr, size_t size )
     return ICLA_SUCCESS;
 }
 
-
-/***************************************************************************//**
-    Frees CPU memory previously allocated by icla_malloc_cpu().
-    The default implementation uses free(),
-    which works for both malloc and posix_memalign.
-    For Windows, _aligned_free() is used.
-
-    @param[in]
-    ptr     Pointer to free.
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_INVALID_PTR on failure
-
-    @ingroup icla_malloc_cpu
-*******************************************************************************/
 extern "C" icla_int_t
 icla_free_cpu( void* ptr )
 {
@@ -214,36 +121,10 @@ icla_free_cpu( void* ptr )
     return ICLA_SUCCESS;
 }
 
-
-/***************************************************************************//**
-    Allocates memory on the CPU in pinned memory.
-    Use icla_free_pinned() to free this memory.
-
-    @param[out]
-    ptrPtr  On output, set to the pointer that was allocated.
-            NULL on failure.
-
-    @param[in]
-    size    Size in bytes to allocate. If size = 0, allocates some minimal size.
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_HOST_ALLOC on failure
-
-    Type-safe versions avoid the need for a (void**) cast and explicit sizeof.
-    @see icla_smalloc_pinned
-    @see icla_dmalloc_pinned
-    @see icla_cmalloc_pinned
-    @see icla_zmalloc_pinned
-    @see icla_imalloc_pinned
-    @see icla_index_malloc_pinned
-
-    @ingroup icla_malloc_pinned
-*******************************************************************************/
 extern "C" icla_int_t
 icla_malloc_pinned( void** ptrPtr, size_t size )
 {
-    // malloc and free sometimes don't work for size=0, so allocate some minimal size
-    // (for pinned memory, the error is detected in free)
+
     if ( size == 0 )
         size = sizeof(iclaDoubleComplex);
     if ( cudaSuccess != cudaHostAlloc( ptrPtr, size, cudaHostAllocPortable )) {
@@ -259,20 +140,6 @@ icla_malloc_pinned( void** ptrPtr, size_t size )
     return ICLA_SUCCESS;
 }
 
-
-/***************************************************************************//**
-    @fn icla_free_pinned( ptr )
-
-    Frees CPU pinned memory previously allocated by icla_malloc_pinned().
-
-    @param[in]
-    ptr     Pointer to free.
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_INVALID_PTR on failure
-
-    @ingroup icla_malloc_pinned
-*******************************************************************************/
 extern "C" icla_int_t
 icla_free_pinned_internal( void* ptr,
     const char* func, const char* file, int line )
@@ -296,26 +163,11 @@ icla_free_pinned_internal( void* ptr,
     return ICLA_SUCCESS;
 }
 
-/***************************************************************************//**
-    @fn icla_mem_info( free, total )
-
-    Sets the parameters 'free' and 'total' to the free and total memory in the
-    system (in bytes).
-
-    @param[in]
-    free    Address of the result for 'free' bytes on the system
-    total   Address of the result for 'total' bytes on the system
-
-    @return ICLA_SUCCESS
-    @return ICLA_ERR_INVALID_PTR on failure
-
-*******************************************************************************/
 extern "C" icla_int_t
 icla_mem_info(size_t * freeMem, size_t * totalMem) {
     cudaMemGetInfo(freeMem, totalMem);
     return ICLA_SUCCESS;
 }
-
 
 extern "C" icla_int_t
 icla_memset(void * ptr, int value, size_t count) {
@@ -325,13 +177,10 @@ icla_memset(void * ptr, int value, size_t count) {
 extern "C" icla_int_t
 icla_memset_async(void * ptr, int value, size_t count, icla_queue_t queue) {
 #ifdef ICLA_HAVE_CUDA
-//    return cudaMemsetAsync(ptr, value, count, queue);
+
     return cudaMemsetAsync(ptr, value, count, queue->cuda_stream());
 #elif defined(ICLA_HAVE_HIP)
     return hipMemsetAsync(ptr, value, count, queue->hip_stream());
 #endif
 }
 
-
-
-//#endif // ICLA_HAVE_CUDA

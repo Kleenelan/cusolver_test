@@ -1,10 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #include "icla_internal.h"
 
@@ -20,17 +13,15 @@
 #  include <sys/time.h>
 #endif
 
-
-// =============================================================================
-// Emulate gettimeofday on Windows.
-
 #if defined( _WIN32 ) || defined( _WIN64 )
 #ifndef _TIMEZONE_DEFINED
 #define _TIMEZONE_DEFINED
 struct timezone
 {
-    int  tz_minuteswest; /* minutes W of Greenwich */
-    int  tz_dsttime;     /* type of dst correction */
+    int  tz_minuteswest;
+
+    int  tz_dsttime;
+
 };
 #endif
 
@@ -47,8 +38,8 @@ int gettimeofday(struct timeval* tv, struct timezone* tz)
         tmpres <<= 32;
         tmpres |=  ft.dwLowDateTime;
 
-        /*converting file time to unix epoch*/
-        tmpres /= 10;  /*convert into microseconds*/
+        tmpres /= 10;
+
         tmpres -= DELTA_EPOCH_IN_MICROSECS;
 
         tv->tv_sec  = (long)(tmpres / 1000000UL);
@@ -66,13 +57,6 @@ int gettimeofday(struct timeval* tv, struct timezone* tz)
 }
 #endif
 
-
-/***************************************************************************//**
-    @return Current wall-clock time in seconds.
-            Resolution is from gettimeofday.
-
-    @ingroup icla_wtime
-*******************************************************************************/
 extern "C"
 double icla_wtime( void )
 {
@@ -81,17 +65,6 @@ double icla_wtime( void )
     return t.tv_sec + t.tv_usec*1e-6;
 }
 
-
-/***************************************************************************//**
-    Calls icla_queue_sync() to synchronize, then returns current time.
-
-    @param[in] queue    Queue to synchronize.
-
-    @return Current wall-clock time in seconds.
-            Resolution is from gettimeofday.
-
-    @ingroup icla_wtime
-*******************************************************************************/
 extern "C"
 double icla_sync_wtime( icla_queue_t queue )
 {
@@ -99,18 +72,8 @@ double icla_sync_wtime( icla_queue_t queue )
     return icla_wtime();
 }
 
-
 #define iclaf_wtime FORTRAN_NAME( iclaf_wtime, ICLAF_WTIME )
 
-/***************************************************************************//**
-    Version of icla_wtime() that is callable from Fortran.
-
-    @param[out]
-    time    On output, set to current wall-clock time in seconds.
-            Resolution is from gettimeofday.
-
-    @ingroup icla_wtime
-*******************************************************************************/
 extern "C"
 void iclaf_wtime(double *time)
 {

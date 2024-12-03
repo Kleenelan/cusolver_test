@@ -1,10 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_COPY_V1_H
 #define ICLA_COPY_V1_H
@@ -18,15 +11,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// =============================================================================
-// copying vectors
-// set  copies host   to device
-// get  copies device to host
-// copy copies device to device
-// (with CUDA unified addressing, copy can be between same or different devices)
-// Add the function, file, and line for error-reporting purposes.
-// async versions are same for v1 and v2; see iclablas_q.h
 
 #define icla_setvector_v1(           n, elemSize, hx_src, incx, dy_dst, incy ) \
         icla_setvector_v1_internal(  n, elemSize, hx_src, incx, dy_dst, incy, __func__, __FILE__, __LINE__ )
@@ -58,10 +42,6 @@ icla_copyvector_v1_internal(
     icla_ptr       dy_dst, icla_int_t incy,
     const char* func, const char* file, int line );
 
-
-// =============================================================================
-// copying sub-matrices (contiguous columns)
-
 #define icla_setmatrix_v1(           m, n, elemSize, hA_src, lda,  dB_dst, lddb ) \
         icla_setmatrix_v1_internal(  m, n, elemSize, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
 
@@ -91,10 +71,6 @@ icla_copymatrix_v1_internal(
     icla_const_ptr dA_src, icla_int_t ldda,
     icla_ptr       dB_dst, icla_int_t lddb,
     const char* func, const char* file, int line );
-
-
-// =============================================================================
-// copying vectors - version for icla_int_t
 
 #define icla_isetvector_v1(           n, hx_src, incx, dy_dst, incy ) \
         icla_isetvector_v1_internal(  n, hx_src, incx, dy_dst, incy, __func__, __FILE__, __LINE__ )
@@ -144,10 +120,6 @@ icla_icopyvector_v1_internal(
                                   func, file, line );
 }
 
-
-// =============================================================================
-// copying sub-matrices - version for icla_int_t
-
 #define icla_isetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_isetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
 
@@ -196,10 +168,6 @@ icla_icopymatrix_v1_internal(
                                   func, file, line );
 }
 
-
-// =============================================================================
-// copying vectors - version for icla_index_t
-
 #define icla_index_setvector_v1(           n, hx_src, incx, dy_dst, incy ) \
         icla_index_setvector_v1_internal(  n, hx_src, incx, dy_dst, incy, __func__, __FILE__, __LINE__ )
 
@@ -247,10 +215,6 @@ icla_index_copyvector_v1_internal(
                                   dy_dst, incy,
                                   func, file, line );
 }
-
-
-// =============================================================================
-// copying sub-matrices - version for icla_index_t
 
 #define icla_index_setmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_index_setmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
@@ -304,4 +268,5 @@ icla_index_copymatrix_v1_internal(
 }
 #endif
 
-#endif // ICLA_COPY_V1_H
+#endif
+

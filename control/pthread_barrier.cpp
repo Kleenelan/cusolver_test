@@ -1,14 +1,10 @@
-// MacOS doesn't provide pthread_barrier
-// icla_winthread.c doesn't provide pthread_barrier
+
 #if (defined( _WIN32 ) || defined( _WIN64 ) || defined( __APPLE__ )) && ! defined( __MINGW32__ )
 
 #include <errno.h>
 
 #include "pthread_barrier.h"
 
-// from http://stackoverflow.com/questions/3640853/performance-test-sem-t-v-s-dispatch-semaphore-t-and-pthread-once-t-v-s-dispat
-
-// *sigh* OSX does not have pthread_barrier
 int pthread_barrier_init( pthread_barrier_t *barrier,
                           const pthread_barrierattr_t *attr, unsigned int count )
 {
@@ -53,4 +49,5 @@ int pthread_barrier_wait( pthread_barrier_t *barrier )
     }
 }
 
-#endif // (_WIN32 || _WIN64 || __APPLE__) && ! __MINGW32__
+#endif
+

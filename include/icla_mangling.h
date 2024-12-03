@@ -1,24 +1,9 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_MANGLING_H
 #define ICLA_MANGLING_H
 
 #include "icla_mangling_cmake.h"
 
-/* Define how to name mangle Fortran names.
- * If using CMake, it defines ICLA_GLOBAL in icla_mangling_cmake.h
- * Otherwise, the make.inc file should have one of -DADD_, -DNOCHANGE, or -DUPCASE.
- * If using outside of ICLA, put one of those in your compiler flags (e.g., CFLAGS).
- * These macros are used in:
- *   include/icla_*lapack.h
- *   control/icla_*f77.cpp
- */
 #ifndef ICLA_FORTRAN_NAME
     #if defined(ICLA_GLOBAL)
         #define FORTRAN_NAME(lcname, UCNAME)  ICLA_GLOBAL( lcname, UCNAME )
@@ -34,4 +19,5 @@
     #endif
 #endif
 
-#endif  // ICLA_MANGLING_H
+#endif
+
