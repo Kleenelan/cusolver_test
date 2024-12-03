@@ -1,22 +1,22 @@
 #ifndef ERROR_H
 #define ERROR_H
 
-#include "magma_types.h"
+#include "icla_types.h"
 
 // overloaded C++ functions to deal with errors
-#ifdef MAGMA_HAVE_CUDA
-void magma_xerror( cudaError_t    err, const char* func, const char* file, int line );
+#ifdef ICLA_HAVE_CUDA
+void icla_xerror( cudaError_t    err, const char* func, const char* file, int line );
 #endif
 
-#ifdef MAGMA_HAVE_CUDA
-void magma_xerror( cublasStatus_t err, const char* func, const char* file, int line );
-#endif 
-
-#ifdef MAGMA_HAVE_HIP
-void magma_xerror( hipError_t     err, const char* func, const char* file, int line );
+#ifdef ICLA_HAVE_CUDA
+void icla_xerror( cublasStatus_t err, const char* func, const char* file, int line );
 #endif
 
-void magma_xerror( magma_int_t    err, const char* func, const char* file, int line );
+#ifdef ICLA_HAVE_HIP
+void icla_xerror( hipError_t     err, const char* func, const char* file, int line );
+#endif
+
+void icla_xerror( icla_int_t    err, const char* func, const char* file, int line );
 
 #ifdef __cplusplus
 extern "C" {
@@ -24,9 +24,9 @@ extern "C" {
 
 // cuda provides cudaGetErrorString,
 // but not cublasGetErrorString, so provide our own.
-// In magma.h, we also provide magma_strerror.
-#ifdef MAGMA_HAVE_CUDA
-const char* magma_cublasGetErrorString( cublasStatus_t error );
+// In icla.h, we also provide icla_strerror.
+#ifdef ICLA_HAVE_CUDA
+const char* icla_cublasGetErrorString( cublasStatus_t error );
 #endif
 
 #ifdef __cplusplus
@@ -45,10 +45,10 @@ const char* magma_cublasGetErrorString( cublasStatus_t error );
 
     @param[in]
     err     Error code.
-    @ingroup magma_error_internal
+    @ingroup icla_error_internal
 *******************************************************************************/
 #define check_error( err ) \
-        magma_xerror( err, __func__, __FILE__, __LINE__ )
+        icla_xerror( err, __func__, __FILE__, __LINE__ )
 
 /***************************************************************************//**
     Checks if err is not success, and prints an error message.
@@ -67,10 +67,10 @@ const char* magma_cublasGetErrorString( cublasStatus_t error );
     @param[in]
     line    Line     where error occurred.
 
-    @ingroup magma_error_internal
+    @ingroup icla_error_internal
 *******************************************************************************/
 #define check_xerror( err, func, file, line ) \
-        magma_xerror( err, func, file, line )
+        icla_xerror( err, func, file, line )
 
 #endif  // not NDEBUG
 

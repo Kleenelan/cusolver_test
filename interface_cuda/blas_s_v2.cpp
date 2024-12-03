@@ -1,5 +1,5 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
@@ -8,14 +8,14 @@
        @author Mark Gates
        @generated from interface_cuda/blas_z_v2.cpp, normal z -> s, Fri Nov 29 12:16:16 2024
 */
-#include "magma_internal.h"
+#include "icla_internal.h"
 #include "error.h"
 
 #define REAL
 
 #define PRECISION_s
 
-/* on some platforms (i.e. hipMAGMA on ROCm stack), we define custom types
+/* on some platforms (i.e. hipICLA on ROCm stack), we define custom types
  * So, to keep the C++ compiler from giving errors, we cast arguments to internal
  * BLAS routines. The hipify script should replace `cu*Complex` with appropriate HIP types
  *
@@ -23,13 +23,13 @@
  *   these will need more complicated macro if/else blocks
  */
 /*#ifdef PRECISION_z
-  #ifdef MAGMA_HAVE_HIP
+  #ifdef ICLA_HAVE_HIP
     typedef float float;
   #else
     typedef float float;
   #endif
 #elif defined(PRECISION_c)
-  #ifdef MAGMA_HAVE_HIP
+  #ifdef ICLA_HAVE_HIP
     typedef hipComplex float;
   #else
     typedef cuFloatComplex float;
@@ -40,7 +40,7 @@
   typedef float float;
 #endif
 */
-//#ifdef MAGMA_HAVE_CUDA
+//#ifdef ICLA_HAVE_CUDA
 
 // =============================================================================
 // Level 1 BLAS
@@ -60,18 +60,18 @@
     incx    Stride between consecutive elements of dx. incx > 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_iamax
+    @ingroup icla_iamax
 *******************************************************************************/
-extern "C" magma_int_t
-magma_isamax(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magma_queue_t queue )
+extern "C" icla_int_t
+icla_isamax(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    icla_queue_t queue )
 {
-    int result; /* not magma_int_t */
+    int result; /* not icla_int_t */
     cublasIsamax( queue->cublas_handle(), int(n), (float*)dx, int(incx), &result );
     return result;
 }
@@ -92,18 +92,18 @@ magma_isamax(
     incx    Stride between consecutive elements of dx. incx > 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_iamin
+    @ingroup icla_iamin
 *******************************************************************************/
-extern "C" magma_int_t
-magma_isamin(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magma_queue_t queue )
+extern "C" icla_int_t
+icla_isamin(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    icla_queue_t queue )
 {
-    int result; /* not magma_int_t */
+    int result; /* not icla_int_t */
     cublasIsamin( queue->cublas_handle(), int(n), (float*)dx, int(incx), &result );
     return result;
 }
@@ -124,16 +124,16 @@ magma_isamin(
     incx    Stride between consecutive elements of dx. incx > 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_asum
+    @ingroup icla_asum
 *******************************************************************************/
 extern "C" float
-magma_sasum(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magma_queue_t queue )
+icla_sasum(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    icla_queue_t queue )
 {
     float result;
     cublasSasum( queue->cublas_handle(), int(n), (float*)dx, int(incx), &result );
@@ -165,18 +165,18 @@ magma_sasum(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_axpy
+    @ingroup icla_axpy
 *******************************************************************************/
 extern "C" void
-magma_saxpy(
-    magma_int_t n,
+icla_saxpy(
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_ptr       dy, magma_int_t incy,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_ptr       dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     cublasSaxpy( queue->cublas_handle(), int(n), (float*)&alpha, (float*)dx, int(incx), (float*)dy, int(incy) );
 }
@@ -203,17 +203,17 @@ magma_saxpy(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_copy
+    @ingroup icla_copy
 *******************************************************************************/
 extern "C" void
-magma_scopy(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_ptr       dy, magma_int_t incy,
-    magma_queue_t queue )
+icla_scopy(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_ptr       dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     cublasScopy( queue->cublas_handle(), int(n), (float*)dx, int(incx), (float*)dy, int(incy) );
 }
@@ -241,17 +241,17 @@ magma_scopy(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma__dot
+    @ingroup icla__dot
 *******************************************************************************/
 extern "C"
-float magma_sdot(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_const_ptr dy, magma_int_t incy,
-    magma_queue_t queue )
+float icla_sdot(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     float result;
     cublasSdot( queue->cublas_handle(), int(n), (float*)dx, int(incx), (float*)dy, int(incy), (float*)&result );
@@ -281,17 +281,17 @@ float magma_sdot(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma__dot
+    @ingroup icla__dot
 *******************************************************************************/
 extern "C"
-float magma_sdot(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_const_ptr dy, magma_int_t incy,
-    magma_queue_t queue )
+float icla_sdot(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     float result;
     cublasSdot( queue->cublas_handle(), int(n), (float*)dx, int(incx), (float*)dy, int(incy), (float*)&result );
@@ -314,16 +314,16 @@ float magma_sdot(
     incx    Stride between consecutive elements of dx. incx > 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_nrm2
+    @ingroup icla_nrm2
 *******************************************************************************/
 extern "C" float
-magma_snrm2(
-    magma_int_t n,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magma_queue_t queue )
+icla_snrm2(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    icla_queue_t queue )
 {
     float result;
     cublasSnrm2( queue->cublas_handle(), int(n), (float*)dx, int(incx), &result );
@@ -362,18 +362,18 @@ magma_snrm2(
             [ -conj(s)  c ]
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_rot
+    @ingroup icla_rot
 *******************************************************************************/
 extern "C" void
-magma_srot(
-    magma_int_t n,
-    magmaFloat_ptr dx, magma_int_t incx,
-    magmaFloat_ptr dy, magma_int_t incy,
+icla_srot(
+    icla_int_t n,
+    iclaFloat_ptr dx, icla_int_t incx,
+    iclaFloat_ptr dy, icla_int_t incy,
     float c, float s,
-    magma_queue_t queue )
+    icla_queue_t queue )
 {
     cublasSrot( queue->cublas_handle(), int(n), (float*)dx, int(incx), (float*)dy, int(incy), &c, (float*)&s );
 }
@@ -411,18 +411,18 @@ magma_srot(
             [ -s  c ]
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_rot
+    @ingroup icla_rot
 *******************************************************************************/
 extern "C" void
-magma_srot(
-    magma_int_t n,
-    magmaFloat_ptr dx, magma_int_t incx,
-    magmaFloat_ptr dy, magma_int_t incy,
+icla_srot(
+    icla_int_t n,
+    iclaFloat_ptr dx, icla_int_t incx,
+    iclaFloat_ptr dy, icla_int_t incy,
     float c, float s,
-    magma_queue_t queue )
+    icla_queue_t queue )
 {
     cublasSrot( queue->cublas_handle(), int(n), (float*)dx, int(incx), (float*)dy, int(incy), &c, &s );
 }
@@ -458,16 +458,16 @@ magma_srot(
     s       On output, sine of rotation.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_rotg
+    @ingroup icla_rotg
 *******************************************************************************/
 extern "C" void
-magma_srotg(
+icla_srotg(
     float *a, float *b,
     float             *c, float *s,
-    magma_queue_t queue )
+    icla_queue_t queue )
 {
     cublasSrotg( queue->cublas_handle(), (float*)a, (float*)b, c, (float*)s );
 }
@@ -477,15 +477,15 @@ magma_srotg(
 /***************************************************************************//**
     Apply modified plane rotation.
 
-    @ingroup magma_rotm
+    @ingroup icla_rotm
 *******************************************************************************/
 extern "C" void
-magma_srotm(
-    magma_int_t n,
-    float *dx, magma_int_t incx,
-    float *dy, magma_int_t incy,
+icla_srotm(
+    icla_int_t n,
+    float *dx, icla_int_t incx,
+    float *dy, icla_int_t incy,
     const float *param,
-    magma_queue_t queue )
+    icla_queue_t queue )
 {
     cublasSrotm( queue->cublas_handle(), int(n), dx, int(incx), dy, int(incy), param );
 }
@@ -496,14 +496,14 @@ magma_srotm(
 /***************************************************************************//**
     Generate modified plane rotation.
 
-    @ingroup magma_rotmg
+    @ingroup icla_rotmg
 *******************************************************************************/
 extern "C" void
-magma_srotmg(
+icla_srotmg(
     float *d1, float       *d2,
     float *x1, const float *y1,
     float *param,
-    magma_queue_t queue )
+    icla_queue_t queue )
 {
     cublasSrotmg( queue->cublas_handle(), d1, d2, x1, y1, param );
 }
@@ -527,17 +527,17 @@ magma_srotmg(
     incx    Stride between consecutive elements of dx. incx > 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_scal
+    @ingroup icla_scal
 *******************************************************************************/
 extern "C" void
-magma_sscal(
-    magma_int_t n,
+icla_sscal(
+    icla_int_t n,
     float alpha,
-    magmaFloat_ptr dx, magma_int_t incx,
-    magma_queue_t queue )
+    iclaFloat_ptr dx, icla_int_t incx,
+    icla_queue_t queue )
 {
     cublasSscal( queue->cublas_handle(), int(n), (float*)&alpha, (float*)dx, int(incx) );
 }
@@ -561,17 +561,17 @@ magma_sscal(
     incx    Stride between consecutive elements of dx. incx > 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_scal
+    @ingroup icla_scal
 *******************************************************************************/
 extern "C" void
-magma_sscal(
-    magma_int_t n,
+icla_sscal(
+    icla_int_t n,
     float alpha,
-    magmaFloat_ptr dx, magma_int_t incx,
-    magma_queue_t queue )
+    iclaFloat_ptr dx, icla_int_t incx,
+    icla_queue_t queue )
 {
     cublasSscal( queue->cublas_handle(), int(n), &alpha, (float*)dx, int(incx) );
 }
@@ -599,17 +599,17 @@ magma_sscal(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_swap
+    @ingroup icla_swap
 *******************************************************************************/
 extern "C" void
-magma_sswap(
-    magma_int_t n,
-    magmaFloat_ptr dx, magma_int_t incx,
-    magmaFloat_ptr dy, magma_int_t incy,
-    magma_queue_t queue )
+icla_sswap(
+    icla_int_t n,
+    iclaFloat_ptr dx, icla_int_t incx,
+    iclaFloat_ptr dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     cublasSswap( queue->cublas_handle(), int(n), (float*)dx, int(incx), (float*)dy, int(incy) );
 }
@@ -620,9 +620,9 @@ magma_sswap(
 
 /***************************************************************************//**
     Perform matrix-vector product.
-        \f$ y = \alpha A   x + \beta y \f$  (transA == MagmaNoTrans), or \n
-        \f$ y = \alpha A^T x + \beta y \f$  (transA == MagmaTrans),   or \n
-        \f$ y = \alpha A^H x + \beta y \f$  (transA == MagmaConjTrans).
+        \f$ y = \alpha A   x + \beta y \f$  (transA == iclaNoTrans), or \n
+        \f$ y = \alpha A^T x + \beta y \f$  (transA == iclaTrans),   or \n
+        \f$ y = \alpha A^H x + \beta y \f$  (transA == iclaConjTrans).
 
     @param[in]
     transA  Operation to perform on A.
@@ -645,7 +645,7 @@ magma_sswap(
 
     @param[in]
     dx      REAL array on GPU device.
-            If transA == MagmaNoTrans, the n element vector x of dimension (1 + (n-1)*incx); \n
+            If transA == iclaNoTrans, the n element vector x of dimension (1 + (n-1)*incx); \n
             otherwise,                 the m element vector x of dimension (1 + (m-1)*incx).
 
     @param[in]
@@ -656,28 +656,28 @@ magma_sswap(
 
     @param[in,out]
     dy      REAL array on GPU device.
-            If transA == MagmaNoTrans, the m element vector y of dimension (1 + (m-1)*incy); \n
+            If transA == iclaNoTrans, the m element vector y of dimension (1 + (m-1)*incy); \n
             otherwise,                 the n element vector y of dimension (1 + (n-1)*incy).
 
     @param[in]
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_gemv
+    @ingroup icla_gemv
 *******************************************************************************/
 extern "C" void
-magma_sgemv(
-    magma_trans_t transA,
-    magma_int_t m, magma_int_t n,
+icla_sgemv(
+    icla_trans_t transA,
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dx, magma_int_t incx,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dx, icla_int_t incx,
     float beta,
-    magmaFloat_ptr       dy, magma_int_t incy,
-    magma_queue_t queue )
+    iclaFloat_ptr       dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     cublasSgemv(
         queue->cublas_handle(),
@@ -724,19 +724,19 @@ magma_sgemv(
     ldda    Leading dimension of dA.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_ger
+    @ingroup icla_ger
 *******************************************************************************/
 extern "C" void
-magma_sger(
-    magma_int_t m, magma_int_t n,
+icla_sger(
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_const_ptr dy, magma_int_t incy,
-    magmaFloat_ptr       dA, magma_int_t ldda,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy,
+    iclaFloat_ptr       dA, icla_int_t ldda,
+    icla_queue_t queue )
 {
     cublasSger(
         queue->cublas_handle(),
@@ -782,19 +782,19 @@ magma_sger(
     ldda    Leading dimension of dA.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_ger
+    @ingroup icla_ger
 *******************************************************************************/
 extern "C" void
-magma_sger(
-    magma_int_t m, magma_int_t n,
+icla_sger(
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_const_ptr dy, magma_int_t incy,
-    magmaFloat_ptr       dA, magma_int_t ldda,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy,
+    iclaFloat_ptr       dA, icla_int_t ldda,
+    icla_queue_t queue )
 {
     cublasSger(
         queue->cublas_handle(),
@@ -844,21 +844,21 @@ magma_sger(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_hemv
+    @ingroup icla_hemv
 *******************************************************************************/
 extern "C" void
-magma_ssymv(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_ssymv(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dx, magma_int_t incx,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dx, icla_int_t incx,
     float beta,
-    magmaFloat_ptr       dy, magma_int_t incy,
-    magma_queue_t queue )
+    iclaFloat_ptr       dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     cublasSsymv(
         queue->cublas_handle(),
@@ -900,19 +900,19 @@ magma_ssymv(
     ldda    Leading dimension of dA.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_her
+    @ingroup icla_her
 *******************************************************************************/
 extern "C" void
-magma_ssyr(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_ssyr(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_ptr       dA, magma_int_t ldda,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_ptr       dA, icla_int_t ldda,
+    icla_queue_t queue )
 {
     cublasSsyr(
         queue->cublas_handle(),
@@ -960,20 +960,20 @@ magma_ssyr(
     ldda    Leading dimension of dA.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_her2
+    @ingroup icla_her2
 *******************************************************************************/
 extern "C" void
-magma_ssyr2(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_ssyr2(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_const_ptr dy, magma_int_t incy,
-    magmaFloat_ptr       dA, magma_int_t ldda,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy,
+    iclaFloat_ptr       dA, icla_int_t ldda,
+    icla_queue_t queue )
 {
     cublasSsyr2(
         queue->cublas_handle(),
@@ -1024,21 +1024,21 @@ magma_ssyr2(
     incy    Stride between consecutive elements of dy. incy != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_symv
+    @ingroup icla_symv
 *******************************************************************************/
 extern "C" void
-magma_ssymv(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_ssymv(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dx, magma_int_t incx,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dx, icla_int_t incx,
     float beta,
-    magmaFloat_ptr       dy, magma_int_t incy,
-    magma_queue_t queue )
+    iclaFloat_ptr       dy, icla_int_t incy,
+    icla_queue_t queue )
 {
     cublasSsymv(
         queue->cublas_handle(),
@@ -1078,19 +1078,19 @@ magma_ssymv(
     ldda    Leading dimension of dA.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_syr
+    @ingroup icla_syr
 *******************************************************************************/
 extern "C" void
-magma_ssyr(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_ssyr(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_ptr       dA, magma_int_t ldda,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_ptr       dA, icla_int_t ldda,
+    icla_queue_t queue )
 {
     cublasSsyr(
         queue->cublas_handle(),
@@ -1136,20 +1136,20 @@ magma_ssyr(
     ldda    Leading dimension of dA.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_syr2
+    @ingroup icla_syr2
 *******************************************************************************/
 extern "C" void
-magma_ssyr2(
-    magma_uplo_t uplo,
-    magma_int_t n,
+icla_ssyr2(
+    icla_uplo_t uplo,
+    icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dx, magma_int_t incx,
-    magmaFloat_const_ptr dy, magma_int_t incy,
-    magmaFloat_ptr       dA, magma_int_t ldda,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy,
+    iclaFloat_ptr       dA, icla_int_t ldda,
+    icla_queue_t queue )
 {
     cublasSsyr2(
         queue->cublas_handle(),
@@ -1163,9 +1163,9 @@ magma_ssyr2(
 
 /***************************************************************************//**
     Perform triangular matrix-vector product.
-        \f$ x = A   x \f$  (trans == MagmaNoTrans), or \n
-        \f$ x = A^T x \f$  (trans == MagmaTrans),   or \n
-        \f$ x = A^H x \f$  (trans == MagmaConjTrans).
+        \f$ x = A   x \f$  (trans == iclaNoTrans), or \n
+        \f$ x = A^T x \f$  (trans == iclaTrans),   or \n
+        \f$ x = A^H x \f$  (trans == iclaConjTrans).
 
     @param[in]
     uplo    Whether the upper or lower triangle of A is referenced.
@@ -1194,18 +1194,18 @@ magma_ssyr2(
     incx    Stride between consecutive elements of dx. incx != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_trmv
+    @ingroup icla_trmv
 *******************************************************************************/
 extern "C" void
-magma_strmv(
-    magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t n,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_ptr       dx, magma_int_t incx,
-    magma_queue_t queue )
+icla_strmv(
+    icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t n,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_ptr       dx, icla_int_t incx,
+    icla_queue_t queue )
 {
     cublasStrmv(
         queue->cublas_handle(),
@@ -1220,9 +1220,9 @@ magma_strmv(
 
 /***************************************************************************//**
     Solve triangular matrix-vector system (one right-hand side).
-        \f$ A   x = b \f$  (trans == MagmaNoTrans), or \n
-        \f$ A^T x = b \f$  (trans == MagmaTrans),   or \n
-        \f$ A^H x = b \f$  (trans == MagmaConjTrans).
+        \f$ A   x = b \f$  (trans == iclaNoTrans), or \n
+        \f$ A^T x = b \f$  (trans == iclaTrans),   or \n
+        \f$ A^H x = b \f$  (trans == iclaConjTrans).
 
     @param[in]
     uplo    Whether the upper or lower triangle of A is referenced.
@@ -1252,18 +1252,18 @@ magma_strmv(
     incx    Stride between consecutive elements of dx. incx != 0.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_trsv
+    @ingroup icla_trsv
 *******************************************************************************/
 extern "C" void
-magma_strsv(
-    magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t n,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_ptr       dx, magma_int_t incx,
-    magma_queue_t queue )
+icla_strsv(
+    icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t n,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_ptr       dx, icla_int_t incx,
+    icla_queue_t queue )
 {
     cublasStrsv(
         queue->cublas_handle(),
@@ -1302,7 +1302,7 @@ magma_strsv(
 
     @param[in]
     dA      REAL array on GPU device.
-            If transA == MagmaNoTrans, the m-by-k matrix A of dimension (ldda,k), ldda >= max(1,m); \n
+            If transA == iclaNoTrans, the m-by-k matrix A of dimension (ldda,k), ldda >= max(1,m); \n
             otherwise,                 the k-by-m matrix A of dimension (ldda,m), ldda >= max(1,k).
 
     @param[in]
@@ -1310,7 +1310,7 @@ magma_strsv(
 
     @param[in]
     dB      REAL array on GPU device.
-            If transB == MagmaNoTrans, the k-by-n matrix B of dimension (lddb,n), lddb >= max(1,k); \n
+            If transB == iclaNoTrans, the k-by-n matrix B of dimension (lddb,n), lddb >= max(1,k); \n
             otherwise,                 the n-by-k matrix B of dimension (lddb,k), lddb >= max(1,n).
 
     @param[in]
@@ -1327,21 +1327,21 @@ magma_strsv(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_gemm
+    @ingroup icla_gemm
 *******************************************************************************/
 extern "C" void
-magma_sgemm(
-    magma_trans_t transA, magma_trans_t transB,
-    magma_int_t m, magma_int_t n, magma_int_t k,
+icla_sgemm(
+    icla_trans_t transA, icla_trans_t transB,
+    icla_int_t m, icla_int_t n, icla_int_t k,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dB, magma_int_t lddb,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dB, icla_int_t lddb,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSgemm(
         queue->cublas_handle(),
@@ -1356,8 +1356,8 @@ magma_sgemm(
 #ifdef COMPLEX
 /***************************************************************************//**
     Perform symmetric matrix-matrix product.
-        \f$ C = \alpha A B + \beta C \f$ (side == MagmaLeft), or \n
-        \f$ C = \alpha B A + \beta C \f$ (side == MagmaRight),   \n
+        \f$ C = \alpha A B + \beta C \f$ (side == iclaLeft), or \n
+        \f$ C = \alpha B A + \beta C \f$ (side == iclaRight),   \n
     where \f$ A \f$ is symmetric.
 
     @param[in]
@@ -1377,7 +1377,7 @@ magma_sgemm(
 
     @param[in]
     dA      REAL array on GPU device.
-            If side == MagmaLeft, the m-by-m symmetric matrix A of dimension (ldda,m), ldda >= max(1,m); \n
+            If side == iclaLeft, the m-by-m symmetric matrix A of dimension (ldda,m), ldda >= max(1,m); \n
             otherwise,            the n-by-n symmetric matrix A of dimension (ldda,n), ldda >= max(1,n).
 
     @param[in]
@@ -1401,21 +1401,21 @@ magma_sgemm(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_hemm
+    @ingroup icla_hemm
 *******************************************************************************/
 extern "C" void
-magma_ssymm(
-    magma_side_t side, magma_uplo_t uplo,
-    magma_int_t m, magma_int_t n,
+icla_ssymm(
+    icla_side_t side, icla_uplo_t uplo,
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dB, magma_int_t lddb,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dB, icla_int_t lddb,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSsymm(
         queue->cublas_handle(),
@@ -1432,8 +1432,8 @@ magma_ssymm(
 #ifdef COMPLEX
 /***************************************************************************//**
     Perform symmetric rank-k update.
-        \f$ C = \alpha A A^H + \beta C \f$ (trans == MagmaNoTrans), or \n
-        \f$ C = \alpha A^H A + \beta C \f$ (trans == MagmaConjTrans), \n
+        \f$ C = \alpha A A^H + \beta C \f$ (trans == iclaNoTrans), or \n
+        \f$ C = \alpha A^H A + \beta C \f$ (trans == iclaConjTrans), \n
     where \f$ C \f$ is symmetric.
 
     @param[in]
@@ -1446,15 +1446,15 @@ magma_ssymm(
     n       Number of rows and columns of C. n >= 0.
 
     @param[in]
-    k       Number of columns of A (for MagmaNoTrans)
-            or rows of A (for MagmaConjTrans). k >= 0.
+    k       Number of columns of A (for iclaNoTrans)
+            or rows of A (for iclaConjTrans). k >= 0.
 
     @param[in]
     alpha   Scalar \f$ \alpha \f$
 
     @param[in]
     dA      REAL array on GPU device.
-            If trans == MagmaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
+            If trans == iclaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
             otherwise,                the k-by-n matrix A of dimension (ldda,n), ldda >= max(1,k).
 
     @param[in]
@@ -1471,20 +1471,20 @@ magma_ssymm(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_herk
+    @ingroup icla_herk
 *******************************************************************************/
 extern "C" void
-magma_ssyrk(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
+icla_ssyrk(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSsyrk(
         queue->cublas_handle(),
@@ -1500,8 +1500,8 @@ magma_ssyrk(
 #ifdef COMPLEX
 /***************************************************************************//**
     Perform symmetric rank-2k update.
-        \f$ C = \alpha A B^H + \alpha B A^H \beta C \f$ (trans == MagmaNoTrans), or \n
-        \f$ C = \alpha A^H B + \alpha B^H A \beta C \f$ (trans == MagmaConjTrans), \n
+        \f$ C = \alpha A B^H + \alpha B A^H \beta C \f$ (trans == iclaNoTrans), or \n
+        \f$ C = \alpha A^H B + \alpha B^H A \beta C \f$ (trans == iclaConjTrans), \n
     where \f$ C \f$ is symmetric.
 
     @param[in]
@@ -1514,15 +1514,15 @@ magma_ssyrk(
     n       Number of rows and columns of C. n >= 0.
 
     @param[in]
-    k       Number of columns of A and B (for MagmaNoTrans)
-            or rows of A and B (for MagmaConjTrans). k >= 0.
+    k       Number of columns of A and B (for iclaNoTrans)
+            or rows of A and B (for iclaConjTrans). k >= 0.
 
     @param[in]
     alpha   Scalar \f$ \alpha \f$
 
     @param[in]
     dA      REAL array on GPU device.
-            If trans == MagmaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
+            If trans == iclaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
             otherwise,                the k-by-n matrix A of dimension (ldda,n), ldda >= max(1,k).
 
     @param[in]
@@ -1530,7 +1530,7 @@ magma_ssyrk(
 
     @param[in]
     dB      REAL array on GPU device.
-            If trans == MagmaNoTrans, the n-by-k matrix B of dimension (lddb,k), lddb >= max(1,n); \n
+            If trans == iclaNoTrans, the n-by-k matrix B of dimension (lddb,k), lddb >= max(1,n); \n
             otherwise,                the k-by-n matrix B of dimension (lddb,n), lddb >= max(1,k).
 
     @param[in]
@@ -1547,21 +1547,21 @@ magma_ssyrk(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_her2k
+    @ingroup icla_her2k
 *******************************************************************************/
 extern "C" void
-magma_ssyr2k(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
+icla_ssyr2k(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dB, magma_int_t lddb,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dB, icla_int_t lddb,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSsyr2k(
         queue->cublas_handle(),
@@ -1577,8 +1577,8 @@ magma_ssyr2k(
 
 /***************************************************************************//**
     Perform symmetric matrix-matrix product.
-        \f$ C = \alpha A B + \beta C \f$ (side == MagmaLeft), or \n
-        \f$ C = \alpha B A + \beta C \f$ (side == MagmaRight),   \n
+        \f$ C = \alpha A B + \beta C \f$ (side == iclaLeft), or \n
+        \f$ C = \alpha B A + \beta C \f$ (side == iclaRight),   \n
     where \f$ A \f$ is symmetric.
 
     @param[in]
@@ -1598,7 +1598,7 @@ magma_ssyr2k(
 
     @param[in]
     dA      REAL array on GPU device.
-            If side == MagmaLeft, the m-by-m symmetric matrix A of dimension (ldda,m), ldda >= max(1,m); \n
+            If side == iclaLeft, the m-by-m symmetric matrix A of dimension (ldda,m), ldda >= max(1,m); \n
             otherwise,            the n-by-n symmetric matrix A of dimension (ldda,n), ldda >= max(1,n).
 
     @param[in]
@@ -1622,21 +1622,21 @@ magma_ssyr2k(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_symm
+    @ingroup icla_symm
 *******************************************************************************/
 extern "C" void
-magma_ssymm(
-    magma_side_t side, magma_uplo_t uplo,
-    magma_int_t m, magma_int_t n,
+icla_ssymm(
+    icla_side_t side, icla_uplo_t uplo,
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dB, magma_int_t lddb,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dB, icla_int_t lddb,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSsymm(
         queue->cublas_handle(),
@@ -1651,8 +1651,8 @@ magma_ssymm(
 
 /***************************************************************************//**
     Perform symmetric rank-k update.
-        \f$ C = \alpha A A^T + \beta C \f$ (trans == MagmaNoTrans), or \n
-        \f$ C = \alpha A^T A + \beta C \f$ (trans == MagmaTrans),      \n
+        \f$ C = \alpha A A^T + \beta C \f$ (trans == iclaNoTrans), or \n
+        \f$ C = \alpha A^T A + \beta C \f$ (trans == iclaTrans),      \n
     where \f$ C \f$ is symmetric.
 
     @param[in]
@@ -1665,15 +1665,15 @@ magma_ssymm(
     n       Number of rows and columns of C. n >= 0.
 
     @param[in]
-    k       Number of columns of A (for MagmaNoTrans)
-            or rows of A (for MagmaTrans). k >= 0.
+    k       Number of columns of A (for iclaNoTrans)
+            or rows of A (for iclaTrans). k >= 0.
 
     @param[in]
     alpha   Scalar \f$ \alpha \f$
 
     @param[in]
     dA      REAL array on GPU device.
-            If trans == MagmaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
+            If trans == iclaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
             otherwise,                the k-by-n matrix A of dimension (ldda,n), ldda >= max(1,k).
 
     @param[in]
@@ -1690,20 +1690,20 @@ magma_ssymm(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_syrk
+    @ingroup icla_syrk
 *******************************************************************************/
 extern "C" void
-magma_ssyrk(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
+icla_ssyrk(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSsyrk(
         queue->cublas_handle(),
@@ -1717,8 +1717,8 @@ magma_ssyrk(
 
 /***************************************************************************//**
     Perform symmetric rank-2k update.
-        \f$ C = \alpha A B^T + \alpha B A^T \beta C \f$ (trans == MagmaNoTrans), or \n
-        \f$ C = \alpha A^T B + \alpha B^T A \beta C \f$ (trans == MagmaTrans),      \n
+        \f$ C = \alpha A B^T + \alpha B A^T \beta C \f$ (trans == iclaNoTrans), or \n
+        \f$ C = \alpha A^T B + \alpha B^T A \beta C \f$ (trans == iclaTrans),      \n
     where \f$ C \f$ is symmetric.
 
     @param[in]
@@ -1731,15 +1731,15 @@ magma_ssyrk(
     n       Number of rows and columns of C. n >= 0.
 
     @param[in]
-    k       Number of columns of A and B (for MagmaNoTrans)
-            or rows of A and B (for MagmaTrans). k >= 0.
+    k       Number of columns of A and B (for iclaNoTrans)
+            or rows of A and B (for iclaTrans). k >= 0.
 
     @param[in]
     alpha   Scalar \f$ \alpha \f$
 
     @param[in]
     dA      REAL array on GPU device.
-            If trans == MagmaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
+            If trans == iclaNoTrans, the n-by-k matrix A of dimension (ldda,k), ldda >= max(1,n); \n
             otherwise,                the k-by-n matrix A of dimension (ldda,n), ldda >= max(1,k).
 
     @param[in]
@@ -1747,7 +1747,7 @@ magma_ssyrk(
 
     @param[in]
     dB      REAL array on GPU device.
-            If trans == MagmaNoTrans, the n-by-k matrix B of dimension (lddb,k), lddb >= max(1,n); \n
+            If trans == iclaNoTrans, the n-by-k matrix B of dimension (lddb,k), lddb >= max(1,n); \n
             otherwise,                the k-by-n matrix B of dimension (lddb,n), lddb >= max(1,k).
 
     @param[in]
@@ -1764,21 +1764,21 @@ magma_ssyrk(
     lddc    Leading dimension of dC.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_syr2k
+    @ingroup icla_syr2k
 *******************************************************************************/
 extern "C" void
-magma_ssyr2k(
-    magma_uplo_t uplo, magma_trans_t trans,
-    magma_int_t n, magma_int_t k,
+icla_ssyr2k(
+    icla_uplo_t uplo, icla_trans_t trans,
+    icla_int_t n, icla_int_t k,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_const_ptr dB, magma_int_t lddb,
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_const_ptr dB, icla_int_t lddb,
     float beta,
-    magmaFloat_ptr       dC, magma_int_t lddc,
-    magma_queue_t queue )
+    iclaFloat_ptr       dC, icla_int_t lddc,
+    icla_queue_t queue )
 {
     cublasSsyr2k(
         queue->cublas_handle(),
@@ -1793,8 +1793,8 @@ magma_ssyr2k(
 
 /***************************************************************************//**
     Perform triangular matrix-matrix product.
-        \f$ B = \alpha op(A) B \f$ (side == MagmaLeft), or \n
-        \f$ B = \alpha B op(A) \f$ (side == MagmaRight),   \n
+        \f$ B = \alpha op(A) B \f$ (side == iclaLeft), or \n
+        \f$ B = \alpha B op(A) \f$ (side == iclaRight),   \n
     where \f$ A \f$ is triangular.
 
     @param[in]
@@ -1820,7 +1820,7 @@ magma_ssyr2k(
 
     @param[in]
     dA      REAL array on GPU device.
-            If side == MagmaLeft, the n-by-n triangular matrix A of dimension (ldda,n), ldda >= max(1,n); \n
+            If side == iclaLeft, the n-by-n triangular matrix A of dimension (ldda,n), ldda >= max(1,n); \n
             otherwise,            the m-by-m triangular matrix A of dimension (ldda,m), ldda >= max(1,m).
 
     @param[in]
@@ -1834,21 +1834,21 @@ magma_ssyr2k(
     lddb    Leading dimension of dB.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_trmm
+    @ingroup icla_trmm
 *******************************************************************************/
 extern "C" void
-magma_strmm(
-    magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t m, magma_int_t n,
+icla_strmm(
+    icla_side_t side, icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_ptr       dB, magma_int_t lddb,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_ptr       dB, icla_int_t lddb,
+    icla_queue_t queue )
 {
-    #ifdef MAGMA_HAVE_HIP
+    #ifdef ICLA_HAVE_HIP
         // TODO: remove fallback when hipblas provides this routine
         cublasStrmm(
 		    queue->cublas_handle(),
@@ -1880,8 +1880,8 @@ magma_strmm(
 
 /***************************************************************************//**
     Solve triangular matrix-matrix system (multiple right-hand sides).
-        \f$ op(A) X = \alpha B \f$ (side == MagmaLeft), or \n
-        \f$ X op(A) = \alpha B \f$ (side == MagmaRight),   \n
+        \f$ op(A) X = \alpha B \f$ (side == iclaLeft), or \n
+        \f$ X op(A) = \alpha B \f$ (side == iclaRight),   \n
     where \f$ A \f$ is triangular.
 
     @param[in]
@@ -1907,7 +1907,7 @@ magma_strmm(
 
     @param[in]
     dA      REAL array on GPU device.
-            If side == MagmaLeft, the m-by-m triangular matrix A of dimension (ldda,m), ldda >= max(1,m); \n
+            If side == iclaLeft, the m-by-m triangular matrix A of dimension (ldda,m), ldda >= max(1,m); \n
             otherwise,            the n-by-n triangular matrix A of dimension (ldda,n), ldda >= max(1,n).
 
     @param[in]
@@ -1922,19 +1922,19 @@ magma_strmm(
     lddb    Leading dimension of dB.
 
     @param[in]
-    queue   magma_queue_t
+    queue   icla_queue_t
             Queue to execute in.
 
-    @ingroup magma_trsm
+    @ingroup icla_trsm
 *******************************************************************************/
 extern "C" void
-magma_strsm(
-    magma_side_t side, magma_uplo_t uplo, magma_trans_t trans, magma_diag_t diag,
-    magma_int_t m, magma_int_t n,
+icla_strsm(
+    icla_side_t side, icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
+    icla_int_t m, icla_int_t n,
     float alpha,
-    magmaFloat_const_ptr dA, magma_int_t ldda,
-    magmaFloat_ptr       dB, magma_int_t lddb,
-    magma_queue_t queue )
+    iclaFloat_const_ptr dA, icla_int_t ldda,
+    iclaFloat_ptr       dB, icla_int_t lddb,
+    icla_queue_t queue )
 {
     cublasStrsm(
         queue->cublas_handle(),
@@ -1947,6 +1947,6 @@ magma_strsm(
                 (float*)dB, int(lddb) );
 }
 
-//#endif // MAGMA_HAVE_CUDA
+//#endif // ICLA_HAVE_CUDA
 
 #undef REAL

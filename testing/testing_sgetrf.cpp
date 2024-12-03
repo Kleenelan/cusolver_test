@@ -6,8 +6,8 @@
 
 // includes, project
 #include "flops.h"
-#include "magma_v2.h"
-#include "magma_lapack.h"
+#include "icla_v2.h"
+#include "icla_lapack.h"
 #include "testings.h"
 
 #include <cuda_runtime.h>
@@ -18,10 +18,10 @@
 // cusolverStatus_t cusolverDnSgetrf_bufferSize(cusolverDnHandle_t handle, int m, int n, float *A, int lda, int *Lwork );
 // cusolverStatus_t cusolverDnSgetrf(cusolverDnHandle_t handle, int m, int n, float *A, int lda, float *Workspace, int *devIpiv, int *devInfo );
 
-// magma_sgetrf( M, N, h_A, lda, ipiv, &info );
-real_Double_t magma_sgetrf( magma_int_t _M, magma_int_t _N, float* _h_A, magma_int_t _lda, magma_int_t* _ipiv, magma_int_t* _info )
+// icla_sgetrf( M, N, h_A, lda, ipiv, &info );
+real_Double_t icla_sgetrf( icla_int_t _M, icla_int_t _N, float* _h_A, icla_int_t _lda, icla_int_t* _ipiv, icla_int_t* _info )
 {
-#if defined(MAGMA_HAVE_CUDA)
+#if defined(ICLA_HAVE_CUDA)
     int M = _M, N = _N, lda = _lda;
     int mn_min = min(M, N);
     int* devIpiv = nullptr;
@@ -69,9 +69,9 @@ real_Double_t magma_sgetrf( magma_int_t _M, magma_int_t _N, float* _h_A, magma_i
     return time_ms;
 }
 
-real_Double_t magma_sgetrf_nopiv( magma_int_t _M, magma_int_t _N, float* _h_A, magma_int_t _lda, magma_int_t* _info )
+real_Double_t icla_sgetrf_nopiv( icla_int_t _M, icla_int_t _N, float* _h_A, icla_int_t _lda, icla_int_t* _info )
 {
-#if defined(MAGMA_HAVE_CUDA)
+#if defined(ICLA_HAVE_CUDA)
     int M = _M, N = _N, lda = _lda;
     int mn_min = min(M, N);
     int* devIpiv = nullptr;
@@ -125,19 +125,19 @@ real_Double_t magma_sgetrf_nopiv( magma_int_t _M, magma_int_t _N, float* _h_A, m
 // This ensures the same ISEED is always used,
 // so we can re-generate the identical matrix.
 void init_matrix(
-    magma_opts &opts,
-    magma_int_t m, magma_int_t n,
-    float *A, magma_int_t lda )
+    icla_opts &opts,
+    icla_int_t m, icla_int_t n,
+    float *A, icla_int_t lda )
 {
-    magma_int_t iseed_save[4];
-    for (magma_int_t i = 0; i < 4; ++i) {
+    icla_int_t iseed_save[4];
+    for (icla_int_t i = 0; i < 4; ++i) {
         iseed_save[i] = opts.iseed[i];
     }
 
-    magma_generate_matrix( opts, m, n, A, lda );
+    icla_generate_matrix( opts, m, n, A, lda );
 
     // restore iseed
-    for (magma_int_t i = 0; i < 4; ++i) {
+    for (icla_int_t i = 0; i < 4; ++i) {
         opts.iseed[i] = iseed_save[i];
     }
 }
@@ -149,29 +149,29 @@ void init_matrix(
 // Generates random RHS b and solves Ax=b.
 // Returns residual, |Ax - b| / (n |A| |x|).
 float get_residual(
-    magma_opts &opts,
-    magma_int_t m, magma_int_t n,
-    float *A, magma_int_t lda,
-    magma_int_t *ipiv )
+    icla_opts &opts,
+    icla_int_t m, icla_int_t n,
+    float *A, icla_int_t lda,
+    icla_int_t *ipiv )
 {
     if ( m != n ) {
         printf( "\nERROR: residual check defined only for square matrices\n" );
         return -1;
     }
 
-    const float c_one     = MAGMA_S_ONE;
-    const float c_neg_one = MAGMA_S_NEG_ONE;
-    const magma_int_t ione = 1;
+    const float c_one     = ICLA_S_ONE;
+    const float c_neg_one = ICLA_S_NEG_ONE;
+    const icla_int_t ione = 1;
 
     // this seed should be DIFFERENT than used in init_matrix
     // (else x is column of A, so residual can be exactly zero)
-    magma_int_t ISEED[4] = {0,0,0,1};
-    magma_int_t info = 0;
+    icla_int_t ISEED[4] = {0,0,0,1};
+    icla_int_t info = 0;
     float *x, *b;
 
     // initialize RHS
-    TESTING_CHECK( magma_smalloc_cpu( &x, n ));
-    TESTING_CHECK( magma_smalloc_cpu( &b, n ));
+    TESTING_CHECK( icla_smalloc_cpu( &x, n ));
+    TESTING_CHECK( icla_smalloc_cpu( &b, n ));
     lapackf77_slarnv( &ione, ISEED, &n, b );
     blasf77_scopy( &n, b, &ione, x, &ione );
 
@@ -179,7 +179,7 @@ float get_residual(
     lapackf77_sgetrs( "Notrans", &n, &ione, A, &lda, ipiv, x, &n, &info );
     if (info != 0) {
         printf("lapackf77_sgetrs returned error %lld: %s.\n",
-               (long long) info, magma_strerror( info ));
+               (long long) info, icla_strerror( info ));
     }
 
     // reset to original A
@@ -194,10 +194,10 @@ float get_residual(
     norm_r = lapackf77_slange( "F", &n, &ione, b, &n, work );
     norm_x = lapackf77_slange( "F", &n, &ione, x, &n, work );
 
-    //printf( "r=\n" ); magma_sprint( 1, n, b, 1 );
+    //printf( "r=\n" ); icla_sprint( 1, n, b, 1 );
 
-    magma_free_cpu( x );
-    magma_free_cpu( b );
+    icla_free_cpu( x );
+    icla_free_cpu( b );
 
     //printf( "r=%.2e, A=%.2e, x=%.2e, n=%lld\n", norm_r, norm_A, norm_x, (long long) n );
     return norm_r / (n * norm_A * norm_x);
@@ -210,22 +210,22 @@ float get_residual(
 // Returns error in factorization, |PA - LU| / (n |A|)
 // This allocates 3 more matrices to store A, L, and U.
 float get_LU_error(
-    magma_opts &opts,
-    magma_int_t M, magma_int_t N,
-    float *LU, magma_int_t lda,
-    magma_int_t *ipiv)
+    icla_opts &opts,
+    icla_int_t M, icla_int_t N,
+    float *LU, icla_int_t lda,
+    icla_int_t *ipiv)
 {
-    magma_int_t min_mn = min(M,N);
-    magma_int_t ione   = 1;
-    magma_int_t i, j;
-    float alpha = MAGMA_S_ONE;
-    float beta  = MAGMA_S_ZERO;
+    icla_int_t min_mn = min(M,N);
+    icla_int_t ione   = 1;
+    icla_int_t i, j;
+    float alpha = ICLA_S_ONE;
+    float beta  = ICLA_S_ZERO;
     float *A, *L, *U;
     float work[1], matnorm, residual;
 
-    TESTING_CHECK( magma_smalloc_cpu( &A, lda*N    ));
-    TESTING_CHECK( magma_smalloc_cpu( &L, M*min_mn ));
-    TESTING_CHECK( magma_smalloc_cpu( &U, min_mn*N ));
+    TESTING_CHECK( icla_smalloc_cpu( &A, lda*N    ));
+    TESTING_CHECK( icla_smalloc_cpu( &L, M*min_mn ));
+    TESTING_CHECK( icla_smalloc_cpu( &U, min_mn*N ));
     memset( L, 0, M*min_mn*sizeof(float) );
     memset( U, 0, min_mn*N*sizeof(float) );
 
@@ -234,10 +234,10 @@ float get_LU_error(
     lapackf77_slaswp( &N, A, &lda, &ione, &min_mn, ipiv, &ione);
 
     // copy LU to L and U, and set diagonal to 1
-    lapackf77_slacpy( MagmaLowerStr, &M, &min_mn, LU, &lda, L, &M      );
-    lapackf77_slacpy( MagmaUpperStr, &min_mn, &N, LU, &lda, U, &min_mn );
+    lapackf77_slacpy( iclaLowerStr, &M, &min_mn, LU, &lda, L, &M      );
+    lapackf77_slacpy( iclaUpperStr, &min_mn, &N, LU, &lda, U, &min_mn );
     for (j=0; j < min_mn; j++)
-        L[j+j*M] = MAGMA_S_MAKE( 1., 0. );
+        L[j+j*M] = ICLA_S_MAKE( 1., 0. );
 
     matnorm = lapackf77_slange("f", &M, &N, A, &lda, work);
 
@@ -246,14 +246,14 @@ float get_LU_error(
 
     for( j = 0; j < N; j++ ) {
         for( i = 0; i < M; i++ ) {
-            LU[i+j*lda] = MAGMA_S_SUB( LU[i+j*lda], A[i+j*lda] );
+            LU[i+j*lda] = ICLA_S_SUB( LU[i+j*lda], A[i+j*lda] );
         }
     }
     residual = lapackf77_slange("f", &M, &N, LU, &lda, work);
 
-    magma_free_cpu( A );
-    magma_free_cpu( L );
-    magma_free_cpu( U );
+    icla_free_cpu( A );
+    icla_free_cpu( L );
+    icla_free_cpu( U );
 
     return residual / (matnorm * N);
 }
@@ -264,17 +264,17 @@ float get_LU_error(
 */
 int main( int argc, char** argv)
 {
-    TESTING_CHECK( magma_init() );
-    magma_print_environment();
+    TESTING_CHECK( icla_init() );
+    icla_print_environment();
 
     real_Double_t   gflops, gpu_perf, gpu_time, cpu_perf=0, cpu_time=0;
     float          error;
     float *h_A;
-    magma_int_t     *ipiv;
-    magma_int_t     M, N, n2, lda, info, min_mn;
+    icla_int_t     *ipiv;
+    icla_int_t     M, N, n2, lda, info, min_mn;
     int status = 0;
 
-    magma_opts opts;
+    icla_opts opts;
     opts.parse_opts( argc, argv );
 
     float tol = opts.tolerance * lapackf77_slamch("E");
@@ -296,8 +296,8 @@ int main( int argc, char** argv)
             n2     = lda*N;
             gflops = FLOPS_SGETRF( M, N ) / 1e9;
 
-            TESTING_CHECK( magma_imalloc_cpu( &ipiv, min_mn ));
-            TESTING_CHECK( magma_smalloc_pinned( &h_A,  n2 ));
+            TESTING_CHECK( icla_imalloc_cpu( &ipiv, min_mn ));
+            TESTING_CHECK( icla_smalloc_pinned( &h_A,  n2 ));
 
             /* =====================================================================
                Performs operation using LAPACK
@@ -305,39 +305,39 @@ int main( int argc, char** argv)
             if ( opts.lapack ) {
                 init_matrix( opts, M, N, h_A, lda );
 
-                cpu_time = magma_wtime();
+                cpu_time = icla_wtime();
                 lapackf77_sgetrf( &M, &N, h_A, &lda, ipiv, &info );
-                cpu_time = magma_wtime() - cpu_time;
+                cpu_time = icla_wtime() - cpu_time;
                 cpu_perf = gflops / cpu_time;
                 if (info != 0) {
                     printf("lapackf77_sgetrf returned error %lld: %s.\n",
-                           (long long) info, magma_strerror( info ));
+                           (long long) info, icla_strerror( info ));
                 }
             }
 
             /* ====================================================================
-               Performs operation using MAGMA
+               Performs operation using ICLA
                =================================================================== */
             init_matrix( opts, M, N, h_A, lda );
             if ( opts.version == 2 || opts.version == 3 ) {
                 // no pivoting versions, so set ipiv to identity
-                for (magma_int_t i=0; i < min_mn; ++i ) {
+                for (icla_int_t i=0; i < min_mn; ++i ) {
                     ipiv[i] = i+1;
                 }
             }
 
-            //gpu_time = magma_wtime();
+            //gpu_time = icla_wtime();
             if ( opts.version == 1 ) {
-                gpu_time = magma_sgetrf( M, N, h_A, lda, ipiv, &info );
+                gpu_time = icla_sgetrf( M, N, h_A, lda, ipiv, &info );
             }
             else if ( opts.version == 2 ) {
-                gpu_time = magma_sgetrf_nopiv( M, N, h_A, lda, &info );
+                gpu_time = icla_sgetrf_nopiv( M, N, h_A, lda, &info );
             }
-            //gpu_time = magma_wtime() - gpu_time;
+            //gpu_time = icla_wtime() - gpu_time;
             gpu_perf = gflops / gpu_time;
             if (info != 0) {
-                printf("magma_sgetrf returned error %lld: %s.\n",
-                       (long long) info, magma_strerror( info ));
+                printf("icla_sgetrf returned error %lld: %s.\n",
+                       (long long) info, icla_strerror( info ));
             }
 
             /* =====================================================================
@@ -365,8 +365,8 @@ int main( int argc, char** argv)
                 printf("     ---   \n");
             }
 
-            magma_free_cpu( ipiv );
-            magma_free_pinned( h_A  );
+            icla_free_cpu( ipiv );
+            icla_free_pinned( h_A  );
             fflush( stdout );
         }
         if ( opts.niter > 1 ) {
@@ -375,6 +375,6 @@ int main( int argc, char** argv)
     }
 
     opts.cleanup();
-    TESTING_CHECK( magma_finalize() );
+    TESTING_CHECK( icla_finalize() );
     return status;
 }

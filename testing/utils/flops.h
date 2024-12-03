@@ -20,8 +20,8 @@
  * All the formula are reported in the LAPACK Lawn 41:
  *     http://www.netlib.org/lapack/lawns/lawn41.ps
  */
-#ifndef MAGMA_FLOPS_H
-#define MAGMA_FLOPS_H
+#ifndef ICLA_FLOPS_H
+#define ICLA_FLOPS_H
 
 /***************************************************************************//**
                  Generic formula coming from LAWN 41
@@ -49,8 +49,8 @@
 #define FMULS_GEMM(m_, n_, k_) ((m_) * (n_) * (k_))
 #define FADDS_GEMM(m_, n_, k_) ((m_) * (n_) * (k_))
 
-#define FMULS_SYMM(side_, m_, n_) ( ( (side_) == MagmaLeft ) ? FMULS_GEMM((m_), (m_), (n_)) : FMULS_GEMM((m_), (n_), (n_)) )
-#define FADDS_SYMM(side_, m_, n_) ( ( (side_) == MagmaLeft ) ? FADDS_GEMM((m_), (m_), (n_)) : FADDS_GEMM((m_), (n_), (n_)) )
+#define FMULS_SYMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FMULS_GEMM((m_), (m_), (n_)) : FMULS_GEMM((m_), (n_), (n_)) )
+#define FADDS_SYMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FADDS_GEMM((m_), (m_), (n_)) : FADDS_GEMM((m_), (n_), (n_)) )
 #define FMULS_HEMM FMULS_SYMM
 #define FADDS_HEMM FADDS_SYMM
 
@@ -68,8 +68,8 @@
 #define FADDS_TRMM_2(m_, n_) (0.5 * (n_) * (m_) * ((m_)-1))
 
 
-#define FMULS_TRMM(side_, m_, n_) ( ( (side_) == MagmaLeft ) ? FMULS_TRMM_2((m_), (n_)) : FMULS_TRMM_2((n_), (m_)) )
-#define FADDS_TRMM(side_, m_, n_) ( ( (side_) == MagmaLeft ) ? FADDS_TRMM_2((m_), (n_)) : FADDS_TRMM_2((n_), (m_)) )
+#define FMULS_TRMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FMULS_TRMM_2((m_), (n_)) : FMULS_TRMM_2((n_), (m_)) )
+#define FADDS_TRMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FADDS_TRMM_2((m_), (n_)) : FADDS_TRMM_2((n_), (m_)) )
 
 #define FMULS_TRSM FMULS_TRMM
 #define FADDS_TRSM FADDS_TRMM
@@ -151,10 +151,10 @@
 #define FMULS_GEQRS(m_, n_, nrhs_) ((nrhs_) * ((n_) * ( 2.* (m_) - 0.5 * (n_) + 2.5)))
 #define FADDS_GEQRS(m_, n_, nrhs_) ((nrhs_) * ((n_) * ( 2.* (m_) - 0.5 * (n_) + 0.5)))
 
-#define FMULS_UNMQR(m_, n_, k_, side_) (( (side_) == MagmaLeft ) \
+#define FMULS_UNMQR(m_, n_, k_, side_) (( (side_) == iclaLeft ) \
     ?  (2.*(n_)*(m_)*(k_) - (n_)*(k_)*(k_) + 2.*(n_)*(k_)) \
     :  (2.*(n_)*(m_)*(k_) - (m_)*(k_)*(k_) + (m_)*(k_) + (n_)*(k_) - 0.5*(k_)*(k_) + 0.5*(k_)))
-#define FADDS_UNMQR(m_, n_, k_, side_) (( ((side_)) == MagmaLeft ) \
+#define FADDS_UNMQR(m_, n_, k_, side_) (( ((side_)) == iclaLeft ) \
     ?  (2.*(n_)*(m_)*(k_) - (n_)*(k_)*(k_) + (n_)*(k_)) \
     :  (2.*(n_)*(m_)*(k_) - (m_)*(k_)*(k_) + (m_)*(k_)))
 #define FMULS_ORMQR FMULS_UNMQR
@@ -397,4 +397,4 @@
 #define FLOPS_DLARFG(n_) (     FMULS_LARFG((double)n_) +      FADDS_LARFG((double)n_) )
 #define FLOPS_SLARFG(n_) (     FMULS_LARFG((double)n_) +      FADDS_LARFG((double)n_) )
 
-#endif /* MAGMA_FLOPS_H */
+#endif /* ICLA_FLOPS_H */

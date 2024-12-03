@@ -1,5 +1,5 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
@@ -18,11 +18,11 @@
 
 #include <cuda_runtime.h>
 
-#include "magma_v2.h"
-#include "magma_internal.h"
+#include "icla_v2.h"
+#include "icla_internal.h"
 #include "error.h"
 
-//#ifdef MAGMA_HAVE_CUDA
+//#ifdef ICLA_HAVE_CUDA
 
 
 #ifdef DEBUG_MEMORY
@@ -35,7 +35,7 @@ std::map< void*, size_t > g_pointers_pin;
 
 /***************************************************************************//**
     Allocates memory on the GPU. CUDA imposes a synchronization.
-    Use magma_free() to free this memory.
+    Use icla_free() to free this memory.
 
     @param[out]
     ptrPtr  On output, set to the pointer that was allocated.
@@ -44,27 +44,27 @@ std::map< void*, size_t > g_pointers_pin;
     @param[in]
     size    Size in bytes to allocate. If size = 0, allocates some minimal size.
 
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_DEVICE_ALLOC on failure
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_DEVICE_ALLOC on failure
 
     Type-safe versions avoid the need for a (void**) cast and explicit sizeof.
-    @see magma_smalloc
-    @see magma_dmalloc
-    @see magma_cmalloc
-    @see magma_zmalloc
-    @see magma_imalloc
-    @see magma_index_malloc
+    @see icla_smalloc
+    @see icla_dmalloc
+    @see icla_cmalloc
+    @see icla_zmalloc
+    @see icla_imalloc
+    @see icla_index_malloc
 
-    @ingroup magma_malloc
+    @ingroup icla_malloc
 *******************************************************************************/
-extern "C" magma_int_t
-magma_malloc( magma_ptr* ptrPtr, size_t size )
+extern "C" icla_int_t
+icla_malloc( icla_ptr* ptrPtr, size_t size )
 {
     // malloc and free sometimes don't work for size=0, so allocate some minimal size
     if ( size == 0 )
-        size = sizeof(magmaDoubleComplex);
+        size = sizeof(iclaDoubleComplex);
     if ( cudaSuccess != cudaMalloc( ptrPtr, size )) {
-        return MAGMA_ERR_DEVICE_ALLOC;
+        return ICLA_ERR_DEVICE_ALLOC;
     }
 
     #ifdef DEBUG_MEMORY
@@ -73,31 +73,31 @@ magma_malloc( magma_ptr* ptrPtr, size_t size )
     g_pointers_mutex.unlock();
     #endif
 
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 
 /***************************************************************************//**
-    @fn magma_free( ptr )
+    @fn icla_free( ptr )
 
-    Frees GPU memory previously allocated by magma_malloc().
+    Frees GPU memory previously allocated by icla_malloc().
 
     @param[in]
     ptr     Pointer to free.
 
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_INVALID_PTR on failure
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_INVALID_PTR on failure
 
-    @ingroup magma_malloc
+    @ingroup icla_malloc
 *******************************************************************************/
-extern "C" magma_int_t
-magma_free_internal( magma_ptr ptr,
+extern "C" icla_int_t
+icla_free_internal( icla_ptr ptr,
     const char* func, const char* file, int line )
 {
     #ifdef DEBUG_MEMORY
     g_pointers_mutex.lock();
     if ( ptr != NULL && g_pointers_dev.count( ptr ) == 0 ) {
-        fprintf( stderr, "magma_free( %p ) that wasn't allocated with magma_malloc.\n", ptr );
+        fprintf( stderr, "icla_free( %p ) that wasn't allocated with icla_malloc.\n", ptr );
     }
     else {
         g_pointers_dev.erase( ptr );
@@ -108,9 +108,9 @@ magma_free_internal( magma_ptr ptr,
     cudaError_t err = cudaFree( ptr );
     check_xerror( err, func, file, line );
     if ( err != cudaSuccess ) {
-        return MAGMA_ERR_INVALID_PTR;
+        return ICLA_ERR_INVALID_PTR;
     }
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 
@@ -120,7 +120,7 @@ magma_free_internal( magma_ptr ptr,
     for vector (SSE, AVX) instructions. The default implementation uses
     posix_memalign (on Linux, MacOS, etc.) or _aligned_malloc (on Windows)
     to align memory to a 64 byte boundary (typical cache line size).
-    Use magma_free_cpu() to free this memory.
+    Use icla_free_cpu() to free this memory.
 
     @param[out]
     ptrPtr  On output, set to the pointer that was allocated.
@@ -129,42 +129,42 @@ magma_free_internal( magma_ptr ptr,
     @param[in]
     size    Size in bytes to allocate. If size = 0, allocates some minimal size.
 
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_HOST_ALLOC on failure
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_HOST_ALLOC on failure
 
     Type-safe versions avoid the need for a (void**) cast and explicit sizeof.
-    @see magma_smalloc_cpu
-    @see magma_dmalloc_cpu
-    @see magma_cmalloc_cpu
-    @see magma_zmalloc_cpu
-    @see magma_imalloc_cpu
-    @see magma_index_malloc_cpu
+    @see icla_smalloc_cpu
+    @see icla_dmalloc_cpu
+    @see icla_cmalloc_cpu
+    @see icla_zmalloc_cpu
+    @see icla_imalloc_cpu
+    @see icla_index_malloc_cpu
 
-    @ingroup magma_malloc_cpu
+    @ingroup icla_malloc_cpu
 *******************************************************************************/
-extern "C" magma_int_t
-magma_malloc_cpu( void** ptrPtr, size_t size )
+extern "C" icla_int_t
+icla_malloc_cpu( void** ptrPtr, size_t size )
 {
     // malloc and free sometimes don't work for size=0, so allocate some minimal size
     if ( size == 0 )
-        size = sizeof(magmaDoubleComplex);
+        size = sizeof(iclaDoubleComplex);
 #if 1
 #if defined( _WIN32 ) || defined( _WIN64 )
     *ptrPtr = _aligned_malloc( size, 64 );
     if ( *ptrPtr == NULL ) {
-        return MAGMA_ERR_HOST_ALLOC;
+        return ICLA_ERR_HOST_ALLOC;
     }
 #else
     int err = posix_memalign( ptrPtr, 64, size );
     if ( err != 0 ) {
         *ptrPtr = NULL;
-        return MAGMA_ERR_HOST_ALLOC;
+        return ICLA_ERR_HOST_ALLOC;
     }
 #endif
 #else
     *ptrPtr = malloc( size );
     if ( *ptrPtr == NULL ) {
-        return MAGMA_ERR_HOST_ALLOC;
+        return ICLA_ERR_HOST_ALLOC;
     }
 #endif
 
@@ -174,12 +174,12 @@ magma_malloc_cpu( void** ptrPtr, size_t size )
     g_pointers_mutex.unlock();
     #endif
 
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 
 /***************************************************************************//**
-    Frees CPU memory previously allocated by magma_malloc_cpu().
+    Frees CPU memory previously allocated by icla_malloc_cpu().
     The default implementation uses free(),
     which works for both malloc and posix_memalign.
     For Windows, _aligned_free() is used.
@@ -187,18 +187,18 @@ magma_malloc_cpu( void** ptrPtr, size_t size )
     @param[in]
     ptr     Pointer to free.
 
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_INVALID_PTR on failure
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_INVALID_PTR on failure
 
-    @ingroup magma_malloc_cpu
+    @ingroup icla_malloc_cpu
 *******************************************************************************/
-extern "C" magma_int_t
-magma_free_cpu( void* ptr )
+extern "C" icla_int_t
+icla_free_cpu( void* ptr )
 {
     #ifdef DEBUG_MEMORY
     g_pointers_mutex.lock();
     if ( ptr != NULL && g_pointers_cpu.count( ptr ) == 0 ) {
-        fprintf( stderr, "magma_free_cpu( %p ) that wasn't allocated with magma_malloc_cpu.\n", ptr );
+        fprintf( stderr, "icla_free_cpu( %p ) that wasn't allocated with icla_malloc_cpu.\n", ptr );
     }
     else {
         g_pointers_cpu.erase( ptr );
@@ -211,13 +211,13 @@ magma_free_cpu( void* ptr )
 #else
     free( ptr );
 #endif
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 
 /***************************************************************************//**
     Allocates memory on the CPU in pinned memory.
-    Use magma_free_pinned() to free this memory.
+    Use icla_free_pinned() to free this memory.
 
     @param[out]
     ptrPtr  On output, set to the pointer that was allocated.
@@ -226,28 +226,28 @@ magma_free_cpu( void* ptr )
     @param[in]
     size    Size in bytes to allocate. If size = 0, allocates some minimal size.
 
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_HOST_ALLOC on failure
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_HOST_ALLOC on failure
 
     Type-safe versions avoid the need for a (void**) cast and explicit sizeof.
-    @see magma_smalloc_pinned
-    @see magma_dmalloc_pinned
-    @see magma_cmalloc_pinned
-    @see magma_zmalloc_pinned
-    @see magma_imalloc_pinned
-    @see magma_index_malloc_pinned
+    @see icla_smalloc_pinned
+    @see icla_dmalloc_pinned
+    @see icla_cmalloc_pinned
+    @see icla_zmalloc_pinned
+    @see icla_imalloc_pinned
+    @see icla_index_malloc_pinned
 
-    @ingroup magma_malloc_pinned
+    @ingroup icla_malloc_pinned
 *******************************************************************************/
-extern "C" magma_int_t
-magma_malloc_pinned( void** ptrPtr, size_t size )
+extern "C" icla_int_t
+icla_malloc_pinned( void** ptrPtr, size_t size )
 {
     // malloc and free sometimes don't work for size=0, so allocate some minimal size
     // (for pinned memory, the error is detected in free)
     if ( size == 0 )
-        size = sizeof(magmaDoubleComplex);
+        size = sizeof(iclaDoubleComplex);
     if ( cudaSuccess != cudaHostAlloc( ptrPtr, size, cudaHostAllocPortable )) {
-        return MAGMA_ERR_HOST_ALLOC;
+        return ICLA_ERR_HOST_ALLOC;
     }
 
     #ifdef DEBUG_MEMORY
@@ -256,31 +256,31 @@ magma_malloc_pinned( void** ptrPtr, size_t size )
     g_pointers_mutex.unlock();
     #endif
 
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 
 /***************************************************************************//**
-    @fn magma_free_pinned( ptr )
+    @fn icla_free_pinned( ptr )
 
-    Frees CPU pinned memory previously allocated by magma_malloc_pinned().
+    Frees CPU pinned memory previously allocated by icla_malloc_pinned().
 
     @param[in]
     ptr     Pointer to free.
 
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_INVALID_PTR on failure
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_INVALID_PTR on failure
 
-    @ingroup magma_malloc_pinned
+    @ingroup icla_malloc_pinned
 *******************************************************************************/
-extern "C" magma_int_t
-magma_free_pinned_internal( void* ptr,
+extern "C" icla_int_t
+icla_free_pinned_internal( void* ptr,
     const char* func, const char* file, int line )
 {
     #ifdef DEBUG_MEMORY
     g_pointers_mutex.lock();
     if ( ptr != NULL && g_pointers_pin.count( ptr ) == 0 ) {
-        fprintf( stderr, "magma_free_pinned( %p ) that wasn't allocated with magma_malloc_pinned.\n", ptr );
+        fprintf( stderr, "icla_free_pinned( %p ) that wasn't allocated with icla_malloc_pinned.\n", ptr );
     }
     else {
         g_pointers_pin.erase( ptr );
@@ -291,13 +291,13 @@ magma_free_pinned_internal( void* ptr,
     cudaError_t err = cudaFreeHost( ptr );
     check_xerror( err, func, file, line );
     if ( cudaSuccess != err ) {
-        return MAGMA_ERR_INVALID_PTR;
+        return ICLA_ERR_INVALID_PTR;
     }
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 /***************************************************************************//**
-    @fn magma_mem_info( free, total )
+    @fn icla_mem_info( free, total )
 
     Sets the parameters 'free' and 'total' to the free and total memory in the
     system (in bytes).
@@ -305,33 +305,33 @@ magma_free_pinned_internal( void* ptr,
     @param[in]
     free    Address of the result for 'free' bytes on the system
     total   Address of the result for 'total' bytes on the system
-    
-    @return MAGMA_SUCCESS
-    @return MAGMA_ERR_INVALID_PTR on failure
+
+    @return ICLA_SUCCESS
+    @return ICLA_ERR_INVALID_PTR on failure
 
 *******************************************************************************/
-extern "C" magma_int_t
-magma_mem_info(size_t * freeMem, size_t * totalMem) {
+extern "C" icla_int_t
+icla_mem_info(size_t * freeMem, size_t * totalMem) {
     cudaMemGetInfo(freeMem, totalMem);
-    return MAGMA_SUCCESS;
+    return ICLA_SUCCESS;
 }
 
 
-extern "C" magma_int_t
-magma_memset(void * ptr, int value, size_t count) {
+extern "C" icla_int_t
+icla_memset(void * ptr, int value, size_t count) {
     return cudaMemset(ptr, value, count);
 }
 
-extern "C" magma_int_t
-magma_memset_async(void * ptr, int value, size_t count, magma_queue_t queue) {
-#ifdef MAGMA_HAVE_CUDA
+extern "C" icla_int_t
+icla_memset_async(void * ptr, int value, size_t count, icla_queue_t queue) {
+#ifdef ICLA_HAVE_CUDA
 //    return cudaMemsetAsync(ptr, value, count, queue);
     return cudaMemsetAsync(ptr, value, count, queue->cuda_stream());
-#elif defined(MAGMA_HAVE_HIP)
+#elif defined(ICLA_HAVE_HIP)
     return hipMemsetAsync(ptr, value, count, queue->hip_stream());
 #endif
 }
 
 
 
-//#endif // MAGMA_HAVE_CUDA
+//#endif // ICLA_HAVE_CUDA

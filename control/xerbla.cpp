@@ -1,5 +1,5 @@
 /*
-    -- MAGMA (version 2.0) --
+    -- ICLA (version 2.0) --
        Univ. of Tennessee, Knoxville
        Univ. of California, Berkeley
        Univ. of Colorado, Denver
@@ -11,13 +11,13 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "magma_internal.h"
+#include "icla_internal.h"
 
 /***************************************************************************//**
     Purpose
     -------
-    magma_xerbla is an error handler for the MAGMA routines.
-    It is called by a MAGMA routine if an input parameter has an
+    icla_xerbla is an error handler for the ICLA routines.
+    It is called by a ICLA routine if an input parameter has an
     invalid value. It prints an error message.
 
     Installers may consider modifying it to
@@ -34,21 +34,21 @@
     neg_info INTEGER
             Error code.
             Note neg_info's sign is opposite info's normal sign.
-            
+
             Normally:
             - neg_info > 0: The position of the invalid parameter
                          in the parameter list of the calling routine.
-            
+
             The conditions below are also reported, but normally code should not
             call xerbla for these runtime errors:
             - neg_info <  0:          Function-specific error.
-            - neg_info >= -MAGMA_ERR: Pre-defined MAGMA error, such as malloc failure.
+            - neg_info >= -ICLA_ERR: Pre-defined ICLA error, such as malloc failure.
             - neg_info == 0:          No error.
 
-    @ingroup magma_error
+    @ingroup icla_error
 *******************************************************************************/
 extern "C"
-void magma_xerbla(const char *srname, magma_int_t neg_info)
+void icla_xerbla(const char *srname, icla_int_t neg_info)
 {
     // the first 3 cases are unusual for calling xerbla;
     // normally runtime errors are passed back in info.
@@ -60,9 +60,9 @@ void magma_xerbla(const char *srname, magma_int_t neg_info)
         fprintf( stderr, "No error, why is %s calling xerbla? (info = %lld)\n",
                  srname, (long long) -neg_info );
     }
-    else if ( neg_info >= -MAGMA_ERR ) {
+    else if ( neg_info >= -ICLA_ERR ) {
         fprintf( stderr, "Error in %s, %s (info = %lld)\n",
-                 srname, magma_strerror(-neg_info), (long long) -neg_info );
+                 srname, icla_strerror(-neg_info), (long long) -neg_info );
     }
     else {
         // this is the normal case for calling xerbla;
