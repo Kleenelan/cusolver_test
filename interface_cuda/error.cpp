@@ -3,16 +3,6 @@
 #include "icla_internal.h"
 #include "error.h"
 
-
-/***************************************************************************//**
-    @return String describing cuBLAS errors (cublasStatus_t).
-    CUDA provides cudaGetErrorString, but not cublasGetErrorString.
-
-    @param[in]
-    err     Error code.
-
-    @ingroup icla_error_internal
-*******************************************************************************/
 #if defined(ICLA_HAVE_CUDA) || defined(ICLA_HAVE_HIP)
 extern "C"
 const char* icla_cublasGetErrorString( cublasStatus_t err )
@@ -48,27 +38,6 @@ const char* icla_cublasGetErrorString( cublasStatus_t err )
 }
 #endif
 
-/***************************************************************************//**
-    Prints error message to stderr.
-    C++ function overloaded for different error types (CUDA,
-    cuBLAS, ICLA errors). Note CUDA and cuBLAS errors are enums,
-    so can be differentiated.
-    Used by the check_error() and check_xerror() macros.
-
-    @param[in]
-    err     Error code.
-
-    @param[in]
-    func    Function where error occurred; inserted by check_error().
-
-    @param[in]
-    file    File     where error occurred; inserted by check_error().
-
-    @param[in]
-    line    Line     where error occurred; inserted by check_error().
-
-    @ingroup icla_error_internal
-*******************************************************************************/
 #ifdef ICLA_HAVE_CUDA
 void icla_xerror( cudaError_t err, const char* func, const char* file, int line )
 {
@@ -79,10 +48,6 @@ void icla_xerror( cudaError_t err, const char* func, const char* file, int line 
 }
 #endif
 
-
-/******************************************************************************/
-/// @see icla_xerror
-/// @ingroup icla_error_internal
 #if defined(ICLA_HAVE_CUDA) || defined(ICLA_HAVE_HIP)
 void icla_xerror( cublasStatus_t err, const char* func, const char* file, int line )
 {
@@ -93,11 +58,6 @@ void icla_xerror( cublasStatus_t err, const char* func, const char* file, int li
 }
 #endif
 
-
-
-/******************************************************************************/
-/// @see icla_xerror
-/// @ingroup icla_error_internal
 #ifdef ICLA_HAVE_HIP
 void icla_xerror( hipError_t err, const char* func, const char* file, int line)
 {
@@ -110,10 +70,6 @@ void icla_xerror( hipError_t err, const char* func, const char* file, int line)
 }
 #endif
 
-
-/******************************************************************************/
-/// @see icla_xerror
-/// @ingroup icla_error_internal
 void icla_xerror( icla_int_t err, const char* func, const char* file, int line )
 {
     if ( err != ICLA_SUCCESS ) {
@@ -122,27 +78,17 @@ void icla_xerror( icla_int_t err, const char* func, const char* file, int line )
     }
 }
 
-
-
-/***************************************************************************//**
-    @return String describing ICLA errors (icla_int_t).
-
-    @param[in]
-    err     Error code.
-
-    @ingroup icla_error
-*******************************************************************************/
 extern "C"
 const char* icla_strerror( icla_int_t err )
 {
-    // LAPACK-compliant errors
+
     if ( err > 0 ) {
         return "function-specific error, see documentation";
     }
     else if ( err < 0 && err > ICLA_ERR ) {
         return "invalid argument";
     }
-    // ICLA-specific errors
+
     switch( err ) {
         case ICLA_SUCCESS:
             return "success";
@@ -204,7 +150,6 @@ const char* icla_strerror( icla_int_t err )
         case ICLA_ERR_NAN:
             return "NaN detected";
 
-        // some ICLA-sparse errors
         case ICLA_SLOW_CONVERGENCE:
             return "stopping criterion not reached within iterations";
 
@@ -220,7 +165,6 @@ const char* icla_strerror( icla_int_t err )
         case ICLA_ERR_BADPRECOND:
             return "bad preconditioner";
 
-        // map cusparse errors to icla errors
         case ICLA_ERR_CUSPARSE_NOT_INITIALIZED:
             return "cusparse: not initialized";
 

@@ -1,40 +1,10 @@
-/**
- *
- * @file flops.h
- *
- *  File provided by Univ. of Tennessee,
- *
- * @version 1.0.0
- * @author Mathieu Faverge
- * @date 2010-12-20
- *
- **/
-/*
- * This file provide the flops formula for all Level 3 BLAS and some
- * Lapack routines.  Each macro uses the same size parameters as the
- * function associated and provide one formula for additions and one
- * for multiplications. Example to use these macros:
- *
- *    FLOPS_ZGEMM( m, n, k )
- *
- * All the formula are reported in the LAPACK Lawn 41:
- *     http://www.netlib.org/lapack/lawns/lawn41.ps
- */
+
 #ifndef ICLA_FLOPS_H
 #define ICLA_FLOPS_H
 
-/***************************************************************************//**
-                 Generic formula coming from LAWN 41
-*******************************************************************************/
-/*
- * Level 1 BLAS
- */
  #define FMULS_AXPY(n_) (n_)
  #define FADDS_AXPY(n_) (n_)
 
-/*
- * Level 2 BLAS
- */
 #define FMULS_GEMV(m_, n_) ((m_) * (n_) + 2. * (m_))
 #define FADDS_GEMV(m_, n_) ((m_) * (n_)           )
 
@@ -43,9 +13,6 @@
 #define FMULS_HEMV FMULS_SYMV
 #define FADDS_HEMV FADDS_SYMV
 
-/*
- * Level 3 BLAS
- */
 #define FMULS_GEMM(m_, n_, k_) ((m_) * (n_) * (k_))
 #define FADDS_GEMM(m_, n_, k_) ((m_) * (n_) * (k_))
 
@@ -67,16 +34,12 @@
 #define FMULS_TRMM_2(m_, n_) (0.5 * (n_) * (m_) * ((m_)+1))
 #define FADDS_TRMM_2(m_, n_) (0.5 * (n_) * (m_) * ((m_)-1))
 
-
 #define FMULS_TRMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FMULS_TRMM_2((m_), (n_)) : FMULS_TRMM_2((n_), (m_)) )
 #define FADDS_TRMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FADDS_TRMM_2((m_), (n_)) : FADDS_TRMM_2((n_), (m_)) )
 
 #define FMULS_TRSM FMULS_TRMM
 #define FADDS_TRSM FADDS_TRMM
 
-/*
- * Lapack
- */
 #define FMULS_GETRF(m_, n_) ( ((m_) < (n_)) \
     ? (0.5 * (m_) * ((m_) * ((n_) - (1./3.) * (m_) - 1. ) + (n_)) + (2. / 3.) * (m_)) \
     : (0.5 * (n_) * ((n_) * ((m_) - (1./3.) * (n_) - 1. ) + (m_)) + (2. / 3.) * (n_)) )
@@ -98,12 +61,6 @@
 
 #define FMULS_POTRS(n_, nrhs_) ((nrhs_) * (n_) * ((n_) + 1 ))
 #define FADDS_POTRS(n_, nrhs_) ((nrhs_) * (n_) * ((n_) - 1 ))
-
-//SPBTRF
-//SPBTRS
-//SSYTRF
-//SSYTRI
-//SSYTRS
 
 #define FMULS_GEQRF(m_, n_) (((m_) > (n_)) \
     ? ((n_) * ((n_) * (  0.5-(1./3.) * (n_) + (m_)) +    (m_) + 23. / 6.)) \
@@ -196,21 +153,11 @@
 #define FMULS_LARFG(n_) (2*n_)
 #define FADDS_LARFG(n_) (  n_)
 
-
-/***************************************************************************//**
-                 Users functions
-*******************************************************************************/
-/*
- * Level 1 BLAS
- */
 #define FLOPS_ZAXPY(n_) (6. * FMULS_AXPY((double)(n_)) + 2.0 * FADDS_AXPY((double)(n_)) )
 #define FLOPS_CAXPY(n_) (6. * FMULS_AXPY((double)(n_)) + 2.0 * FADDS_AXPY((double)(n_)) )
 #define FLOPS_DAXPY(n_) (     FMULS_AXPY((double)(n_)) +       FADDS_AXPY((double)(n_)) )
 #define FLOPS_SAXPY(n_) (     FMULS_AXPY((double)(n_)) +       FADDS_AXPY((double)(n_)) )
 
-/*
- * Level 2 BLAS
- */
 #define FLOPS_ZGEMV(m_, n_) (6. * FMULS_GEMV((double)(m_), (double)(n_)) + 2.0 * FADDS_GEMV((double)(m_), (double)(n_)) )
 #define FLOPS_CGEMV(m_, n_) (6. * FMULS_GEMV((double)(m_), (double)(n_)) + 2.0 * FADDS_GEMV((double)(m_), (double)(n_)) )
 #define FLOPS_DGEMV(m_, n_) (     FMULS_GEMV((double)(m_), (double)(n_)) +       FADDS_GEMV((double)(m_), (double)(n_)) )
@@ -224,9 +171,6 @@
 #define FLOPS_DSYMV(n_) (     FMULS_SYMV((double)(n_)) +       FADDS_SYMV((double)(n_)) )
 #define FLOPS_SSYMV(n_) (     FMULS_SYMV((double)(n_)) +       FADDS_SYMV((double)(n_)) )
 
-/*
- * Level 3 BLAS
- */
 #define FLOPS_ZGEMM(m_, n_, k_) (6. * FMULS_GEMM((double)(m_), (double)(n_), (double)(k_)) + 2.0 * FADDS_GEMM((double)(m_), (double)(n_), (double)(k_)) )
 #define FLOPS_CGEMM(m_, n_, k_) (6. * FMULS_GEMM((double)(m_), (double)(n_), (double)(k_)) + 2.0 * FADDS_GEMM((double)(m_), (double)(n_), (double)(k_)) )
 #define FLOPS_DGEMM(m_, n_, k_) (     FMULS_GEMM((double)(m_), (double)(n_), (double)(k_)) +       FADDS_GEMM((double)(m_), (double)(n_), (double)(k_)) )
@@ -266,9 +210,6 @@
 #define FLOPS_DTRSM(side_, m_, n_) (     FMULS_TRSM(side_, (double)(m_), (double)(n_)) +       FADDS_TRSM(side_, (double)(m_), (double)(n_)) )
 #define FLOPS_STRSM(side_, m_, n_) (     FMULS_TRSM(side_, (double)(m_), (double)(n_)) +       FADDS_TRSM(side_, (double)(m_), (double)(n_)) )
 
-/*
- * Lapack
- */
 #define FLOPS_ZGETRF(m_, n_) (6. * FMULS_GETRF((double)(m_), (double)(n_)) + 2.0 * FADDS_GETRF((double)(m_), (double)(n_)) )
 #define FLOPS_CGETRF(m_, n_) (6. * FMULS_GETRF((double)(m_), (double)(n_)) + 2.0 * FADDS_GETRF((double)(m_), (double)(n_)) )
 #define FLOPS_DGETRF(m_, n_) (     FMULS_GETRF((double)(m_), (double)(n_)) +       FADDS_GETRF((double)(m_), (double)(n_)) )
@@ -397,4 +338,5 @@
 #define FLOPS_DLARFG(n_) (     FMULS_LARFG((double)n_) +      FADDS_LARFG((double)n_) )
 #define FLOPS_SLARFG(n_) (     FMULS_LARFG((double)n_) +      FADDS_LARFG((double)n_) )
 
-#endif /* ICLA_FLOPS_H */
+#endif
+

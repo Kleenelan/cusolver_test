@@ -1,11 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-*/
 
 #ifndef ICLA_HTC_H
 #define ICLA_HTC_H
@@ -15,13 +7,6 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-// =============================================================================
-// ICLA mixed precision tensor cores function definitions
-//
-// In alphabetical order of base name (ignoring precision).
-
-/* Half precision iterative refinement routines */
 
 icla_int_t
 icla_dhgesv_iteref_gpu(
@@ -90,8 +75,6 @@ icla_dsgelatrs_cpu(
     iclaFloat_ptr dSX,
     icla_int_t *info);
 
-/* Half precision LU factorizations routines */
-
 icla_int_t
 icla_hgetrf_gpu(
     icla_int_t m, icla_int_t n,
@@ -132,7 +115,6 @@ icla_get_xgetrf_nb(
         icla_int_t m, icla_int_t n, icla_int_t prev_nb,
         icla_mp_type_t enable_tc, icla_mp_type_t mp_algo_type);
 
-/* Cholesky-based solvers with FP16 capability */
 icla_int_t
 icla_dshposv_gpu_expert(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nrhs,
@@ -159,7 +141,6 @@ icla_dshposv_native(
     iclaDouble_ptr dX, icla_int_t lddx,
     icla_int_t *iter, icla_int_t *info);
 
-/* Cholesky factorizations routines with FP16 */
 icla_int_t
 icla_shpotrf_gpu(
     icla_uplo_t uplo, icla_int_t n,
@@ -187,7 +168,6 @@ icla_dfgmres_spd_gpu(
 	icla_int_t is_preprocessed, float miu,
     icla_queue_t queue);
 
-/* Half precision conversion routines */
 void
 iclablas_convert_dp2hp(
     icla_int_t m, icla_int_t n,
@@ -228,4 +208,5 @@ iclablas_hlaswp(
 }
 #endif
 
-#endif /* ICLA_HTC_H */
+#endif
+

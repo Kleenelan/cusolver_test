@@ -1,16 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Azzam Haidar
-       @author Tingxing Dong
-       @author Ahmad Abdelfattah
-
-       @precisions normal z -> s d c
-*/
 
 #ifndef ICLA_ZVBATCHED_H
 #define ICLA_ZVBATCHED_H
@@ -23,15 +10,7 @@
 extern "C" {
 #endif
 
-  /*
-   *  control and tuning
-   */
 void icla_get_zgetrf_vbatched_nbparam(icla_int_t max_m, icla_int_t max_n, icla_int_t *nb, icla_int_t *recnb);
-
-
-  /*
-   *  LAPACK vbatched routines
-   */
 
 icla_int_t
 icla_zgetf2_fused_vbatched(
@@ -195,10 +174,7 @@ icla_zpotrf_vbatched(
     iclaDoubleComplex **dA_array, icla_int_t *ldda,
     icla_int_t *info_array,  icla_int_t batchCount,
     icla_queue_t queue);
-  /*
-   *  BLAS vbatched routines
-   */
-/* Level 3 */
+
 void
 iclablas_zgemm_vbatched_core(
     icla_trans_t transA, icla_trans_t transB,
@@ -675,7 +651,6 @@ iclablas_zhemm_vbatched(
         iclaDoubleComplex **dC_array, icla_int_t *lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
-/* Level 2 */
 void
 iclablas_zgemv_vbatched_max_nocheck(
     icla_trans_t trans, icla_int_t* m, icla_int_t* n,
@@ -757,8 +732,7 @@ iclablas_zhemv_vbatched(
     iclaDoubleComplex beta,
     iclaDoubleComplex_ptr dy_array[], icla_int_t* incy,
     icla_int_t batchCount, icla_queue_t queue);
-/* Level 1 */
-/* Auxiliary routines */
+
 void icla_zset_pointer_var_cc(
     iclaDoubleComplex **output_array,
     iclaDoubleComplex *input,
@@ -808,9 +782,6 @@ iclablas_zlacpy_vbatched(
     iclaDoubleComplex**               dBarray, icla_int_t* lddb,
     icla_int_t batchCount, icla_queue_t queue );
 
-  /*
-   *  Aux. vbatched routines
-   */
 icla_int_t icla_get_zpotrf_vbatched_crossover();
 
 #ifdef __cplusplus
@@ -819,4 +790,5 @@ icla_int_t icla_get_zpotrf_vbatched_crossover();
 
 #undef ICLA_COMPLEX
 
-#endif  /* ICLA_ZVBATCHED_H */
+#endif
+

@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Mark Gates
-*/
 
 #ifndef ICLA_TIMER_H
 #define ICLA_TIMER_H
@@ -24,23 +15,16 @@ typedef long long icla_flops_t;
 
     #if defined(HAVE_PAPI)
         #include <papi.h>
-        extern int gPAPI_flops_set;  // defined in testing/icla_util.cpp
+        extern int gPAPI_flops_set;
+
     #endif
 #endif
 
-// If we're not using GNU C, elide __attribute__
 #ifndef __GNUC__
-  #define  __attribute__(x)  /*NOTHING*/
+  #define  __attribute__(x)
+
 #endif
 
-/***************************************************************************//**
-    @param[out]
-    t       On output, set to current time.
-
-    If ENABLE_TIMER is not defined, does nothing.
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline void timer_start( icla_timer_t &t )
 {
     #if defined(ENABLE_TIMER)
@@ -48,18 +32,6 @@ static inline void timer_start( icla_timer_t &t )
     #endif
 }
 
-
-/***************************************************************************//**
-    @param[out]
-    t       On output, set to current time.
-
-    @param[in]
-    queue  Queue to sync with, before getting time.
-
-    If ENABLE_TIMER is not defined, does nothing.
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline void timer_sync_start( icla_timer_t &t, icla_queue_t queue )
 {
     #if defined(ENABLE_TIMER)
@@ -68,27 +40,6 @@ static inline void timer_sync_start( icla_timer_t &t, icla_queue_t queue )
     #endif
 }
 
-
-/***************************************************************************//**
-    @param[in,out]
-    t       On input, time when timer_start() was called.
-            On output, set to (current time - start time).
-
-    @return t, to sum up times:
-
-        icla_timer_t time, time_sum=0;
-        for( ... ) {
-            timer_start( time );
-            ...do timed operations...
-            time_sum += timer_stop( time );
-
-            ...do other operations...
-        }
-
-    If ENABLE_TIMER is not defined, returns 0.
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline icla_timer_t timer_stop( icla_timer_t &t )
 {
     #if defined(ENABLE_TIMER)
@@ -99,30 +50,6 @@ static inline icla_timer_t timer_stop( icla_timer_t &t )
     #endif
 }
 
-
-/***************************************************************************//**
-    @param[in,out]
-    t       On input, time when timer_start() was called.
-            On output, set to (current time - start time).
-
-    @param[in]
-    queue  Queue to sync with, before getting time.
-
-    @return t, to sum up times:
-
-        icla_timer_t time, time_sum=0;
-        for( ... ) {
-            timer_start( time );
-            ...do timed operations...
-            time_sum += timer_stop( time );
-
-            ...do other operations...
-        }
-
-    If ENABLE_TIMER is not defined, returns 0.
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline icla_timer_t timer_sync_stop( icla_timer_t &t, icla_queue_t queue )
 {
     #if defined(ENABLE_TIMER)
@@ -134,19 +61,6 @@ static inline icla_timer_t timer_sync_stop( icla_timer_t &t, icla_queue_t queue 
     #endif
 }
 
-
-/***************************************************************************//**
-    @param[out]
-    flops   On output, set to current flop counter.
-
-    Requires global gPAPI_flops_set to be setup by testing/icla_util.cpp
-    Note that newer CPUs may not support flop counts; see
-    https://icl.cs.utk.edu/projects/papi/wiki/PAPITopics:SandyFlops
-
-    If ENABLE_TIMER and HAVE_PAPI are not both defined, does nothing.
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline void flops_start( icla_flops_t &flops )
 {
     #if defined(ENABLE_TIMER) && defined(HAVE_PAPI)
@@ -154,18 +68,6 @@ static inline void flops_start( icla_flops_t &flops )
     #endif
 }
 
-
-/***************************************************************************//**
-    @param[out]
-    flops   On input, flop counter when flops_start() was called.
-            On output, set to (current flop counter - start flop counter).
-
-    @return flops, so you can sum up; see timer_stop().
-
-    If ENABLE_TIMER and HAVE_PAPI are not both defined, returns 0.
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline icla_flops_t flops_stop( icla_flops_t &flops )
 {
     #if defined(ENABLE_TIMER) && defined(HAVE_PAPI)
@@ -178,13 +80,6 @@ static inline icla_flops_t flops_stop( icla_flops_t &flops )
     #endif
 }
 
-
-/***************************************************************************//**
-    If ENABLE_TIMER is defined, same as printf;
-    else does nothing (returns 0).
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline int timer_printf( const char* format, ... )
     __attribute__((format(printf,1,2)));
 
@@ -200,13 +95,6 @@ static inline int timer_printf( const char* format, ... )
     return len;
 }
 
-
-/***************************************************************************//**
-    If ENABLE_TIMER is defined, same as fprintf;
-    else does nothing (returns 0).
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline int timer_fprintf( FILE* stream, const char* format, ... )
     __attribute__((format(printf,2,3)));
 
@@ -222,13 +110,6 @@ static inline int timer_fprintf( FILE* stream, const char* format, ... )
     return len;
 }
 
-
-/***************************************************************************//**
-    If ENABLE_TIMER is defined, same as snprintf;
-    else does nothing (returns 0).
-
-    @ingroup icla_timer
-*******************************************************************************/
 static inline int timer_snprintf( char* str, size_t size, const char* format, ... )
     __attribute__((format(printf,3,4)));
 
@@ -244,4 +125,5 @@ static inline int timer_snprintf( char* str, size_t size, const char* format, ..
     return len;
 }
 
-#endif        //  #ifndef ICLA_TIMER_H
+#endif
+

@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @precisions mixed zc -> ds
-*/
 
 #ifndef ICLABLAS_ZC_H
 #define ICLABLAS_ZC_H
@@ -17,7 +8,6 @@
 extern "C" {
 #endif
 
-  /* Mixed precision */
 void
 iclablas_zcaxpycp(
     icla_int_t m,
@@ -72,4 +62,5 @@ iclablas_clat2z(
 }
 #endif
 
-#endif // ICLABLAS_ZC_H
+#endif
+

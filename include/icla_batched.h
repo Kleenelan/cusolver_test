@@ -1,37 +1,23 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_BATCHED_H
 #define ICLA_BATCHED_H
 
 #include "icla_types.h"
 
-/* ------------------------------------------------------------
- * ICLA BATCHED functions
- * --------------------------------------------------------- */
 #include "icla_zbatched.h"
 #include "icla_cbatched.h"
 #include "icla_dbatched.h"
 #include "icla_sbatched.h"
 #include "icla_hbatched.h"
 
-
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 void
 setup_pivinfo_batched( icla_int_t **pivinfo_array, icla_int_t **ipiv_array, icla_int_t ipiv_offset,
     icla_int_t m, icla_int_t nb,
     icla_int_t batchCount,  icla_queue_t queue);
-
 
 void
 adjust_ipiv_batched( icla_int_t **ipiv_array, icla_int_t ipiv_offset,
@@ -78,5 +64,5 @@ void icla_gbtrf_adjust_ju(
 }
 #endif
 
+#endif
 
-#endif /* ICLA_BATCHED_H */

@@ -1,15 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Azzam Haidar
-       @author Tingxing Dong
-
-       @generated from include/icla_zbatched.h, normal z -> s, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLA_SBATCHED_H
 #define ICLA_SBATCHED_H
@@ -21,9 +9,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-  /*
-   *  local auxiliary routines
-   */
+
 void
 icla_sset_pointer(
     float **output_array,
@@ -73,13 +59,6 @@ iclablas_sswapdblk_batched(
     float **dB, icla_int_t lddb, icla_int_t incb,
     icla_int_t batchCount, icla_queue_t queue );
 
-  /*
-   *  LAPACK batched routines
-   */
-
-  /*
-   *  BLAS batched routines
-   */
 void
 iclablas_sgemm_batched_core(
     icla_trans_t transA, icla_trans_t transB,
@@ -1253,7 +1232,6 @@ icla_spotrf_v33_batched(
     icla_int_t *info_array,
     icla_int_t batchCount, icla_queue_t queue);
 
-// host interface
 void
 blas_slacpy_batched(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -1318,7 +1296,6 @@ blas_ssyr2k_batched(
     float beta,              float               **hC_array, icla_int_t ldc,
     icla_int_t batchCount );
 
-// for debugging purpose
 void
 sset_stepinit_ipiv(
     icla_int_t **ipiv_array,
@@ -1331,4 +1308,5 @@ sset_stepinit_ipiv(
 
 #undef ICLA_REAL
 
-#endif  /* ICLA_SBATCHED_H */
+#endif
+

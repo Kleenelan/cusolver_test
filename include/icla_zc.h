@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @precisions mixed zc -> ds
-*/
 
 #ifndef ICLA_ZC_H
 #define ICLA_ZC_H
@@ -17,10 +8,6 @@
 extern "C" {
 #endif
 
-// =============================================================================
-// ICLA mixed precision function definitions
-//
-// In alphabetical order of base name (ignoring precision).
 icla_int_t
 icla_zcgeqrsv_gpu(
     icla_int_t m, icla_int_t n, icla_int_t nrhs,
@@ -53,7 +40,6 @@ icla_zcgetrs_gpu(
     iclaFloatComplex_ptr dSX,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zchesv_gpu(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nrhs,
@@ -80,4 +66,5 @@ icla_zcposv_gpu(
 }
 #endif
 
-#endif /* ICLA_ZC_H */
+#endif
+

@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/iclablas_z_v1_map.h, normal z -> s, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLABLAS_S_V1_MAP_H
 #define ICLABLAS_S_V1_MAP_H
@@ -14,9 +5,6 @@
 #ifdef ICLA_NO_V1
 #error "Since ICLA_NO_V1 is defined, icla.h is invalid; use icla_v2.h"
 #endif
-
-// =============================================================================
-// map function names to old v1 routines
 
 #define iclablas_stranspose_inplace        iclablas_stranspose_inplace_v1
 #define iclablas_stranspose_inplace   iclablas_stranspose_inplace_v1
@@ -132,4 +120,5 @@
 #define icla_strmm                         icla_strmm_v1
 #define icla_strsm                         icla_strsm_v1
 
-#endif // ICLABLAS_S_V1_MAP_H
+#endif
+

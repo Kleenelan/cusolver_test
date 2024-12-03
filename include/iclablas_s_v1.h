@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/iclablas_z_v1.h, normal z -> s, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLABLAS_S_V1_H
 #define ICLABLAS_S_V1_H
@@ -24,9 +15,6 @@
 extern "C" {
 #endif
 
-  /*
-   * Transpose functions
-   */
 void
 iclablas_stranspose_inplace_v1(
     icla_int_t n,
@@ -63,9 +51,6 @@ iclablas_ssetmatrix_transpose_v1(
     iclaFloat_ptr    dAT,   icla_int_t ldda,
     iclaFloat_ptr    dwork, icla_int_t lddwork, icla_int_t nb );
 
-  /*
-   * RBT-related functions
-   */
 void
 iclablas_sprbt_v1(
     icla_int_t n,
@@ -85,9 +70,6 @@ iclablas_sprbt_mtv_v1(
     iclaFloat_ptr du,
     iclaFloat_ptr db, icla_int_t lddb);
 
-  /*
-   * Multi-GPU copy functions
-   */
 void
 icla_sgetmatrix_1D_col_bcyclic_v1(
     icla_int_t m, icla_int_t n,
@@ -116,10 +98,6 @@ icla_ssetmatrix_1D_row_bcyclic_v1(
     iclaFloat_ptr    dA[], icla_int_t ldda,
     icla_int_t ngpu, icla_int_t nb );
 
-
-  /*
-   * LAPACK auxiliary functions (alphabetical order)
-   */
 void
 iclablas_sgeadd_v1(
     icla_int_t m, icla_int_t n,
@@ -277,9 +255,6 @@ iclablas_strtri_diag_v1(
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr d_dinvA );
 
-  /*
-   * to cleanup (alphabetical order)
-   */
 void
 iclablas_snrm2_adjust_v1(
     icla_int_t k,
@@ -374,10 +349,6 @@ icla_slarfx_gpu_v1(
     iclaFloat_ptr dT, icla_int_t iter,
     iclaFloat_ptr work );
 
-
-  /*
-   * Level 1 BLAS (alphabetical order)
-   */
 void
 iclablas_saxpycp_v1(
     icla_int_t m,
@@ -407,9 +378,6 @@ iclablas_sswapdblk_v1(
     iclaFloat_ptr dA, icla_int_t ldda, icla_int_t inca,
     iclaFloat_ptr dB, icla_int_t lddb, icla_int_t incb );
 
-  /*
-   * Level 2 BLAS (alphabetical order)
-   */
 void
 iclablas_sgemv_v1(
     icla_trans_t trans, icla_int_t m, icla_int_t n,
@@ -445,9 +413,6 @@ iclablas_ssymv_v1(
     float beta,
     iclaFloat_ptr       dy, icla_int_t incy );
 
-  /*
-   * Level 3 BLAS (alphabetical order)
-   */
 void
 iclablas_sgemm_v1(
     icla_trans_t transA, icla_trans_t transB,
@@ -555,20 +520,6 @@ iclablas_strsm_work_v1(
     icla_int_t flag,
     iclaFloat_ptr d_dinvA, icla_int_t dinvA_length );
 
-
-  /*
-   * Wrappers for platform independence.
-   * These wrap CUBLAS or AMD OpenCL BLAS functions.
-   */
-
-// =============================================================================
-// copying vectors
-// set  copies host   to device
-// get  copies device to host
-// copy copies device to device
-// (with CUDA unified addressing, copy can be between same or different devices)
-// Add the function, file, and line for error-reporting purposes.
-
 #define icla_ssetvector_v1(           n, hx_src, incx, dy_dst, incy ) \
         icla_ssetvector_v1_internal(  n, hx_src, incx, dy_dst, incy, __func__, __FILE__, __LINE__ )
 
@@ -616,10 +567,6 @@ icla_scopyvector_v1_internal(
                                   dy_dst, incy,
                                   func, file, line );
 }
-
-
-// =============================================================================
-// copying sub-matrices (contiguous columns)
 
 #define icla_ssetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_ssetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
@@ -669,23 +616,16 @@ icla_scopymatrix_v1_internal(
                                   func, file, line );
 }
 
-
-// =============================================================================
-// Level 1 BLAS (alphabetical order)
-
-// in cublas_v2, result returned through output argument
 icla_int_t
 icla_isamax_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx );
 
-// in cublas_v2, result returned through output argument
 icla_int_t
 icla_isamin_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx );
 
-// in cublas_v2, result returned through output argument
 float
 icla_sasum_v1(
     icla_int_t n,
@@ -704,21 +644,18 @@ icla_scopy_v1(
     iclaFloat_const_ptr dx, icla_int_t incx,
     iclaFloat_ptr       dy, icla_int_t incy );
 
-// in cublas_v2, result returned through output argument
 float
 icla_sdot_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx,
     iclaFloat_const_ptr dy, icla_int_t incy );
 
-// in cublas_v2, result returned through output argument
 float
 icla_sdot_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx,
     iclaFloat_const_ptr dy, icla_int_t incy );
 
-// in cublas_v2, result returned through output argument
 float
 icla_snrm2_v1(
     icla_int_t n,
@@ -751,7 +688,7 @@ icla_srotmg_v1(
     iclaFloat_ptr d1, iclaFloat_ptr       d2,
     iclaFloat_ptr x1, iclaFloat_const_ptr y1,
     iclaFloat_ptr param );
-#endif  // ICLA_REAL
+#endif
 
 void
 icla_sscal_v1(
@@ -770,9 +707,6 @@ icla_sswap_v1(
     icla_int_t n,
     iclaFloat_ptr dx, icla_int_t incx,
     iclaFloat_ptr dy, icla_int_t incy );
-
-// =============================================================================
-// Level 2 BLAS (alphabetical order)
 
 void
 icla_sgemv_v1(
@@ -840,9 +774,6 @@ icla_strsv_v1(
     icla_int_t n,
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr       dx, icla_int_t incx );
-
-// =============================================================================
-// Level 3 BLAS (alphabetical order)
 
 void
 icla_sgemm_v1(
@@ -928,11 +859,11 @@ icla_strsm_v1(
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr       dB, icla_int_t lddb );
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #undef ICLA_REAL
 
-#endif // ICLABLAS_S_H
+#endif
+

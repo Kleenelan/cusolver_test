@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/iclablas_zc_v1.h, mixed zc -> ds, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLABLAS_DS_V1_H
 #define ICLABLAS_DS_V1_H
@@ -21,7 +12,6 @@
 extern "C" {
 #endif
 
-  /* Mixed precision */
 void
 iclablas_dsaxpycp_v1(
     icla_int_t m,
@@ -70,4 +60,5 @@ iclablas_slat2d_v1(
 }
 #endif
 
-#endif // ICLABLAS_DS_V1_H
+#endif
+

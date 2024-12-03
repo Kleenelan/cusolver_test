@@ -1,20 +1,9 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Mathieu Faverge
-       @author Mark Gates
-*/
 
 #ifndef ICLA_OPERATORS_H
 #define ICLA_OPERATORS_H
 
 #ifdef __cplusplus
 
-// __host__ and __device__ are defined in CUDA headers.
 #include "icla_types.h"
 
 #ifdef ICLA_HAVE_OPENCL
@@ -22,29 +11,6 @@
 #define __device__
 #endif
 
-/// @addtogroup icla_complex
-/// In C++, including icla_operators.h defines the usual unary and binary
-/// operators for complex numbers: +, +=, -, -=, *, *=, /, /=, ==, !=.
-/// Additionally, real(), imag(), conj(), fabs(), and abs1() are defined
-/// to apply to both complex and real numbers.
-///
-/// In C, there are equivalent macros:
-/// ICLA_Z_{MAKE, REAL, IMAG, ADD, SUB, MUL, DIV, ABS, ABS1, CONJ} for double-complex,
-/// ICLA_C_{...} for float-complex,
-/// ICLA_D_{...} for double,
-/// ICLA_S_{...} for float.
-///
-/// Just the double-complex versions are documented here.
-
-
-// =============================================================================
-// names to match C++ std complex functions
-
-/// @return real component of complex number x; x for real number.
-/// @ingroup icla_complex
-
-
-// hip_complex.h manually uses the function name 'real' and 'imag' in the GLOBAL namespace (why they claim the name 'real' is beyond me...), but it should work the same as ours
 __host__ __device__ static inline double real(const iclaDoubleComplex &x) { return ICLA_Z_REAL(x); }
 __host__ __device__ static inline float  real(const iclaFloatComplex  &x) { return ICLA_C_REAL(x); }
 
@@ -53,43 +19,24 @@ __host__ __device__ static inline float  imag(const iclaFloatComplex  &x) { retu
 
 __host__ __device__ static inline iclaDoubleComplex conj(const iclaDoubleComplex &x) { return ICLA_Z_CONJ(x); }
 __host__ __device__ static inline iclaFloatComplex  conj(const iclaFloatComplex  &x) { return ICLA_C_CONJ(x); }
-//#endif
 
 __host__ __device__ static inline double real(const double             &x) { return x; }
 __host__ __device__ static inline float  real(const float              &x) { return x; }
 
-/// @return imaginary component of complex number x; 0 for real number.
-/// @ingroup icla_complex
 __host__ __device__ static inline double imag(const double             &x) { return 0.; }
 __host__ __device__ static inline float  imag(const float              &x) { return 0.f; }
 
-/// @return conjugate of complex number x; x for real number.
-/// @ingroup icla_complex
 __host__ __device__ static inline double             conj(const double             &x) { return x; }
 __host__ __device__ static inline float              conj(const float              &x) { return x; }
 
-/// @return 2-norm absolute value of complex number x: sqrt( real(x)^2 + imag(x)^2 ).
-///         math.h or cmath provide fabs for real numbers.
-/// @ingroup icla_complex
 __host__ __device__ static inline double fabs(const iclaDoubleComplex &x) { return ICLA_Z_ABS(x); }
 __host__ __device__ static inline float  fabs(const iclaFloatComplex  &x) { return ICLA_C_ABS(x); }
-//__host__ __device__ static inline float  fabs(const float              &x) { return ICLA_S_ABS(x); }  // conflicts with std::fabs in .cu files
-// already have fabs( double ) in math.h
 
-/// @return 1-norm absolute value of complex nmuber x: | real(x) | + | imag(x) |.
-/// @ingroup icla_complex
 __host__ __device__ static inline double abs1(const iclaDoubleComplex &x) { return ICLA_Z_ABS1(x); }
 __host__ __device__ static inline float  abs1(const iclaFloatComplex  &x) { return ICLA_C_ABS1(x); }
 __host__ __device__ static inline double abs1(const double             &x) { return ICLA_D_ABS1(x); }
 __host__ __device__ static inline float  abs1(const float              &x) { return ICLA_S_ABS1(x); }
 
-
-// =============================================================================
-// iclaDoubleComplex
-
-// hip_complex.h also defines oeprators
-
-// ---------- negate
 __host__ __device__ static inline iclaDoubleComplex
 operator - (const iclaDoubleComplex &a)
 {
@@ -97,8 +44,6 @@ operator - (const iclaDoubleComplex &a)
                          -imag(a) );
 }
 
-
-// ---------- add
 __host__ __device__ static inline iclaDoubleComplex
 operator + (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -136,8 +81,6 @@ operator += (iclaDoubleComplex &a, const double s)
     return a;
 }
 
-
-// ---------- subtract
 __host__ __device__ static inline iclaDoubleComplex
 operator - (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -175,8 +118,6 @@ operator -= (iclaDoubleComplex &a, const double s)
     return a;
 }
 
-
-// ---------- multiply
 __host__ __device__ static inline iclaDoubleComplex
 operator * (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -197,8 +138,6 @@ operator * (const iclaDoubleComplex a, const float s)
     return ICLA_Z_MAKE( real(a)*s,
                          imag(a)*s );
 }
-
-
 
 __host__ __device__ static inline iclaDoubleComplex
 operator * (const double s, const iclaDoubleComplex a)
@@ -223,15 +162,6 @@ operator *= (iclaDoubleComplex &a, const double s)
     return a;
 }
 
-
-// ---------- divide
-/* From LAPACK DLADIV
- * Performs complex division in real arithmetic, avoiding unnecessary overflow.
- *
- *             a + i*b
- *  p + i*q = ---------
- *             c + i*d
- */
 __host__ __device__ static inline iclaDoubleComplex
 operator / (const iclaDoubleComplex x, const iclaDoubleComplex y)
 {
@@ -298,8 +228,6 @@ operator /= (iclaDoubleComplex &a, const double s)
     return a;
 }
 
-
-// ---------- equality
 __host__ __device__ static inline bool
 operator == (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -321,8 +249,6 @@ operator == (const double s, const iclaDoubleComplex a)
              imag(a) == 0. );
 }
 
-
-// ---------- not equality
 __host__ __device__ static inline bool
 operator != (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -340,12 +266,6 @@ operator != (const double s, const iclaDoubleComplex a)
     return ! (a == s);
 }
 
-
-
-// =============================================================================
-// iclaFloatComplex
-
-// ---------- negate
 __host__ __device__ static inline iclaFloatComplex
 operator - (const iclaFloatComplex &a)
 {
@@ -353,8 +273,6 @@ operator - (const iclaFloatComplex &a)
                          -imag(a) );
 }
 
-
-// ---------- add
 __host__ __device__ static inline iclaFloatComplex
 operator + (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -392,8 +310,6 @@ operator += (iclaFloatComplex &a, const float s)
     return a;
 }
 
-
-// ---------- subtract
 __host__ __device__ static inline iclaFloatComplex
 operator - (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -431,8 +347,6 @@ operator -= (iclaFloatComplex &a, const float s)
     return a;
 }
 
-
-// ---------- multiply
 __host__ __device__ static inline iclaFloatComplex
 operator * (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -470,15 +384,6 @@ operator *= (iclaFloatComplex &a, const float s)
     return a;
 }
 
-
-// ---------- divide
-/* From LAPACK DLADIV
- * Performs complex division in real arithmetic, avoiding unnecessary overflow.
- *
- *             a + i*b
- *  p + i*q = ---------
- *             c + i*d
- */
 __host__ __device__ static inline iclaFloatComplex
 operator / (const iclaFloatComplex x, const iclaFloatComplex y)
 {
@@ -545,8 +450,6 @@ operator /= (iclaFloatComplex &a, const float s)
     return a;
 }
 
-
-// ---------- equality
 __host__ __device__ static inline bool
 operator == (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -568,8 +471,6 @@ operator == (const float s, const iclaFloatComplex a)
              imag(a) == 0. );
 }
 
-
-// ---------- not equality
 __host__ __device__ static inline bool
 operator != (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -588,12 +489,12 @@ operator != (const float s, const iclaFloatComplex a)
     return ! (a == s);
 }
 
-
 #ifdef ICLA_HAVE_OPENCL
 #undef __host__
 #undef __device__
 #endif
 
-#endif /* __cplusplus */
+#endif
 
-#endif /* ICLA_OPERATORS_H */
+#endif
+

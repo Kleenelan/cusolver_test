@@ -1,16 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @author Azzam Haidar
-       @author Tingxing Dong
-       @author Ahmad Abdelfattah
-
-       @generated from include/icla_zvbatched.h, normal z -> d, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLA_DVBATCHED_H
 #define ICLA_DVBATCHED_H
@@ -23,15 +10,7 @@
 extern "C" {
 #endif
 
-  /*
-   *  control and tuning
-   */
 void icla_get_dgetrf_vbatched_nbparam(icla_int_t max_m, icla_int_t max_n, icla_int_t *nb, icla_int_t *recnb);
-
-
-  /*
-   *  LAPACK vbatched routines
-   */
 
 icla_int_t
 icla_dgetf2_fused_vbatched(
@@ -195,10 +174,7 @@ icla_dpotrf_vbatched(
     double **dA_array, icla_int_t *ldda,
     icla_int_t *info_array,  icla_int_t batchCount,
     icla_queue_t queue);
-  /*
-   *  BLAS vbatched routines
-   */
-/* Level 3 */
+
 void
 iclablas_dgemm_vbatched_core(
     icla_trans_t transA, icla_trans_t transB,
@@ -675,7 +651,6 @@ iclablas_dsymm_vbatched(
         double **dC_array, icla_int_t *lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
-/* Level 2 */
 void
 iclablas_dgemv_vbatched_max_nocheck(
     icla_trans_t trans, icla_int_t* m, icla_int_t* n,
@@ -757,8 +732,7 @@ iclablas_dsymv_vbatched(
     double beta,
     iclaDouble_ptr dy_array[], icla_int_t* incy,
     icla_int_t batchCount, icla_queue_t queue);
-/* Level 1 */
-/* Auxiliary routines */
+
 void icla_dset_pointer_var_cc(
     double **output_array,
     double *input,
@@ -808,9 +782,6 @@ iclablas_dlacpy_vbatched(
     double**               dBarray, icla_int_t* lddb,
     icla_int_t batchCount, icla_queue_t queue );
 
-  /*
-   *  Aux. vbatched routines
-   */
 icla_int_t icla_get_dpotrf_vbatched_crossover();
 
 #ifdef __cplusplus
@@ -819,4 +790,5 @@ icla_int_t icla_get_dpotrf_vbatched_crossover();
 
 #undef ICLA_REAL
 
-#endif  /* ICLA_DVBATCHED_H */
+#endif
+

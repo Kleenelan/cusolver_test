@@ -1,15 +1,4 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
 
-       @generated from testing/testing_z.h, normal z -> s, Fri Nov 29 12:16:14 2024
-       @author Mark Gates
-
-       Utilities for testing.
-*/
 #ifndef TESTING_ICLA_S_H
 #define TESTING_ICLA_S_H
 
@@ -25,7 +14,6 @@ void icla_smake_symmetric( icla_int_t N, float* A, icla_int_t lda );
 void icla_smake_spd( icla_int_t N, float* A, icla_int_t lda );
 void icla_smake_hpd( icla_int_t N, float* A, icla_int_t lda );
 
-// work around MKL bug in multi-threaded lanhe/lansy
 float safe_lapackf77_slansy(
     const char *norm, const char *uplo,
     const icla_int_t *n,
@@ -70,29 +58,11 @@ void check_sgeev(
     #endif
     float result[4] );
 
-//void icla_sgenerate_matrix(
-//    icla_int_t matrix,
-//    icla_int_t m, icla_int_t n,
-//    icla_int_t iseed[4],
-//    float* sigma,
-//    float* A, icla_int_t lda );
-
 #undef REAL
 
 #ifdef __cplusplus
 }
 #endif
 
-/******************************************************************************/
-// C++ utility functions
+#endif
 
-//class icla_opts;
-
-//void icla_generate_matrix(
-//    icla_opts& opts,
-//    icla_int_t iseed[4],
-//    icla_int_t m, icla_int_t n,
-//    float* sigma_ptr,
-//    float* A_ptr, icla_int_t lda );
-
-#endif        //  #ifndef TESTING_ICLA_S_H

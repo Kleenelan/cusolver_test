@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @precisions normal z -> s d c
-*/
 
 #ifndef ICLA_Z_H
 #define ICLA_Z_H
@@ -20,14 +11,11 @@
 extern "C" {
 #endif
 
-// =============================================================================
-// ICLA Auxiliary functions to get the NB used
-
 #ifdef ICLA_REAL
-icla_int_t icla_get_dlaex3_m_nb();       // defined in dlaex3_m.cpp
+icla_int_t icla_get_dlaex3_m_nb();
+
 #endif
 
-// Cholesky, LU, symmetric indefinite
 icla_int_t icla_get_zpotrf_nb( icla_int_t n );
 icla_int_t icla_get_zgetrf_nb( icla_int_t m, icla_int_t n );
 icla_int_t icla_get_zgetrf_native_nb( icla_int_t m, icla_int_t n );
@@ -36,47 +24,29 @@ icla_int_t icla_get_zhetrf_nb( icla_int_t n );
 icla_int_t icla_get_zhetrf_nopiv_nb( icla_int_t n );
 icla_int_t icla_get_zhetrf_aasen_nb( icla_int_t n );
 
-// QR
 icla_int_t icla_get_zgeqp3_nb( icla_int_t m, icla_int_t n );
 icla_int_t icla_get_zgeqrf_nb( icla_int_t m, icla_int_t n );
 icla_int_t icla_get_zgeqlf_nb( icla_int_t m, icla_int_t n );
 icla_int_t icla_get_zgelqf_nb( icla_int_t m, icla_int_t n );
 
-// eigenvalues
 icla_int_t icla_get_zgehrd_nb( icla_int_t n );
 icla_int_t icla_get_zhetrd_nb( icla_int_t n );
 icla_int_t icla_get_zhegst_nb( icla_int_t n );
 icla_int_t icla_get_zhegst_m_nb( icla_int_t n );
 
-// SVD
 icla_int_t icla_get_zgebrd_nb( icla_int_t m, icla_int_t n );
 icla_int_t icla_get_zgesvd_nb( icla_int_t m, icla_int_t n );
 
-// 2-stage eigenvalues
 icla_int_t icla_get_zbulge_nb( icla_int_t n, icla_int_t nbthreads );
 icla_int_t icla_get_zbulge_nb_mgpu( icla_int_t n );
 icla_int_t icla_get_zbulge_vblksiz( icla_int_t n, icla_int_t nb, icla_int_t nbthreads );
 icla_int_t icla_get_zbulge_gcperf();
 
-// =============================================================================
-// Other auxiliary functions
 bool icla_zgetrf_gpu_recommend_cpu(icla_int_t m, icla_int_t n, icla_int_t nb);
 bool icla_zgetrf_native_recommend_notrans(icla_int_t m, icla_int_t n, icla_int_t nb);
 
-// =============================================================================
-// ICLA function definitions
-//
-// In alphabetical order of base name (ignoring precision).
-// Keep different versions of the same routine together, sorted this way:
-// cpu (no suffix), gpu (_gpu), cpu/multi-gpu (_m), multi-gpu (_mgpu). Ex:
-// icla_zheevdx
-// icla_zheevdx_gpu
-// icla_zheevdx_m
-// icla_zheevdx_2stage
-// icla_zheevdx_2stage_m
-
 #ifdef ICLA_REAL
-// only applicable to real [sd] precisions
+
 icla_int_t
 icla_dsidi(
     icla_uplo_t uplo,
@@ -90,7 +60,6 @@ icla_dmove_eig(
     icla_range_t range, icla_int_t n, double *w,
     icla_int_t *il, icla_int_t *iu, double vl, double vu, icla_int_t *mout);
 
-// defined in dlaex3.cpp
 void
 icla_zvrange(
     icla_int_t k, double *d, icla_int_t *il, icla_int_t *iu, double vl, double vu);
@@ -98,9 +67,8 @@ icla_zvrange(
 void
 icla_zirange(
     icla_int_t k, icla_int_t *indxq, icla_int_t *iil, icla_int_t *iiu, icla_int_t il, icla_int_t iu);
-#endif  // ICLA_REAL
+#endif
 
-// ---------------------------------------------------------------- zgb routines
 icla_int_t
 icla_zgbsv_native(
         icla_int_t n, icla_int_t kl, icla_int_t ku, icla_int_t nrhs,
@@ -160,7 +128,6 @@ icla_zgbtrf_native_work(
     void* device_work, icla_int_t* lwork,
     icla_queue_t queue);
 
-// ---------------------------------------------------------------- zgb routines
 icla_int_t
 icla_zgebrd(
     icla_int_t m, icla_int_t n,
@@ -187,7 +154,6 @@ icla_zgeev(
     #endif
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeev_m(
     icla_vec_t jobvl, icla_vec_t jobvr, icla_int_t n,
@@ -205,7 +171,6 @@ icla_zgeev_m(
     #endif
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgegqr_gpu(
     icla_int_t ikind, icla_int_t m, icla_int_t n,
@@ -230,7 +195,6 @@ icla_zgehrd(
     iclaDoubleComplex_ptr dT,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgehrd_m(
     icla_int_t n, icla_int_t ilo, icla_int_t ihi,
@@ -240,7 +204,6 @@ icla_zgehrd_m(
     iclaDoubleComplex *T,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgehrd2(
     icla_int_t n, icla_int_t ilo, icla_int_t ihi,
@@ -257,7 +220,6 @@ icla_zgelqf(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgelqf_gpu(
     icla_int_t m, icla_int_t n,
@@ -266,7 +228,6 @@ icla_zgelqf_gpu(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgels(
     icla_trans_t trans, icla_int_t m, icla_int_t n, icla_int_t nrhs,
@@ -275,7 +236,6 @@ icla_zgels(
     iclaDoubleComplex *hwork, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zggrqf(
     icla_int_t m, icla_int_t p, icla_int_t n,
@@ -303,7 +263,6 @@ icla_zgels_gpu(
     iclaDoubleComplex *hwork, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgels3_gpu(
     icla_trans_t trans, icla_int_t m, icla_int_t n, icla_int_t nrhs,
@@ -320,7 +279,6 @@ icla_zgeqlf(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqp3(
     icla_int_t m, icla_int_t n,
@@ -332,7 +290,6 @@ icla_zgeqp3(
     #endif
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqp3_gpu(
     icla_int_t m, icla_int_t n,
@@ -353,7 +310,6 @@ icla_zgeqp3_expert_gpu_work(
     void* device_work, icla_int_t *lwork_device,
     icla_int_t *info, icla_queue_t queue );
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqr2_gpu(
     icla_int_t m, icla_int_t n,
@@ -363,7 +319,6 @@ icla_zgeqr2_gpu(
     icla_queue_t queue,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqr2x_gpu(
     icla_int_t m, icla_int_t n,
@@ -373,7 +328,6 @@ icla_zgeqr2x_gpu(
     iclaDouble_ptr        dwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqr2x2_gpu(
     icla_int_t m, icla_int_t n,
@@ -393,7 +347,6 @@ icla_zgeqr2x3_gpu(
     iclaDouble_ptr        dwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqr2x4_gpu(
     icla_int_t m, icla_int_t n,
@@ -432,7 +385,6 @@ icla_zgeqrf_expert_gpu_work(
     void* device_work, icla_int_t *lwork_device,
     icla_queue_t queues[2] );
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqrf_m(
     icla_int_t ngpu,
@@ -442,7 +394,6 @@ icla_zgeqrf_m(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqrf_ooc(
     icla_int_t m, icla_int_t n,
@@ -466,7 +417,6 @@ icla_zgeqrf2_mgpu(
     iclaDoubleComplex *tau,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqrf3_gpu(
     icla_int_t m, icla_int_t n,
@@ -485,7 +435,6 @@ icla_zgeqrs_gpu(
     iclaDoubleComplex *hwork, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgeqrs3_gpu(
     icla_int_t m, icla_int_t n, icla_int_t nrhs,
@@ -496,7 +445,6 @@ icla_zgeqrs3_gpu(
     iclaDoubleComplex *hwork, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgerbt_gpu(
     icla_bool_t gen, icla_int_t n, icla_int_t nrhs,
@@ -505,7 +453,6 @@ icla_zgerbt_gpu(
     iclaDoubleComplex *U, iclaDoubleComplex *V,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgerfs_nopiv_gpu(
     icla_trans_t trans, icla_int_t n, icla_int_t nrhs,
@@ -553,7 +500,6 @@ icla_zgesv_nopiv_gpu(
     iclaDoubleComplex_ptr dB, icla_int_t lddb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgesv_rbt(
     icla_bool_t ref, icla_int_t n, icla_int_t nrhs,
@@ -573,7 +519,6 @@ icla_zgesvd(
     #endif
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetf2_gpu(
     icla_int_t m, icla_int_t n,
@@ -599,7 +544,6 @@ icla_zgetf2_native(
     icla_event_t events[2],
     icla_queue_t queue, icla_queue_t update_queue);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetf2_nopiv(
     icla_int_t m, icla_int_t n,
@@ -654,7 +598,6 @@ icla_zgetrf_native(
     icla_int_t *ipiv,
     icla_int_t *info );
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetrf_m(
     icla_int_t ngpu,
@@ -671,7 +614,6 @@ icla_zgetrf_mgpu(
     icla_int_t *ipiv,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetrf2(
     icla_int_t m, icla_int_t n,
@@ -690,14 +632,12 @@ icla_zgetrf2_mgpu(
     icla_queue_t queues[][2],
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetrf_nopiv(
     icla_int_t m, icla_int_t n,
     iclaDoubleComplex *A, icla_int_t lda,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetrf_nopiv_gpu(
     icla_int_t m, icla_int_t n,
@@ -741,7 +681,6 @@ icla_zgetrs_expert_gpu_work(
     void* device_work, icla_int_t *lwork_device,
     icla_queue_t queue );
 
-// CUDA ICLA only
 icla_int_t
 icla_zgetrs_nopiv_gpu(
     icla_trans_t trans, icla_int_t n, icla_int_t nrhs,
@@ -749,7 +688,6 @@ icla_zgetrs_nopiv_gpu(
     iclaDoubleComplex_ptr dB, icla_int_t lddb,
     icla_int_t *info);
 
-// ------------------------------------------------------------ zhe routines
 icla_int_t
 icla_zheevd(
     icla_vec_t jobz, icla_uplo_t uplo, icla_int_t n,
@@ -762,7 +700,6 @@ icla_zheevd(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevd_gpu(
     icla_vec_t jobz, icla_uplo_t uplo,
@@ -777,7 +714,6 @@ icla_zheevd_gpu(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevd_m(
     icla_int_t ngpu,
@@ -792,7 +728,6 @@ icla_zheevd_m(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevdx(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -806,7 +741,6 @@ icla_zheevdx(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevdx_gpu(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo,
@@ -823,7 +757,6 @@ icla_zheevdx_gpu(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevdx_m(
     icla_int_t ngpu,
@@ -839,7 +772,6 @@ icla_zheevdx_m(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevdx_2stage(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo,
@@ -854,7 +786,6 @@ icla_zheevdx_2stage(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevdx_2stage_m(
     icla_int_t ngpu,
@@ -871,8 +802,7 @@ icla_zheevdx_2stage_m(
     icla_int_t *info);
 
 #ifdef ICLA_COMPLEX
-// no real [sd] precisions available
-// CUDA ICLA only
+
 icla_int_t
 icla_zheevr(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -887,7 +817,6 @@ icla_zheevr(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevr_gpu(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -904,7 +833,6 @@ icla_zheevr_gpu(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevx(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -918,7 +846,6 @@ icla_zheevx(
     icla_int_t *ifail,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zheevx_gpu(
     icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -933,9 +860,8 @@ icla_zheevx_gpu(
     double *rwork, icla_int_t *iwork,
     icla_int_t *ifail,
     icla_int_t *info);
-#endif  // ICLA_COMPLEX
+#endif
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegst(
     icla_int_t itype, icla_uplo_t uplo, icla_int_t n,
@@ -943,7 +869,6 @@ icla_zhegst(
     iclaDoubleComplex *B, icla_int_t ldb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegst_gpu(
     icla_int_t itype, icla_uplo_t uplo, icla_int_t n,
@@ -951,7 +876,6 @@ icla_zhegst_gpu(
     iclaDoubleComplex_const_ptr dB, icla_int_t lddb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegst_m(
     icla_int_t ngpu,
@@ -960,7 +884,6 @@ icla_zhegst_m(
     iclaDoubleComplex *B, icla_int_t ldb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegvd(
     icla_int_t itype, icla_vec_t jobz, icla_uplo_t uplo, icla_int_t n,
@@ -973,7 +896,6 @@ icla_zhegvd(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegvd_m(
     icla_int_t ngpu,
@@ -989,7 +911,6 @@ icla_zhegvd_m(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegvdx(
     icla_int_t itype, icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo,
@@ -1004,7 +925,6 @@ icla_zhegvdx(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegvdx_m(
     icla_int_t ngpu,
@@ -1021,7 +941,6 @@ icla_zhegvdx_m(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegvdx_2stage(
     icla_int_t itype, icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -1036,7 +955,6 @@ icla_zhegvdx_2stage(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhegvdx_2stage_m(
     icla_int_t ngpu,
@@ -1054,8 +972,7 @@ icla_zhegvdx_2stage_m(
     icla_int_t *info);
 
 #ifdef ICLA_COMPLEX
-// no real [sd] precisions available
-// CUDA ICLA only
+
 icla_int_t
 icla_zhegvr(
     icla_int_t itype, icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo, icla_int_t n,
@@ -1069,8 +986,6 @@ icla_zhegvr(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// no real [sd] precisions available
-// CUDA ICLA only
 icla_int_t
 icla_zhegvx(
     icla_int_t itype, icla_vec_t jobz, icla_range_t range, icla_uplo_t uplo,
@@ -1092,7 +1007,6 @@ icla_zhesv(
     iclaDoubleComplex *B, icla_int_t ldb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhesv_nopiv_gpu(
     icla_uplo_t uplo,  icla_int_t n, icla_int_t nrhs,
@@ -1108,7 +1022,6 @@ icla_zhetrd(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrd_gpu(
     icla_uplo_t uplo, icla_int_t n,
@@ -1118,7 +1031,6 @@ icla_zhetrd_gpu(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrd2_gpu(
     icla_uplo_t uplo, icla_int_t n,
@@ -1129,8 +1041,6 @@ icla_zhetrd2_gpu(
     iclaDoubleComplex_ptr dwork, icla_int_t ldwork,
     icla_int_t *info);
 
-// TODO: rename icla_zhetrd_m?
-// CUDA ICLA only
 icla_int_t
 icla_zhetrd_mgpu(
     icla_int_t ngpu, icla_int_t nqueue,
@@ -1140,7 +1050,6 @@ icla_zhetrd_mgpu(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrd_hb2st(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nb, icla_int_t Vblksiz,
@@ -1150,7 +1059,6 @@ icla_zhetrd_hb2st(
     iclaDoubleComplex *TAU, icla_int_t compT,
     iclaDoubleComplex *T, icla_int_t ldt);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrd_he2hb(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -1160,7 +1068,6 @@ icla_zhetrd_he2hb(
     iclaDoubleComplex_ptr dT,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrd_he2hb_mgpu(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -1187,7 +1094,6 @@ icla_zhetrf_gpu(
    icla_int_t *ipiv,
    icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrf_aasen(
     icla_uplo_t uplo, icla_int_t cpu_panel, icla_int_t n,
@@ -1212,7 +1118,6 @@ icla_zhetrf_nopiv_gpu(
     iclaDoubleComplex_ptr dA, icla_int_t ldda,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zhetrs_nopiv_gpu(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nrhs,
@@ -1220,9 +1125,8 @@ icla_zhetrs_nopiv_gpu(
     iclaDoubleComplex_ptr dB, icla_int_t lddb,
     icla_int_t *info);
 
-// ------------------------------------------------------------ [dz]la routines
 #ifdef ICLA_REAL
-// only applicable to real [sd] precisions
+
 icla_int_t
 icla_dlaex0(
     icla_int_t n, double *d, double *e,
@@ -1232,7 +1136,6 @@ icla_dlaex0(
     icla_range_t range, double vl, double vu, icla_int_t il, icla_int_t iu,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_dlaex0_m(
     icla_int_t ngpu,
@@ -1254,7 +1157,6 @@ icla_dlaex1(
     icla_range_t range, double vl, double vu, icla_int_t il, icla_int_t iu,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_dlaex1_m(
     icla_int_t ngpu,
@@ -1279,7 +1181,6 @@ icla_dlaex3(
     icla_range_t range, double vl, double vu, icla_int_t il, icla_int_t iu,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_dlaex3_m(
     icla_int_t ngpu,
@@ -1291,7 +1192,7 @@ icla_dlaex3_m(
     icla_queue_t queues[iclaMaxGPUs][2],
     icla_range_t range, double vl, double vu, icla_int_t il, icla_int_t iu,
     icla_int_t *info);
-#endif  // ICLA_REAL
+#endif
 
 icla_int_t
 icla_zlabrd_gpu(
@@ -1326,7 +1227,6 @@ icla_zlahr2(
     iclaDoubleComplex *Y,  icla_int_t ldy,
     icla_queue_t queue);
 
-// CUDA ICLA only
 icla_int_t
 icla_zlahr2_m(
     icla_int_t n, icla_int_t k, icla_int_t nb,
@@ -1347,7 +1247,6 @@ icla_zlahru(
     iclaDoubleComplex_ptr dwork,
     icla_queue_t queue);
 
-// CUDA ICLA only
 icla_int_t
 icla_zlahru_m(
     icla_int_t n, icla_int_t ihi, icla_int_t k, icla_int_t nb,
@@ -1355,7 +1254,7 @@ icla_zlahru_m(
     struct zgehrd_data *data);
 
 #ifdef ICLA_REAL
-// CUDA ICLA only
+
 icla_int_t
 icla_dlaln2(
     icla_int_t trans, icla_int_t na, icla_int_t nw,
@@ -1366,7 +1265,6 @@ icla_dlaln2(
     icla_int_t *info);
 #endif
 
-// CUDA ICLA only
 icla_int_t
 icla_zlaqps(
     icla_int_t m, icla_int_t n, icla_int_t offset,
@@ -1378,7 +1276,6 @@ icla_zlaqps(
     iclaDoubleComplex *F,  icla_int_t ldf,
     iclaDoubleComplex_ptr dF, icla_int_t lddf);
 
-// CUDA ICLA only
 icla_int_t
 icla_zlaqps_gpu(
     icla_int_t m, icla_int_t n, icla_int_t offset,
@@ -1389,7 +1286,6 @@ icla_zlaqps_gpu(
     iclaDoubleComplex_ptr dauxv,
     iclaDoubleComplex_ptr dF, icla_int_t lddf);
 
-// CUDA ICLA only
 icla_int_t
 icla_zlaqps2_gpu(
     icla_int_t m, icla_int_t n, icla_int_t offset,
@@ -1404,7 +1300,7 @@ icla_zlaqps2_gpu(
     icla_queue_t queue);
 
 #ifdef ICLA_REAL
-// CUDA ICLA only
+
 icla_int_t
 icla_zlaqtrsd(
     icla_trans_t trans, icla_int_t n,
@@ -1414,7 +1310,6 @@ icla_zlaqtrsd(
     icla_int_t *info);
 #endif
 
-// CUDA ICLA only
 icla_int_t
 icla_zlarf_gpu(
     icla_int_t m,  icla_int_t n,
@@ -1422,11 +1317,6 @@ icla_zlarf_gpu(
     iclaDoubleComplex_ptr dC, icla_int_t lddc,
     icla_queue_t queue);
 
-// icla_zlarfb_gpu
-// see iclablas_q.h
-
-// in zgeqr2x_gpu-v3.cpp
-// CUDA ICLA only
 icla_int_t
 icla_zlarfb2_gpu(
     icla_int_t m, icla_int_t n, icla_int_t k,
@@ -1447,7 +1337,6 @@ icla_zlatrd(
     iclaDoubleComplex_ptr dW, icla_int_t lddw,
     icla_queue_t queue);
 
-// CUDA ICLA only
 icla_int_t
 icla_zlatrd2(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -1460,7 +1349,6 @@ icla_zlatrd2(
     iclaDoubleComplex_ptr dwork, icla_int_t ldwork,
     icla_queue_t queue);
 
-// CUDA ICLA only
 icla_int_t
 icla_zlatrd_mgpu(
     icla_int_t ngpu,
@@ -1476,7 +1364,7 @@ icla_zlatrd_mgpu(
     icla_queue_t queues[]);
 
 #ifdef ICLA_COMPLEX
-// CUDA ICLA only
+
 icla_int_t
 icla_zlatrsd(
     icla_uplo_t uplo, icla_trans_t trans,
@@ -1500,7 +1388,6 @@ icla_zlauum_gpu(
     iclaDoubleComplex_ptr dA, icla_int_t ldda,
     icla_int_t *info);
 
-// ------------------------------------------------------------ zpo routines
 icla_int_t
 icla_zposv(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nrhs,
@@ -1515,7 +1402,6 @@ icla_zposv_gpu(
     iclaDoubleComplex_ptr dB, icla_int_t lddb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zpotf2_gpu(
     icla_uplo_t uplo, icla_int_t n,
@@ -1572,7 +1458,6 @@ icla_zpotrf_native(
     iclaDoubleComplex_ptr dA, icla_int_t ldda,
     icla_int_t *info );
 
-// CUDA ICLA only
 icla_int_t
 icla_zpotrf_m(
     icla_int_t ngpu,
@@ -1587,7 +1472,6 @@ icla_zpotrf_mgpu(
     iclaDoubleComplex_ptr d_lA[], icla_int_t ldda,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zpotrf_mgpu_right(
     icla_int_t ngpu,
@@ -1595,7 +1479,6 @@ icla_zpotrf_mgpu_right(
     iclaDoubleComplex_ptr d_lA[], icla_int_t ldda,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zpotrf3_mgpu(
     icla_int_t ngpu,
@@ -1636,9 +1519,8 @@ icla_zpotrs_expert_gpu_work(
     void* device_work, icla_int_t *lwork_device,
     icla_queue_t queue );
 
-// ------------------------------------------------------------ zsy routines
 #ifdef ICLA_COMPLEX
-// CUDA ICLA only
+
 icla_int_t
 icla_zsysv_nopiv_gpu(
     icla_uplo_t uplo,  icla_int_t n, icla_int_t nrhs,
@@ -1646,21 +1528,18 @@ icla_zsysv_nopiv_gpu(
     iclaDoubleComplex_ptr dB, icla_int_t lddb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zsytrf_nopiv_cpu(
     icla_uplo_t uplo, icla_int_t n, icla_int_t ib,
     iclaDoubleComplex *A, icla_int_t lda,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zsytrf_nopiv_gpu(
     icla_uplo_t uplo, icla_int_t n,
     iclaDoubleComplex_ptr dA, icla_int_t ldda,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zsytrs_nopiv_gpu(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nrhs,
@@ -1669,7 +1548,6 @@ icla_zsytrs_nopiv_gpu(
     icla_int_t *info);
 #endif
 
-// ------------------------------------------------------------ zst routines
 icla_int_t
 icla_zstedx(
     icla_range_t range, icla_int_t n, double vl, double vu,
@@ -1680,7 +1558,6 @@ icla_zstedx(
     iclaDouble_ptr dwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zstedx_m(
     icla_int_t ngpu,
@@ -1691,8 +1568,6 @@ icla_zstedx_m(
     icla_int_t *iwork, icla_int_t liwork,
     icla_int_t *info);
 
-// ------------------------------------------------------------ ztr routines
-// CUDA ICLA only
 icla_int_t
 icla_ztrevc3(
     icla_side_t side, icla_vec_t howmany,
@@ -1707,7 +1582,6 @@ icla_ztrevc3(
     #endif
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_ztrevc3_mt(
     icla_side_t side, icla_vec_t howmany,
@@ -1722,7 +1596,6 @@ icla_ztrevc3_mt(
     #endif
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_ztrsm_m(
     icla_int_t ngpu,
@@ -1752,8 +1625,6 @@ icla_ztrtri_expert_gpu_work(
     void* device_work, icla_int_t *lwork_device,
     icla_queue_t queues[2] );
 
-// ------------------------------------------------------------ zun routines
-// CUDA ICLA only
 icla_int_t
 icla_zungbr(
     icla_vect_t vect, icla_int_t m, icla_int_t n, icla_int_t k,
@@ -1770,7 +1641,6 @@ icla_zunghr(
     iclaDoubleComplex_ptr dT, icla_int_t nb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunghr_m(
     icla_int_t n, icla_int_t ilo, icla_int_t ihi,
@@ -1779,7 +1649,6 @@ icla_zunghr_m(
     iclaDoubleComplex *T, icla_int_t nb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunglq(
     icla_int_t m, icla_int_t n, icla_int_t k,
@@ -1796,7 +1665,6 @@ icla_zungqr(
     iclaDoubleComplex_ptr dT, icla_int_t nb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zungqr_gpu(
     icla_int_t m, icla_int_t n, icla_int_t k,
@@ -1805,7 +1673,6 @@ icla_zungqr_gpu(
     iclaDoubleComplex_ptr dT, icla_int_t nb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zungqr_m(
     icla_int_t m, icla_int_t n, icla_int_t k,
@@ -1861,7 +1728,6 @@ icla_zunmql(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunmql2_gpu(
     icla_side_t side, icla_trans_t trans,
@@ -1893,7 +1759,6 @@ icla_zunmqr_gpu(
     iclaDoubleComplex_ptr       dT, icla_int_t nb,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunmqr2_gpu(
     icla_side_t side, icla_trans_t trans,
@@ -1904,7 +1769,6 @@ icla_zunmqr2_gpu(
     const iclaDoubleComplex *wA, icla_int_t ldwa,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunmqr_m(
     icla_int_t ngpu,
@@ -1926,7 +1790,6 @@ icla_zunmtr(
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunmtr_gpu(
     icla_side_t side, icla_uplo_t uplo, icla_trans_t trans,
@@ -1937,7 +1800,6 @@ icla_zunmtr_gpu(
     const iclaDoubleComplex *wA, icla_int_t ldwa,
     icla_int_t *info);
 
-// CUDA ICLA only
 icla_int_t
 icla_zunmtr_m(
     icla_int_t ngpu,
@@ -1948,9 +1810,6 @@ icla_zunmtr_m(
     iclaDoubleComplex *C,    icla_int_t ldc,
     iclaDoubleComplex *work, icla_int_t lwork,
     icla_int_t *info);
-
-// =============================================================================
-// ICLA utility function definitions
 
 extern const iclaDoubleComplex ICLA_Z_NAN;
 extern const iclaDoubleComplex ICLA_Z_INF;
@@ -1996,7 +1855,6 @@ void icla_zq_to_panel(
     iclaDoubleComplex *A, icla_int_t lda,
     iclaDoubleComplex *work);
 
-/* auxiliary routines for posv-irgmres  */
 void
 iclablas_zextract_diag_sqrt(
     icla_int_t m, icla_int_t n,
@@ -2026,4 +1884,5 @@ iclablas_zdimv_invert(
 
 #undef ICLA_COMPLEX
 
-#endif /* ICLA_Z_H */
+#endif
+

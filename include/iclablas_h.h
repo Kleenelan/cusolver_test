@@ -1,11 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-*/
 
 #ifndef ICLABLAS_H_H
 #define ICLABLAS_H_H
@@ -13,12 +5,9 @@
 #include "icla_types.h"
 #include "icla_copy.h"
 
-// Half precision routines are available for C++ compilers only
 #ifdef __cplusplus
 extern "C" {
 
-// =============================================================================
-// conversion routines
 void
 iclablas_slag2h(
     icla_int_t m, icla_int_t n,
@@ -48,8 +37,6 @@ iclablas_hlag2s_batched(
     float               **dSAarray, icla_int_t ldsa,
     icla_int_t batchCount, icla_queue_t queue );
 
-// =============================================================================
-// Level 3 BLAS (alphabetical order)
 void
 icla_hgemm(
     icla_trans_t transA, icla_trans_t transB,
@@ -74,4 +61,5 @@ icla_hgemmx(
 }
 
 #endif
-#endif // ICLABLAS_H_H
+#endif
+

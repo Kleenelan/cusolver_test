@@ -1,31 +1,15 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
 
-       @author Mark Gates
-       @generated from interface_cuda/blas_z_v1.cpp, normal z -> s, Fri Nov 29 12:16:16 2024
-*/
 #ifndef ICLA_NO_V1
 
 #include "icla_internal.h"
-#include "iclablas_v1.h"  // includes v1 prototypes; does NOT map routine names
+#include "iclablas_v1.h"
+
 #include "error.h"
 
 #define REAL
 
 #ifdef ICLA_HAVE_CUDA
 
-// These ICLA v1 routines are all deprecated.
-// See blas_s_v2.cpp for documentation.
-
-
-// =============================================================================
-// Level 1 BLAS
-
-/******************************************************************************/
 extern "C" icla_int_t
 icla_isamax_v1(
     icla_int_t n,
@@ -34,8 +18,6 @@ icla_isamax_v1(
     return icla_isamax( n, dx, incx, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" icla_int_t
 icla_isamin_v1(
     icla_int_t n,
@@ -44,8 +26,6 @@ icla_isamin_v1(
     return icla_isamin( n, dx, incx, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" float
 icla_sasum_v1(
     icla_int_t n,
@@ -54,8 +34,6 @@ icla_sasum_v1(
     return icla_sasum( n, dx, incx, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_saxpy_v1(
     icla_int_t n,
@@ -66,8 +44,6 @@ icla_saxpy_v1(
     icla_saxpy( n, alpha, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_scopy_v1(
     icla_int_t n,
@@ -77,8 +53,6 @@ icla_scopy_v1(
     icla_scopy( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C"
 float icla_sdot_v1(
     icla_int_t n,
@@ -88,8 +62,6 @@ float icla_sdot_v1(
     return icla_sdot( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C"
 float icla_sdot_v1(
@@ -99,10 +71,8 @@ float icla_sdot_v1(
 {
     return icla_sdot( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 extern "C" float
 icla_snrm2_v1(
     icla_int_t n,
@@ -111,8 +81,6 @@ icla_snrm2_v1(
     return icla_snrm2( n, dx, incx, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_srot_v1(
     icla_int_t n,
@@ -123,8 +91,6 @@ icla_srot_v1(
     icla_srot( n, dx, incx, dy, incy, c, s, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
 icla_srot_v1(
@@ -135,10 +101,8 @@ icla_srot_v1(
 {
     icla_srot( n, dx, incx, dy, incy, c, s, iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 #ifdef REAL
 extern "C" void
 icla_srotm_v1(
@@ -149,10 +113,8 @@ icla_srotm_v1(
 {
     icla_srotm( n, dx, incx, dy, incy, param, iclablasGetQueue() );
 }
-#endif // REAL
+#endif
 
-
-/******************************************************************************/
 #ifdef REAL
 extern "C" void
 icla_srotmg_v1(
@@ -162,10 +124,8 @@ icla_srotmg_v1(
 {
     icla_srotmg( d1, d2, x1, y1, param, iclablasGetQueue() );
 }
-#endif // REAL
+#endif
 
-
-/******************************************************************************/
 extern "C" void
 icla_sscal_v1(
     icla_int_t n,
@@ -175,8 +135,6 @@ icla_sscal_v1(
     icla_sscal( n, alpha, dx, incx, iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
 icla_sscal_v1(
@@ -186,10 +144,8 @@ icla_sscal_v1(
 {
     icla_sscal( n, alpha, dx, incx, iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 extern "C" void
 icla_sswap_v1(
     icla_int_t n,
@@ -199,11 +155,6 @@ icla_sswap_v1(
     icla_sswap( n, dx, incx, dy, incy, iclablasGetQueue() );
 }
 
-
-// =============================================================================
-// Level 2 BLAS
-
-/******************************************************************************/
 extern "C" void
 icla_sgemv_v1(
     icla_trans_t transA,
@@ -223,8 +174,6 @@ icla_sgemv_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_sger_v1(
     icla_int_t m, icla_int_t n,
@@ -241,8 +190,6 @@ icla_sger_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
 icla_sger_v1(
@@ -259,10 +206,8 @@ icla_sger_v1(
                dA, ldda,
         iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 extern "C" void
 icla_ssymv_v1(
     icla_uplo_t uplo,
@@ -282,8 +227,6 @@ icla_ssymv_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_ssyr_v1(
     icla_uplo_t uplo,
@@ -300,8 +243,6 @@ icla_ssyr_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_ssyr2_v1(
     icla_uplo_t uplo,
@@ -320,8 +261,6 @@ icla_ssyr2_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_strmv_v1(
     icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
@@ -337,8 +276,6 @@ icla_strmv_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_strsv_v1(
     icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
@@ -354,11 +291,6 @@ icla_strsv_v1(
         iclablasGetQueue() );
 }
 
-
-// =============================================================================
-// Level 3 BLAS
-
-/******************************************************************************/
 extern "C" void
 icla_sgemm_v1(
     icla_trans_t transA, icla_trans_t transB,
@@ -378,8 +310,6 @@ icla_sgemm_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_ssymm_v1(
     icla_side_t side, icla_uplo_t uplo,
@@ -399,8 +329,6 @@ icla_ssymm_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_ssyrk_v1(
     icla_uplo_t uplo, icla_trans_t trans,
@@ -418,8 +346,6 @@ icla_ssyrk_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_ssyr2k_v1(
     icla_uplo_t uplo, icla_trans_t trans,
@@ -439,8 +365,6 @@ icla_ssyr2k_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
 icla_ssymm_v1(
@@ -460,10 +384,8 @@ icla_ssymm_v1(
         beta,  dC, lddc,
         iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
 icla_ssyrk_v1(
@@ -481,10 +403,8 @@ icla_ssyrk_v1(
         beta,  dC, lddc,
         iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 #ifdef COMPLEX
 extern "C" void
 icla_ssyr2k_v1(
@@ -504,10 +424,8 @@ icla_ssyr2k_v1(
         beta,  dC, lddc,
         iclablasGetQueue() );
 }
-#endif // COMPLEX
+#endif
 
-
-/******************************************************************************/
 extern "C" void
 icla_strmm_v1(
     icla_side_t side, icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
@@ -524,8 +442,6 @@ icla_strmm_v1(
         iclablasGetQueue() );
 }
 
-
-/******************************************************************************/
 extern "C" void
 icla_strsm_v1(
     icla_side_t side, icla_uplo_t uplo, icla_trans_t trans, icla_diag_t diag,
@@ -542,8 +458,9 @@ icla_strsm_v1(
         iclablasGetQueue() );
 }
 
-#endif // ICLA_HAVE_CUDA
+#endif
 
 #undef REAL
 
-#endif // ICLA_NO_V1
+#endif
+

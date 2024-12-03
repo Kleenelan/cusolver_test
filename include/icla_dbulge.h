@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @generated from include/icla_zbulge.h, normal z -> d, Fri Nov 29 12:16:14 2024
-*/
 
 #ifndef ICLA_DBULGE_H
 #define ICLA_DBULGE_H
@@ -71,7 +62,6 @@ icla_dtrdtype1cbHLsym_withQ_v2(
     icla_int_t sweep, icla_int_t Vblksiz,
     double *work);
 
-
 void
 icla_dtrdtype2cbHLsym_withQ_v2(
     icla_int_t n, icla_int_t nb,
@@ -81,7 +71,6 @@ icla_dtrdtype2cbHLsym_withQ_v2(
     icla_int_t st, icla_int_t ed,
     icla_int_t sweep, icla_int_t Vblksiz,
     double *work);
-
 
 void
 icla_dtrdtype3cbHLsym_withQ_v2(
@@ -126,7 +115,6 @@ icla_dsbtype3cb(icla_int_t n, icla_int_t nb,
                 icla_int_t Vblksiz, icla_int_t wantz,
                 double *work);
 
-
 icla_int_t
 icla_dormqr_2stage_gpu(
     icla_side_t side, icla_trans_t trans, icla_int_t m, icla_int_t n, icla_int_t k,
@@ -144,13 +132,11 @@ icla_dbulge_getstg2size(icla_int_t n, icla_int_t nb, icla_int_t wantz,
                          icla_int_t *blkcnt, icla_int_t *sizTAU2,
                          icla_int_t *sizT2, icla_int_t *sizV2);
 
-
 icla_int_t
 icla_dbulge_getlwstg2(icla_int_t n, icla_int_t threads, icla_int_t wantz,
                        icla_int_t *Vblksiz, icla_int_t *ldv, icla_int_t *ldt,
                        icla_int_t *blkcnt, icla_int_t *sizTAU2,
                        icla_int_t *sizT2, icla_int_t *sizV2);
-
 
 void
 icla_bulge_get_VTsiz(icla_int_t n, icla_int_t nb, icla_int_t threads,
@@ -164,8 +150,6 @@ icla_dsyevdx_getworksize(icla_int_t n, icla_int_t threads,
         #endif
         icla_int_t *liwmin);
 
-
-// used only for old version and internal
 icla_int_t
 icla_dsytrd_bsy2trc_v5(
     icla_int_t threads, icla_int_t wantz, icla_uplo_t uplo,
@@ -183,9 +167,9 @@ icla_dorgqr_2stage_gpu(
     icla_int_t nb,
     icla_int_t *info);
 
-
 #ifdef __cplusplus
 }
 #endif
 #undef ICLA_REAL
-#endif /* ICLA_DBULGE_H */
+#endif
+

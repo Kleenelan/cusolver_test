@@ -1,18 +1,8 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-*/
 
 #ifndef ICLA_VBATCHED_H
 #define ICLA_VBATCHED_H
 
 #include "icla_types.h"
-
-// =============================================================================
-// ICLA VBATCHED functions
 
 #include "icla_zvbatched.h"
 #include "icla_cvbatched.h"
@@ -23,12 +13,10 @@
 extern "C" {
 #endif
 
-// getrf vbatched setup
 void icla_getrf_vbatched_setup(
     icla_int_t *m, icla_int_t *n, icla_int_t *stats,
     icla_int_t batchCount, icla_queue_t queue );
 
-// getrf vbatched: setup pivinfo
 void
 setup_pivinfo_vbatched(
     icla_int_t **pivinfo_array, icla_int_t pivinfo_offset,
@@ -37,14 +25,12 @@ setup_pivinfo_vbatched(
     icla_int_t max_m, icla_int_t nb, icla_int_t batchCount,
     icla_queue_t queue);
 
-// adjust pivot for LU
 void
 adjust_ipiv_vbatched(
     icla_int_t **ipiv_array, icla_int_t ipiv_offset,
     icla_int_t *minmn, icla_int_t max_minmn, icla_int_t offset,
     icla_int_t batchCount, icla_queue_t queue);
 
-// checker routines - LAPACK
 icla_int_t
 icla_getrf_vbatched_checker(
         icla_int_t* m, icla_int_t* n, icla_int_t* ldda,
@@ -56,7 +42,6 @@ icla_potrf_vbatched_checker(
         icla_int_t* n, icla_int_t* ldda,
         icla_int_t batchCount, icla_queue_t queue );
 
-// checker routines - Level 3 BLAS
 icla_int_t
 icla_gemm_vbatched_checker(
         icla_trans_t transA, icla_trans_t transB,
@@ -115,7 +100,6 @@ icla_hemm_vbatched_checker(
         icla_int_t* ldda, icla_int_t* lddb, icla_int_t* lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
-// checker routines - Level 2 BLAS
 icla_int_t
 icla_gemv_vbatched_checker(
         icla_trans_t trans,
@@ -129,26 +113,22 @@ icla_hemv_vbatched_checker(
         icla_int_t* n, icla_int_t* ldda, icla_int_t* incx, icla_int_t* incy,
         icla_int_t batchCount, icla_queue_t queue );
 
-// checker routines - Level 1 BLAS
 icla_int_t
 icla_axpy_vbatched_checker(
         icla_int_t *n,
         icla_int_t *incx, icla_int_t *incy,
         icla_int_t batchCount, icla_queue_t queue);
 
-// routines to find the maximum dimensions
 void icla_imax_size_1(icla_int_t *n, icla_int_t l, icla_queue_t queue);
 
 void icla_imax_size_2(icla_int_t *m, icla_int_t *n, icla_int_t l, icla_queue_t queue);
 
 void icla_imax_size_3(icla_int_t *m, icla_int_t *n, icla_int_t *k, icla_int_t l, icla_queue_t queue);
 
-// aux. routines
 icla_int_t
 icla_ivec_max( icla_int_t vecsize,
                   icla_int_t* x,
                   icla_int_t* work, icla_int_t lwork, icla_queue_t queue);
-
 
 icla_int_t
 icla_isum_reduce( icla_int_t vecsize,
@@ -264,5 +244,5 @@ icla_imax_size_3(icla_int_t *m, icla_int_t *n, icla_int_t *k, icla_int_t l, icla
 }
 #endif
 
+#endif
 
-#endif /* ICLA_VBATCHED_H */

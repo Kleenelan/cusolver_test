@@ -1,12 +1,3 @@
-/*
-    -- ICLA (version 2.0) --
-       Univ. of Tennessee, Knoxville
-       Univ. of California, Berkeley
-       Univ. of Colorado, Denver
-       @date
-
-       @precisions normal z -> s d c
-*/
 
 #ifndef ICLA_LAPACK_H
 #define ICLA_LAPACK_H
@@ -42,8 +33,6 @@ extern "C" {
 
 #define lapackf77_zlat2c FORTRAN_NAME( zlat2c, ZLAT2C )
 #define lapackf77_dlat2s FORTRAN_NAME( dlat2s, DLAT2S )
-//#define lapackf77_clat2z FORTRAN_NAME( clat2z, CLAT2Z )
-//#define lapackf77_slat2d FORTRAN_NAME( slat2d, SLAT2D )
 
 #define lapackf77_dlapy2 FORTRAN_NAME( dlapy2, DLAPY2 )
 #define lapackf77_slapy2 FORTRAN_NAME( slapy2, SLAPY2 )
@@ -55,7 +44,6 @@ long   lapackf77_lsame(  const char *ca, const char *cb );
 float  lapackf77_slamch( const char *cmach );
 double lapackf77_dlamch( const char *cmach );
 
-// "small" (lowercase) defined as char on Windows (reported by MathWorks)
 void   lapackf77_slabad( float  *Small, float  *large );
 void   lapackf77_dlabad( double *Small, double *large );
 
@@ -85,7 +73,6 @@ void   lapackf77_ssterf( const icla_int_t *n,
                          float *d, float *e,
                          icla_int_t *info );
 
-// precision conversion, general matrix
 void   lapackf77_zlag2c( const icla_int_t *m, const icla_int_t *n,
                          const iclaDoubleComplex *A,  const icla_int_t *lda,
                                iclaFloatComplex  *SA, const icla_int_t *ldsa,
@@ -106,7 +93,6 @@ void   lapackf77_slag2d( const icla_int_t *m, const icla_int_t *n,
                                double *A,  const icla_int_t *lda,
                          icla_int_t *info );
 
-// precision conversion, triangular (or symmetric) matrix
 void   lapackf77_zlat2c( const char *uplo, const icla_int_t *n,
                          const iclaDoubleComplex *A,  const icla_int_t *lda,
                                iclaFloatComplex  *SA, const icla_int_t *ldsa,
@@ -117,17 +103,6 @@ void   lapackf77_dlat2s( const char *uplo, const icla_int_t *n,
                                float  *SA, const icla_int_t *ldsa,
                          icla_int_t *info );
 
-// not implemented in LAPACK
-//void lapackf77_clat2z(const char *uplo, const icla_int_t *n,
-//                       const iclaFloatComplex  *SA, const icla_int_t *ldsa,
-//                             iclaDoubleComplex *A,  const icla_int_t *lda,
-//                       icla_int_t *info );
-//
-//void lapackf77_slat2d( const char *uplo, const icla_int_t *n,
-//                       const float  *SA, const icla_int_t *ldsa,
-//                             double *A,  const icla_int_t *lda,
-//                       icla_int_t *info );
-
 double lapackf77_dlapy2( const double *x, const double *y );
 float  lapackf77_slapy2( const float  *x, const float  *y );
 
@@ -135,4 +110,5 @@ float  lapackf77_slapy2( const float  *x, const float  *y );
 }
 #endif
 
-#endif /* ICLA_LAPACK_H */
+#endif
+
