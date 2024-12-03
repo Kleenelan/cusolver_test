@@ -7,11 +7,8 @@
 #include <stdint.h>
 #include <assert.h>
 
-#ifdef HAVE_clAmdBlas
-#define ICLA_HAVE_OPENCL
-#endif
 
-#if ! defined(ICLA_HAVE_CUDA) && ! defined(ICLA_HAVE_OPENCL) && ! defined(HAVE_MIC) && ! defined(ICLA_HAVE_HIP)
+#if ! defined(ICLA_HAVE_CUDA) && defined(ICLA_HAVE_HIP)
 
 #define ICLA_HAVE_CUDA
 #endif
@@ -235,93 +232,8 @@ typedef double real_Double_t;
     #ifdef __cplusplus
     }
     #endif
-
-#elif defined(ICLA_HAVE_OPENCL)
-    #include <clBLAS.h>
-
-    #ifdef __cplusplus
-    extern "C" {
-    #endif
-
-    typedef cl_command_queue  icla_queue_t;
-    typedef cl_event          icla_event_t;
-    typedef cl_device_id      icla_device_t;
-
-    typedef short         iclaHalf;
-
-    typedef DoubleComplex iclaDoubleComplex;
-    typedef FloatComplex  iclaFloatComplex;
-
-    cl_command_queue icla_queue_get_cl_queue( icla_queue_t queue );
-
-    #define ICLA_Z_MAKE(r,i)     doubleComplex(r,i)
-    #define ICLA_Z_REAL(a)       (a).s[0]
-    #define ICLA_Z_IMAG(a)       (a).s[1]
-    #define ICLA_Z_ADD(a, b)     ICLA_Z_MAKE((a).s[0] + (b).s[0], (a).s[1] + (b).s[1])
-    #define ICLA_Z_SUB(a, b)     ICLA_Z_MAKE((a).s[0] - (b).s[0], (a).s[1] - (b).s[1])
-    #define ICLA_Z_MUL(a, b)     ((a) * (b))
-    #define ICLA_Z_DIV(a, b)     ((a) / (b))
-    #define ICLA_Z_ABS(a)        icla_cabs(a)
-    #define ICLA_Z_ABS1(a)       (fabs((a).s[0]) + fabs((a).s[1]))
-    #define ICLA_Z_CONJ(a)       ICLA_Z_MAKE((a).s[0], -(a).s[1])
-
-    #define ICLA_C_MAKE(r,i)     floatComplex(r,i)
-    #define ICLA_C_REAL(a)       (a).s[0]
-    #define ICLA_C_IMAG(a)       (a).s[1]
-    #define ICLA_C_ADD(a, b)     ICLA_C_MAKE((a).s[0] + (b).s[0], (a).s[1] + (b).s[1])
-    #define ICLA_C_SUB(a, b)     ICLA_C_MAKE((a).s[0] - (b).s[0], (a).s[1] - (b).s[1])
-    #define ICLA_C_MUL(a, b)     ((a) * (b))
-    #define ICLA_C_DIV(a, b)     ((a) / (b))
-    #define ICLA_C_ABS(a)        icla_cabsf(a)
-    #define ICLA_C_ABS1(a)       (fabsf((a).s[0]) + fabsf((a).s[1]))
-    #define ICLA_C_CONJ(a)       ICLA_C_MAKE((a).s[0], -(a).s[1])
-
-    #ifdef __cplusplus
-    }
-    #endif
-#elif defined(HAVE_MIC)
-    #include <complex>
-
-    #ifdef __cplusplus
-    extern "C" {
-    #endif
-
-    typedef int   icla_queue_t;
-    typedef int   icla_event_t;
-    typedef int   icla_device_t;
-
-    typedef short                 iclaHalf;
-
-    typedef std::complex<float>   iclaFloatComplex;
-    typedef std::complex<double>  iclaDoubleComplex;
-
-    #define ICLA_Z_MAKE(r, i)    std::complex<double>(r,i)
-    #define ICLA_Z_REAL(x)       (x).real()
-    #define ICLA_Z_IMAG(x)       (x).imag()
-    #define ICLA_Z_ADD(a, b)     ((a)+(b))
-    #define ICLA_Z_SUB(a, b)     ((a)-(b))
-    #define ICLA_Z_MUL(a, b)     ((a)*(b))
-    #define ICLA_Z_DIV(a, b)     ((a)/(b))
-    #define ICLA_Z_ABS(a)        abs(a)
-    #define ICLA_Z_ABS1(a)       (fabs((a).real()) + fabs((a).imag()))
-    #define ICLA_Z_CONJ(a)       conj(a)
-
-    #define ICLA_C_MAKE(r, i)    std::complex<float> (r,i)
-    #define ICLA_C_REAL(x)       (x).real()
-    #define ICLA_C_IMAG(x)       (x).imag()
-    #define ICLA_C_ADD(a, b)     ((a)+(b))
-    #define ICLA_C_SUB(a, b)     ((a)-(b))
-    #define ICLA_C_MUL(a, b)     ((a)*(b))
-    #define ICLA_C_DIV(a, b)     ((a)/(b))
-    #define ICLA_C_ABS(a)        abs(a)
-    #define ICLA_C_ABS1(a)       (fabs((a).real()) + fabs((a).imag()))
-    #define ICLA_C_CONJ(a)       conj(a)
-
-    #ifdef __cplusplus
-    }
-    #endif
 #else
-    #error "One of ICLA_HAVE_CUDA, ICLA_HAVE_HIP, ICLA_HAVE_OPENCL, or HAVE_MIC must be defined. For example, add -DICLA_HAVE_CUDA to CFLAGS, or #define ICLA_HAVE_CUDA before #include <icla.h>. In ICLA, this happens in Makefile."
+    #error "One of ICLA_HAVE_CUDA, ICLA_HAVE_HIP, must be defined. For example, add -DICLA_HAVE_CUDA to CFLAGS, or #define ICLA_HAVE_CUDA before #include <icla.h>. In ICLA, this happens in Makefile."
 #endif
 
 #ifdef __cplusplus
@@ -391,45 +303,25 @@ extern "C" {
 double icla_cabs ( iclaDoubleComplex x );
 float  icla_cabsf( iclaFloatComplex  x );
 
-#if defined(ICLA_HAVE_OPENCL)
+typedef void               *icla_ptr;
+typedef icla_int_t        *iclaInt_ptr;
+typedef icla_index_t      *iclaIndex_ptr;
+typedef icla_uindex_t     *iclaUIndex_ptr;
+typedef float              *iclaFloat_ptr;
+typedef double             *iclaDouble_ptr;
+typedef iclaFloatComplex  *iclaFloatComplex_ptr;
+typedef iclaDoubleComplex *iclaDoubleComplex_ptr;
+typedef iclaHalf          *iclaHalf_ptr;
 
-    typedef cl_mem icla_ptr;
-    typedef cl_mem iclaInt_ptr;
-    typedef cl_mem iclaIndex_ptr;
-    typedef cl_mem iclaFloat_ptr;
-    typedef cl_mem iclaDouble_ptr;
-    typedef cl_mem iclaFloatComplex_ptr;
-    typedef cl_mem iclaDoubleComplex_ptr;
-
-    typedef cl_mem icla_const_ptr;
-    typedef cl_mem iclaInt_const_ptr;
-    typedef cl_mem iclaIndex_const_ptr;
-    typedef cl_mem iclaFloat_const_ptr;
-    typedef cl_mem iclaDouble_const_ptr;
-    typedef cl_mem iclaFloatComplex_const_ptr;
-    typedef cl_mem iclaDoubleComplex_const_ptr;
-#else
-
-    typedef void               *icla_ptr;
-    typedef icla_int_t        *iclaInt_ptr;
-    typedef icla_index_t      *iclaIndex_ptr;
-    typedef icla_uindex_t     *iclaUIndex_ptr;
-    typedef float              *iclaFloat_ptr;
-    typedef double             *iclaDouble_ptr;
-    typedef iclaFloatComplex  *iclaFloatComplex_ptr;
-    typedef iclaDoubleComplex *iclaDoubleComplex_ptr;
-    typedef iclaHalf          *iclaHalf_ptr;
-
-    typedef void               const *icla_const_ptr;
-    typedef icla_int_t        const *iclaInt_const_ptr;
-    typedef icla_index_t      const *iclaIndex_const_ptr;
-    typedef icla_uindex_t     const *iclaUIndex_const_ptr;
-    typedef float              const *iclaFloat_const_ptr;
-    typedef double             const *iclaDouble_const_ptr;
-    typedef iclaFloatComplex  const *iclaFloatComplex_const_ptr;
-    typedef iclaDoubleComplex const *iclaDoubleComplex_const_ptr;
-    typedef iclaHalf          const *iclaHalf_const_ptr;
-#endif
+typedef void               const *icla_const_ptr;
+typedef icla_int_t        const *iclaInt_const_ptr;
+typedef icla_index_t      const *iclaIndex_const_ptr;
+typedef icla_uindex_t     const *iclaUIndex_const_ptr;
+typedef float              const *iclaFloat_const_ptr;
+typedef double             const *iclaDouble_const_ptr;
+typedef iclaFloatComplex  const *iclaFloatComplex_const_ptr;
+typedef iclaDoubleComplex const *iclaDoubleComplex_const_ptr;
+typedef iclaHalf          const *iclaHalf_const_ptr;
 
 #define ICLA_VERSION_MAJOR 1
 #define ICLA_VERSION_MINOR 0
@@ -911,14 +803,6 @@ static inline char lapacke_range_const ( icla_range_t  icla_const ) { return *la
 static inline char lapacke_vect_const  ( icla_vect_t   icla_const ) { return *lapack_vect_const  ( icla_const ); }
 static inline char lapacke_direct_const( icla_direct_t icla_const ) { return *lapack_direct_const( icla_const ); }
 static inline char lapacke_storev_const( icla_storev_t icla_const ) { return *lapack_storev_const( icla_const ); }
-
-#if defined(ICLA_HAVE_OPENCL)
-clblasOrder          clblas_order_const( icla_order_t order );
-clblasTranspose      clblas_trans_const( icla_trans_t trans );
-clblasUplo           clblas_uplo_const ( icla_uplo_t  uplo  );
-clblasDiag           clblas_diag_const ( icla_diag_t  diag  );
-clblasSide           clblas_side_const ( icla_side_t  side  );
-#endif
 
 #if defined(CUBLAS_V2_H_)
 cublasOperation_t    cublas_trans_const ( icla_trans_t trans );

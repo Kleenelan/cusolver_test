@@ -6,10 +6,6 @@
 
 #include "icla_types.h"
 
-#ifdef ICLA_HAVE_OPENCL
-#define __host__
-#define __device__
-#endif
 
 __host__ __device__ static inline double real(const iclaDoubleComplex &x) { return ICLA_Z_REAL(x); }
 __host__ __device__ static inline float  real(const iclaFloatComplex  &x) { return ICLA_C_REAL(x); }
@@ -489,10 +485,6 @@ operator != (const float s, const iclaFloatComplex a)
     return ! (a == s);
 }
 
-#ifdef ICLA_HAVE_OPENCL
-#undef __host__
-#undef __device__
-#endif
 
 #endif
 
