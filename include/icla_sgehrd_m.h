@@ -16,19 +16,14 @@ struct sgehrd_data
     icla_int_t ldv;
     icla_int_t ldvd;
 
-    iclaFloat_ptr dA [ iclaMaxGPUs ];
+    iclaFloat_ptr dA [ IclaMaxGPUs ];
+    iclaFloat_ptr dV [ IclaMaxGPUs ];
+    iclaFloat_ptr dVd[ IclaMaxGPUs ];
+    iclaFloat_ptr dY [ IclaMaxGPUs ];
+    iclaFloat_ptr dW [ IclaMaxGPUs ];
+    iclaFloat_ptr dTi[ IclaMaxGPUs ];
 
-    iclaFloat_ptr dV [ iclaMaxGPUs ];
-
-    iclaFloat_ptr dVd[ iclaMaxGPUs ];
-
-    iclaFloat_ptr dY [ iclaMaxGPUs ];
-
-    iclaFloat_ptr dW [ iclaMaxGPUs ];
-
-    iclaFloat_ptr dTi[ iclaMaxGPUs ];
-
-    icla_queue_t queues[ iclaMaxGPUs ];
+    icla_queue_t queues[ IclaMaxGPUs ];
 };
 
 #ifdef __cplusplus
@@ -36,4 +31,3 @@ struct sgehrd_data
 #endif
 
 #endif
-

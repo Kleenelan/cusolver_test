@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_CGEHRD_H
 #define ICLA_CGEHRD_H
 
@@ -8,6 +9,7 @@
 extern "C" {
 #endif
 
+
 struct cgehrd_data
 {
     icla_int_t ngpu;
@@ -16,19 +18,14 @@ struct cgehrd_data
     icla_int_t ldv;
     icla_int_t ldvd;
 
-    iclaFloatComplex_ptr dA [ iclaMaxGPUs ];
+    iclaFloatComplex_ptr dA [ IclaMaxGPUs ];
+    iclaFloatComplex_ptr dV [ IclaMaxGPUs ];
+    iclaFloatComplex_ptr dVd[ IclaMaxGPUs ];
+    iclaFloatComplex_ptr dY [ IclaMaxGPUs ];
+    iclaFloatComplex_ptr dW [ IclaMaxGPUs ];
+    iclaFloatComplex_ptr dTi[ IclaMaxGPUs ];
 
-    iclaFloatComplex_ptr dV [ iclaMaxGPUs ];
-
-    iclaFloatComplex_ptr dVd[ iclaMaxGPUs ];
-
-    iclaFloatComplex_ptr dY [ iclaMaxGPUs ];
-
-    iclaFloatComplex_ptr dW [ iclaMaxGPUs ];
-
-    iclaFloatComplex_ptr dTi[ iclaMaxGPUs ];
-
-    icla_queue_t queues[ iclaMaxGPUs ];
+    icla_queue_t queues[ IclaMaxGPUs ];
 };
 
 #ifdef __cplusplus
@@ -36,4 +33,3 @@ struct cgehrd_data
 #endif
 
 #endif
-

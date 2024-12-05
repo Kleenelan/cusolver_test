@@ -1,17 +1,32 @@
 
+
 #ifndef ICLA_TYPES_H
 #define ICLA_TYPES_H
 
+
 #include "icla_config.h"
+
 
 #include <stdint.h>
 #include <assert.h>
 
 
-#if ! defined(ICLA_HAVE_CUDA) && defined(ICLA_HAVE_HIP)
+
+#ifdef HAVE_clAmdBlas
+#define ICLA_HAVE_OPENCL
+#endif
+
+
+
+#if ! defined(ICLA_HAVE_CUDA) && ! defined(ICLA_HAVE_OPENCL) && ! defined(HAVE_MIC) && ! defined(ICLA_HAVE_HIP)
+
 
 #define ICLA_HAVE_CUDA
 #endif
+
+
+
+
 
 #if __STDC_VERSION__ < 199901L
   #ifndef __func__
@@ -23,9 +38,12 @@
   #endif
 #endif
 
+
+
+
+
 #if defined(ICLA_ILP64) || defined(MKL_ILP64)
 typedef long long int icla_int_t;
-
 #else
 typedef int icla_int_t;
 #endif
@@ -33,31 +51,40 @@ typedef int icla_int_t;
 typedef int icla_index_t;
 typedef unsigned int icla_uindex_t;
 
+
 typedef double real_Double_t;
+
+
+
+
+
 
 #if defined(ICLA_HAVE_CUDA)
 
     #ifndef CUBLAS_H_
     #include <cuda.h>
-
     #include <cublas_v2.h>
     #endif
 
     #include <cusparse_v2.h>
+    #include <cusolverDn.h>
 
     #ifdef __cplusplus
     extern "C" {
     #endif
+
 
     struct icla_queue;
     typedef struct icla_queue* icla_queue_t;
     typedef cudaEvent_t    icla_event_t;
     typedef icla_int_t    icla_device_t;
 
+
     #if defined(__cplusplus) && CUDA_VERSION >= 7500
     #include <cuda_fp16.h>
     typedef __half           iclaHalf;
     #else
+
 
     typedef short            iclaHalf;
     #endif
@@ -69,24 +96,18 @@ typedef double real_Double_t;
     cublasHandle_t   icla_queue_get_cublas_handle  ( icla_queue_t queue );
     cusparseHandle_t icla_queue_get_cusparse_handle( icla_queue_t queue );
 
+
+
+
     #define ICLA_Z_MAKE(r,i)     make_cuDoubleComplex(r, i)
-
     #define ICLA_Z_REAL(a)       (a).x
-
     #define ICLA_Z_IMAG(a)       (a).y
-
     #define ICLA_Z_ADD(a, b)     cuCadd(a, b)
-
     #define ICLA_Z_SUB(a, b)     cuCsub(a, b)
-
     #define ICLA_Z_MUL(a, b)     cuCmul(a, b)
-
     #define ICLA_Z_DIV(a, b)     cuCdiv(a, b)
-
     #define ICLA_Z_ABS(a)        cuCabs(a)
-
     #define ICLA_Z_ABS1(a)       (fabs((a).x) + fabs((a).y))
-
     #define ICLA_Z_CONJ(a)       cuConj(a)
 
     #define ICLA_C_MAKE(r,i)     make_cuFloatComplex(r, i)
@@ -103,10 +124,14 @@ typedef double real_Double_t;
     #define iclaCfma cuCfma
     #define iclaCfmaf cuCfmaf
 
+
+
+
     #ifdef __cplusplus
     }
     #endif
 #elif defined(ICLA_HAVE_HIP)
+
 
     #if !defined(__HIP_PLATFORM_AMD__) && !defined(__HIP_PLATFORM_NVCC)
       #define __HIP_PLATFORM_AMD__
@@ -115,6 +140,7 @@ typedef double real_Double_t;
     #include <hip/hip_version.h>
     #include <hip/hip_runtime.h>
 
+
     #if HIP_VERSION >= 50200000
     #include <hipblas/hipblas.h>
     #include <hipsparse/hipsparse.h>
@@ -122,6 +148,8 @@ typedef double real_Double_t;
     #include <hipblas.h>
     #include <hipsparse.h>
     #endif
+
+
 
     #ifndef icla_unsupported
     #define icla_unsupported(fname) ((hipblasStatus_t)(fprintf(stderr, "ICLA: Unsupported function '" #fname "'\n"), HIPBLAS_STATUS_NOT_SUPPORTED))
@@ -132,6 +160,7 @@ typedef double real_Double_t;
     #ifdef __cplusplus
     extern "C" {
     #endif
+
 
     struct icla_queue;
     typedef struct icla_queue* icla_queue_t;
@@ -149,11 +178,21 @@ typedef double real_Double_t;
     hipblasHandle_t   icla_queue_get_hipblas_handle  ( icla_queue_t queue );
     hipsparseHandle_t icla_queue_get_hipsparse_handle( icla_queue_t queue );
 
+
+
+
+
+
+
+
     typedef struct {
+
 
         double x, y;
 
     } iclaDoubleComplex;
+
+
 
     #define ICLA_Z_MAKE(r, i)   ((iclaDoubleComplex){(double)(r), (double)(i)})
     #define ICLA_Z_REAL(a) (a).x
@@ -165,6 +204,8 @@ typedef double real_Double_t;
     #define ICLA_Z_ABS(a) (hypot(ICLA_Z_REAL(a), ICLA_Z_IMAG(a)))
     #define ICLA_Z_ABS1(a) (fabs(ICLA_Z_REAL(a)) + fabs(ICLA_Z_IMAG(a)))
     #define ICLA_Z_CONJ(a) iclaConj(a)
+
+
 
     __host__ __device__ static inline iclaDoubleComplex iclaCadd(iclaDoubleComplex a, iclaDoubleComplex b) {
         return ICLA_Z_MAKE(a.x+b.x, a.y+b.y);
@@ -189,11 +230,22 @@ typedef double real_Double_t;
         return iclaCadd(iclaCmul(a, b), c);
     }
 
+
+
+
+
+
+
+
+
     typedef struct {
+
 
         float x, y;
 
     } iclaFloatComplex;
+
+
 
     #define ICLA_C_MAKE(r, i)   ((iclaFloatComplex){(float)(r), (float)(i)})
     #define ICLA_C_REAL(a) (a).x
@@ -205,6 +257,8 @@ typedef double real_Double_t;
     #define ICLA_C_ABS(a) (hypotf(ICLA_C_REAL(a), ICLA_C_IMAG(a)))
     #define ICLA_C_ABS1(a) (fabsf(ICLA_C_REAL(a)) + fabs(ICLA_C_IMAG(a)))
     #define ICLA_C_CONJ(a) iclaConjf(a)
+
+
 
     __host__ __device__ static inline iclaFloatComplex iclaCaddf(iclaFloatComplex a, iclaFloatComplex b) {
         return ICLA_C_MAKE(a.x+b.x, a.y+b.y);
@@ -229,11 +283,95 @@ typedef double real_Double_t;
         return iclaCaddf(iclaCmulf(a, b), c);
     }
 
+
+    #ifdef __cplusplus
+    }
+    #endif
+
+#elif defined(ICLA_HAVE_OPENCL)
+    #include <clBLAS.h>
+
+    #ifdef __cplusplus
+    extern "C" {
+    #endif
+
+    typedef cl_command_queue  icla_queue_t;
+    typedef cl_event          icla_event_t;
+    typedef cl_device_id      icla_device_t;
+
+    typedef short         iclaHalf;
+    typedef DoubleComplex iclaDoubleComplex;
+    typedef FloatComplex  iclaFloatComplex;
+
+    cl_command_queue icla_queue_get_cl_queue( icla_queue_t queue );
+
+    #define ICLA_Z_MAKE(r,i)     doubleComplex(r,i)
+    #define ICLA_Z_REAL(a)       (a).s[0]
+    #define ICLA_Z_IMAG(a)       (a).s[1]
+    #define ICLA_Z_ADD(a, b)     ICLA_Z_MAKE((a).s[0] + (b).s[0], (a).s[1] + (b).s[1])
+    #define ICLA_Z_SUB(a, b)     ICLA_Z_MAKE((a).s[0] - (b).s[0], (a).s[1] - (b).s[1])
+    #define ICLA_Z_MUL(a, b)     ((a) * (b))
+    #define ICLA_Z_DIV(a, b)     ((a) / (b))
+    #define ICLA_Z_ABS(a)        icla_cabs(a)
+    #define ICLA_Z_ABS1(a)       (fabs((a).s[0]) + fabs((a).s[1]))
+    #define ICLA_Z_CONJ(a)       ICLA_Z_MAKE((a).s[0], -(a).s[1])
+
+    #define ICLA_C_MAKE(r,i)     floatComplex(r,i)
+    #define ICLA_C_REAL(a)       (a).s[0]
+    #define ICLA_C_IMAG(a)       (a).s[1]
+    #define ICLA_C_ADD(a, b)     ICLA_C_MAKE((a).s[0] + (b).s[0], (a).s[1] + (b).s[1])
+    #define ICLA_C_SUB(a, b)     ICLA_C_MAKE((a).s[0] - (b).s[0], (a).s[1] - (b).s[1])
+    #define ICLA_C_MUL(a, b)     ((a) * (b))
+    #define ICLA_C_DIV(a, b)     ((a) / (b))
+    #define ICLA_C_ABS(a)        icla_cabsf(a)
+    #define ICLA_C_ABS1(a)       (fabsf((a).s[0]) + fabsf((a).s[1]))
+    #define ICLA_C_CONJ(a)       ICLA_C_MAKE((a).s[0], -(a).s[1])
+
+    #ifdef __cplusplus
+    }
+    #endif
+#elif defined(HAVE_MIC)
+    #include <complex>
+
+    #ifdef __cplusplus
+    extern "C" {
+    #endif
+
+    typedef int   icla_queue_t;
+    typedef int   icla_event_t;
+    typedef int   icla_device_t;
+
+    typedef short                 iclaHalf;
+    typedef std::complex<float>   iclaFloatComplex;
+    typedef std::complex<double>  iclaDoubleComplex;
+
+    #define ICLA_Z_MAKE(r, i)    std::complex<double>(r,i)
+    #define ICLA_Z_REAL(x)       (x).real()
+    #define ICLA_Z_IMAG(x)       (x).imag()
+    #define ICLA_Z_ADD(a, b)     ((a)+(b))
+    #define ICLA_Z_SUB(a, b)     ((a)-(b))
+    #define ICLA_Z_MUL(a, b)     ((a)*(b))
+    #define ICLA_Z_DIV(a, b)     ((a)/(b))
+    #define ICLA_Z_ABS(a)        abs(a)
+    #define ICLA_Z_ABS1(a)       (fabs((a).real()) + fabs((a).imag()))
+    #define ICLA_Z_CONJ(a)       conj(a)
+
+    #define ICLA_C_MAKE(r, i)    std::complex<float> (r,i)
+    #define ICLA_C_REAL(x)       (x).real()
+    #define ICLA_C_IMAG(x)       (x).imag()
+    #define ICLA_C_ADD(a, b)     ((a)+(b))
+    #define ICLA_C_SUB(a, b)     ((a)-(b))
+    #define ICLA_C_MUL(a, b)     ((a)*(b))
+    #define ICLA_C_DIV(a, b)     ((a)/(b))
+    #define ICLA_C_ABS(a)        abs(a)
+    #define ICLA_C_ABS1(a)       (fabs((a).real()) + fabs((a).imag()))
+    #define ICLA_C_CONJ(a)       conj(a)
+
     #ifdef __cplusplus
     }
     #endif
 #else
-    #error "One of ICLA_HAVE_CUDA, ICLA_HAVE_HIP, must be defined. For example, add -DICLA_HAVE_CUDA to CFLAGS, or #define ICLA_HAVE_CUDA before #include <icla.h>. In ICLA, this happens in Makefile."
+    #error "One of ICLA_HAVE_CUDA, ICLA_HAVE_HIP, ICLA_HAVE_OPENCL, or HAVE_MIC must be defined. For example, add -DICLA_HAVE_CUDA to CFLAGS, or #define ICLA_HAVE_CUDA before #include <icla.h>. In ICLA, this happens in Makefile."
 #endif
 
 #ifdef __cplusplus
@@ -300,86 +438,107 @@ extern "C" {
 #define CBLAS_SADDR(a)  &(a)
 #endif
 
+
 double icla_cabs ( iclaDoubleComplex x );
 float  icla_cabsf( iclaFloatComplex  x );
 
-typedef void               *icla_ptr;
-typedef icla_int_t        *iclaInt_ptr;
-typedef icla_index_t      *iclaIndex_ptr;
-typedef icla_uindex_t     *iclaUIndex_ptr;
-typedef float              *iclaFloat_ptr;
-typedef double             *iclaDouble_ptr;
-typedef iclaFloatComplex  *iclaFloatComplex_ptr;
-typedef iclaDoubleComplex *iclaDoubleComplex_ptr;
-typedef iclaHalf          *iclaHalf_ptr;
+#if defined(ICLA_HAVE_OPENCL)
 
-typedef void               const *icla_const_ptr;
-typedef icla_int_t        const *iclaInt_const_ptr;
-typedef icla_index_t      const *iclaIndex_const_ptr;
-typedef icla_uindex_t     const *iclaUIndex_const_ptr;
-typedef float              const *iclaFloat_const_ptr;
-typedef double             const *iclaDouble_const_ptr;
-typedef iclaFloatComplex  const *iclaFloatComplex_const_ptr;
-typedef iclaDoubleComplex const *iclaDoubleComplex_const_ptr;
-typedef iclaHalf          const *iclaHalf_const_ptr;
+    typedef cl_mem icla_ptr;
+    typedef cl_mem iclaInt_ptr;
+    typedef cl_mem iclaIndex_ptr;
+    typedef cl_mem iclaFloat_ptr;
+    typedef cl_mem iclaDouble_ptr;
+    typedef cl_mem iclaFloatComplex_ptr;
+    typedef cl_mem iclaDoubleComplex_ptr;
 
-#define ICLA_VERSION_MAJOR 1
-#define ICLA_VERSION_MINOR 0
+    typedef cl_mem icla_const_ptr;
+    typedef cl_mem iclaInt_const_ptr;
+    typedef cl_mem iclaIndex_const_ptr;
+    typedef cl_mem iclaFloat_const_ptr;
+    typedef cl_mem iclaDouble_const_ptr;
+    typedef cl_mem iclaFloatComplex_const_ptr;
+    typedef cl_mem iclaDoubleComplex_const_ptr;
+#else
+
+    typedef void               *icla_ptr;
+    typedef icla_int_t        *iclaInt_ptr;
+    typedef icla_index_t      *iclaIndex_ptr;
+    typedef icla_uindex_t     *iclaUIndex_ptr;
+    typedef float              *iclaFloat_ptr;
+    typedef double             *iclaDouble_ptr;
+    typedef iclaFloatComplex  *iclaFloatComplex_ptr;
+    typedef iclaDoubleComplex *iclaDoubleComplex_ptr;
+    typedef iclaHalf          *iclaHalf_ptr;
+
+    typedef void               const *icla_const_ptr;
+    typedef icla_int_t        const *iclaInt_const_ptr;
+    typedef icla_index_t      const *iclaIndex_const_ptr;
+    typedef icla_uindex_t     const *iclaUIndex_const_ptr;
+    typedef float              const *iclaFloat_const_ptr;
+    typedef double             const *iclaDouble_const_ptr;
+    typedef iclaFloatComplex  const *iclaFloatComplex_const_ptr;
+    typedef iclaDoubleComplex const *iclaDoubleComplex_const_ptr;
+    typedef iclaHalf          const *iclaHalf_const_ptr;
+#endif
+
+
+
+
+
+
+#define ICLA_VERSION_MAJOR 2
+#define ICLA_VERSION_MINOR 8
 #define ICLA_VERSION_MICRO 0
+
 
 #define ICLA_VERSION_STAGE "svn"
 
-#define iclaMaxGPUs 8
-#define iclaMaxAccelerators 8
-#define iclaMaxSubs 16
+#define IclaMaxGPUs 8
+#define IclaMaxAccelerators 8
+#define IclaMaxSubs 16
 
-#define iclaBigTileSize 1000000
+
+#define IclaBigTileSize 1000000
+
+
+
+
+
+
+
+
 
 #define ICLA_SUCCESS               0
-
 #define ICLA_ERR                  -100
-
 #define ICLA_ERR_NOT_INITIALIZED  -101
-
 #define ICLA_ERR_REINITIALIZED    -102
-
 #define ICLA_ERR_NOT_SUPPORTED    -103
-
 #define ICLA_ERR_ILLEGAL_VALUE    -104
-
 #define ICLA_ERR_NOT_FOUND        -105
-
 #define ICLA_ERR_ALLOCATION       -106
-
 #define ICLA_ERR_INTERNAL_LIMIT   -107
-
 #define ICLA_ERR_UNALLOCATED      -108
-
 #define ICLA_ERR_FILESYSTEM       -109
-
 #define ICLA_ERR_UNEXPECTED       -110
-
 #define ICLA_ERR_SEQUENCE_FLUSHED -111
-
 #define ICLA_ERR_HOST_ALLOC       -112
-
 #define ICLA_ERR_DEVICE_ALLOC     -113
-
 #define ICLA_ERR_CUDASTREAM       -114
-
 #define ICLA_ERR_INVALID_PTR      -115
-
 #define ICLA_ERR_UNKNOWN          -116
-
 #define ICLA_ERR_NOT_IMPLEMENTED  -117
-
 #define ICLA_ERR_NAN              -118
+
 
 #define ICLA_SLOW_CONVERGENCE     -201
 #define ICLA_DIVERGENCE           -202
 #define ICLA_NONSPD               -203
 #define ICLA_ERR_BADPRECOND       -204
 #define ICLA_NOTCONVERGED         -205
+
+
+
 
 #define ICLA_ERR_CUSPARSE                            -3000
 #define ICLA_ERR_CUSPARSE_NOT_INITIALIZED            -3001
@@ -392,367 +551,393 @@ typedef iclaHalf          const *iclaHalf_const_ptr;
 #define ICLA_ERR_CUSPARSE_MATRIX_TYPE_NOT_SUPPORTED  -3008
 #define ICLA_ERR_CUSPARSE_ZERO_PIVOT                 -3009
 
+
+
+
+
+
+
+
+
+
 typedef enum {
-    iclaFalse         = 0,
-    iclaTrue          = 1
+    IclaFalse         = 0,
+    IclaTrue          = 1
 } icla_bool_t;
 
 typedef enum {
-    iclaRowMajor      = 101,
-    iclaColMajor      = 102
+    IclaRowMajor      = 101,
+    IclaColMajor      = 102
 } icla_order_t;
 
+
+
 typedef enum {
-    iclaNoTrans       = 111,
-    iclaTrans         = 112,
-    iclaConjTrans     = 113,
-    icla_ConjTrans    = iclaConjTrans
+    IclaNoTrans       = 111,
+    IclaTrans         = 112,
+    IclaConjTrans     = 113,
+    Icla_ConjTrans    = IclaConjTrans
 } icla_trans_t;
 
 typedef enum {
-    iclaUpper         = 121,
-    iclaLower         = 122,
-    iclaFull          = 123,
+    IclaUpper         = 121,
+    IclaLower         = 122,
+    IclaFull          = 123,
 
-    iclaHessenberg    = 124
+    IclaHessenberg    = 124
 
 } icla_uplo_t;
 
 typedef icla_uplo_t icla_type_t;
 
+
 typedef enum {
-    iclaNonUnit       = 131,
-    iclaUnit          = 132
+    IclaNonUnit       = 131,
+    IclaUnit          = 132
 } icla_diag_t;
 
 typedef enum {
-    iclaLeft          = 141,
-    iclaRight         = 142,
-    iclaBothSides     = 143
+    IclaLeft          = 141,
+    IclaRight         = 142,
+    IclaBothSides     = 143
 
 } icla_side_t;
 
 typedef enum {
-    iclaOneNorm       = 171,
+    IclaOneNorm       = 171,
 
-    iclaRealOneNorm   = 172,
-    iclaTwoNorm       = 173,
-    iclaFrobeniusNorm = 174,
-    iclaInfNorm       = 175,
-    iclaRealInfNorm   = 176,
-    iclaMaxNorm       = 177,
-    iclaRealMaxNorm   = 178
+    IclaRealOneNorm   = 172,
+    IclaTwoNorm       = 173,
+    IclaFrobeniusNorm = 174,
+    IclaInfNorm       = 175,
+    IclaRealInfNorm   = 176,
+    IclaMaxNorm       = 177,
+    IclaRealMaxNorm   = 178
 } icla_norm_t;
 
 typedef enum {
-    iclaDistUniform   = 201,
+    IclaDistUniform   = 201,
 
-    iclaDistSymmetric = 202,
-    iclaDistNormal    = 203
+    IclaDistSymmetric = 202,
+    IclaDistNormal    = 203
 } icla_dist_t;
 
 typedef enum {
-    iclaHermGeev      = 241,
+    IclaHermGeev      = 241,
 
-    iclaHermPoev      = 242,
-    iclaNonsymPosv    = 243,
-    iclaSymPosv       = 244
+    IclaHermPoev      = 242,
+    IclaNonsymPosv    = 243,
+    IclaSymPosv       = 244
 } icla_sym_t;
 
 typedef enum {
-    iclaNoPacking     = 291,
+    IclaNoPacking     = 291,
 
-    iclaPackSubdiag   = 292,
-    iclaPackSupdiag   = 293,
-    iclaPackColumn    = 294,
-    iclaPackRow       = 295,
-    iclaPackLowerBand = 296,
-    iclaPackUpeprBand = 297,
-    iclaPackAll       = 298
+    IclaPackSubdiag   = 292,
+    IclaPackSupdiag   = 293,
+    IclaPackColumn    = 294,
+    IclaPackRow       = 295,
+    IclaPackLowerBand = 296,
+    IclaPackUpeprBand = 297,
+    IclaPackAll       = 298
 } icla_pack_t;
 
 typedef enum {
-    iclaNoVec         = 301,
+    IclaNoVec         = 301,
 
-    iclaVec           = 302,
+    IclaVec           = 302,
 
-    iclaIVec          = 303,
+    IclaIVec          = 303,
 
-    iclaAllVec        = 304,
+    IclaAllVec        = 304,
 
-    iclaSomeVec       = 305,
+    IclaSomeVec       = 305,
 
-    iclaOverwriteVec  = 306,
+    IclaOverwriteVec  = 306,
 
-    iclaBacktransVec  = 307
+    IclaBacktransVec  = 307
 
 } icla_vec_t;
 
 typedef enum {
-    iclaRangeAll      = 311,
+    IclaRangeAll      = 311,
 
-    iclaRangeV        = 312,
-    iclaRangeI        = 313
+    IclaRangeV        = 312,
+    IclaRangeI        = 313
 } icla_range_t;
 
 typedef enum {
-    iclaQ             = 322,
+    IclaQ             = 322,
 
-    iclaP             = 323
+    IclaP             = 323
 } icla_vect_t;
 
 typedef enum {
-    iclaForward       = 391,
+    IclaForward       = 391,
 
-    iclaBackward      = 392
+    IclaBackward      = 392
 } icla_direct_t;
 
 typedef enum {
-    iclaColumnwise    = 401,
+    IclaColumnwise    = 401,
 
-    iclaRowwise       = 402
+    IclaRowwise       = 402
 } icla_storev_t;
 
 typedef enum {
-    iclaHybrid        = 701,
-    iclaNative        = 702
+    IclaHybrid        = 701,
+    IclaNative        = 702
 } icla_mode_t;
 
-typedef enum {
-    icla_CSR          = 611,
-    icla_ELLPACKT     = 612,
-    icla_ELL          = 613,
-    icla_DENSE        = 614,
-    icla_BCSR         = 615,
-    icla_CSC          = 616,
-    icla_HYB          = 617,
-    icla_COO          = 618,
-    icla_ELLRT        = 619,
-    icla_SPMVFUNCTION = 620,
-    icla_SELLP        = 621,
-    icla_ELLD         = 622,
-    icla_CSRLIST      = 623,
-    icla_CSRD         = 624,
-    icla_CSRL         = 627,
-    icla_CSRU         = 628,
-    icla_CSRCOO       = 629,
-    icla_CUCSR        = 630,
-    icla_COOLIST      = 631,
-    icla_CSR5         = 632
-} icla_storage_t;
 
 typedef enum {
-    icla_CG           = 431,
-    icla_CGMERGE      = 432,
-    icla_GMRES        = 433,
-    icla_BICGSTAB     = 434,
-  icla_BICGSTABMERGE  = 435,
-  icla_BICGSTABMERGE2 = 436,
-    icla_JACOBI       = 437,
-    icla_GS           = 438,
-    icla_ITERREF      = 439,
-    icla_BCSRLU       = 440,
-    icla_PCG          = 441,
-    icla_PGMRES       = 442,
-    icla_PBICGSTAB    = 443,
-    icla_PASTIX       = 444,
-    icla_ILU          = 445,
-    icla_ICC          = 446,
-    icla_PARILU       = 447,
-    icla_PARIC        = 448,
-    icla_BAITER       = 449,
-    icla_LOBPCG       = 450,
-    icla_NONE         = 451,
-    icla_FUNCTION     = 452,
-    icla_IDR          = 453,
-    icla_PIDR         = 454,
-    icla_CGS          = 455,
-    icla_PCGS         = 456,
-    icla_CGSMERGE     = 457,
-    icla_PCGSMERGE    = 458,
-    icla_TFQMR        = 459,
-    icla_PTFQMR       = 460,
-    icla_TFQMRMERGE   = 461,
-    icla_PTFQMRMERGE  = 462,
-    icla_QMR          = 463,
-    icla_PQMR         = 464,
-    icla_QMRMERGE     = 465,
-    icla_PQMRMERGE    = 466,
-    icla_BOMBARD      = 490,
-    icla_BOMBARDMERGE = 491,
-    icla_PCGMERGE     = 492,
-    icla_BAITERO      = 493,
-    icla_IDRMERGE     = 494,
-  icla_PBICGSTABMERGE = 495,
-    icla_PARICT       = 496,
-    icla_CUSTOMIC     = 497,
-    icla_CUSTOMILU    = 498,
-    icla_PIDRMERGE    = 499,
-    icla_BICG         = 500,
-    icla_BICGMERGE    = 501,
-    icla_PBICG        = 502,
-    icla_PBICGMERGE   = 503,
-    icla_LSQR         = 504,
-    icla_PARILUT      = 505,
-    icla_ISAI         = 506,
-    icla_CUSOLVE      = 507,
-    icla_VBJACOBI     = 508,
-    icla_PARDISO      = 509,
-    icla_SYNCFREESOLVE= 510,
-    icla_ILUT         = 511
+    Icla_CSR          = 611,
+    Icla_ELLPACKT     = 612,
+    Icla_ELL          = 613,
+    Icla_DENSE        = 614,
+    Icla_BCSR         = 615,
+    Icla_CSC          = 616,
+    Icla_HYB          = 617,
+    Icla_COO          = 618,
+    Icla_ELLRT        = 619,
+    Icla_SPMVFUNCTION = 620,
+    Icla_SELLP        = 621,
+    Icla_ELLD         = 622,
+    Icla_CSRLIST      = 623,
+    Icla_CSRD         = 624,
+    Icla_CSRL         = 627,
+    Icla_CSRU         = 628,
+    Icla_CSRCOO       = 629,
+    Icla_CUCSR        = 630,
+    Icla_COOLIST      = 631,
+    Icla_CSR5         = 632
+} icla_storage_t;
+
+
+typedef enum {
+    Icla_CG           = 431,
+    Icla_CGMERGE      = 432,
+    Icla_GMRES        = 433,
+    Icla_BICGSTAB     = 434,
+  Icla_BICGSTABMERGE  = 435,
+  Icla_BICGSTABMERGE2 = 436,
+    Icla_JACOBI       = 437,
+    Icla_GS           = 438,
+    Icla_ITERREF      = 439,
+    Icla_BCSRLU       = 440,
+    Icla_PCG          = 441,
+    Icla_PGMRES       = 442,
+    Icla_PBICGSTAB    = 443,
+    Icla_PASTIX       = 444,
+    Icla_ILU          = 445,
+    Icla_ICC          = 446,
+    Icla_PARILU       = 447,
+    Icla_PARIC        = 448,
+    Icla_BAITER       = 449,
+    Icla_LOBPCG       = 450,
+    Icla_NONE         = 451,
+    Icla_FUNCTION     = 452,
+    Icla_IDR          = 453,
+    Icla_PIDR         = 454,
+    Icla_CGS          = 455,
+    Icla_PCGS         = 456,
+    Icla_CGSMERGE     = 457,
+    Icla_PCGSMERGE    = 458,
+    Icla_TFQMR        = 459,
+    Icla_PTFQMR       = 460,
+    Icla_TFQMRMERGE   = 461,
+    Icla_PTFQMRMERGE  = 462,
+    Icla_QMR          = 463,
+    Icla_PQMR         = 464,
+    Icla_QMRMERGE     = 465,
+    Icla_PQMRMERGE    = 466,
+    Icla_BOMBARD      = 490,
+    Icla_BOMBARDMERGE = 491,
+    Icla_PCGMERGE     = 492,
+    Icla_BAITERO      = 493,
+    Icla_IDRMERGE     = 494,
+  Icla_PBICGSTABMERGE = 495,
+    Icla_PARICT       = 496,
+    Icla_CUSTOMIC     = 497,
+    Icla_CUSTOMILU    = 498,
+    Icla_PIDRMERGE    = 499,
+    Icla_BICG         = 500,
+    Icla_BICGMERGE    = 501,
+    Icla_PBICG        = 502,
+    Icla_PBICGMERGE   = 503,
+    Icla_LSQR         = 504,
+    Icla_PARILUT      = 505,
+    Icla_ISAI         = 506,
+    Icla_CUSOLVE      = 507,
+    Icla_VBJACOBI     = 508,
+    Icla_PARDISO      = 509,
+    Icla_SYNCFREESOLVE= 510,
+    Icla_ILUT         = 511
 } icla_solver_type;
 
 typedef enum {
-    icla_CGSO         = 561,
-    icla_FUSED_CGSO   = 562,
-    icla_MGSO         = 563
+    Icla_CGSO         = 561,
+    Icla_FUSED_CGSO   = 562,
+    Icla_MGSO         = 563
 } icla_ortho_t;
 
 typedef enum {
-    icla_CPU          = 571,
-    icla_DEV          = 572
+    Icla_CPU          = 571,
+    Icla_DEV          = 572
 } icla_location_t;
 
 typedef enum {
-    icla_GENERAL      = 581,
-    icla_SYMMETRIC    = 582
+    Icla_GENERAL      = 581,
+    Icla_SYMMETRIC    = 582
 } icla_symmetry_t;
 
 typedef enum {
-    icla_ORDERED      = 591,
-    icla_DIAGFIRST    = 592,
-    icla_UNITY        = 593,
-    icla_VALUE        = 594
+    Icla_ORDERED      = 591,
+    Icla_DIAGFIRST    = 592,
+    Icla_UNITY        = 593,
+    Icla_VALUE        = 594
 } icla_diagorder_t;
 
 typedef enum {
-    icla_DCOMPLEX     = 501,
-    icla_FCOMPLEX     = 502,
-    icla_DOUBLE       = 503,
-    icla_FLOAT        = 504
+    Icla_DCOMPLEX     = 501,
+    Icla_FCOMPLEX     = 502,
+    Icla_DOUBLE       = 503,
+    Icla_FLOAT        = 504
 } icla_precision;
 
 typedef enum {
-    icla_NOSCALE      = 511,
-    icla_UNITROW      = 512,
-    icla_UNITDIAG     = 513,
-    icla_UNITCOL      = 514,
-    icla_UNITROWCOL   = 515,
-
-    icla_UNITDIAGCOL  = 516,
-
+    Icla_NOSCALE      = 511,
+    Icla_UNITROW      = 512,
+    Icla_UNITDIAG     = 513,
+    Icla_UNITCOL      = 514,
+    Icla_UNITROWCOL   = 515,
+    Icla_UNITDIAGCOL  = 516,
 } icla_scale_t;
 
+
 typedef enum {
-    icla_SOLVE        = 801,
-    icla_SETUPSOLVE   = 802,
-    icla_APPLYSOLVE   = 803,
-    icla_DESTROYSOLVE = 804,
-    icla_INFOSOLVE    = 805,
-    icla_GENERATEPREC = 806,
-    icla_PRECONDLEFT  = 807,
-    icla_PRECONDRIGHT = 808,
-    icla_TRANSPOSE    = 809,
-    icla_SPMV         = 810
+    Icla_SOLVE        = 801,
+    Icla_SETUPSOLVE   = 802,
+    Icla_APPLYSOLVE   = 803,
+    Icla_DESTROYSOLVE = 804,
+    Icla_INFOSOLVE    = 805,
+    Icla_GENERATEPREC = 806,
+    Icla_PRECONDLEFT  = 807,
+    Icla_PRECONDRIGHT = 808,
+    Icla_TRANSPOSE    = 809,
+    Icla_SPMV         = 810
 } icla_operation_t;
 
 typedef enum {
-    icla_PREC_SS           = 900,
-    icla_PREC_SST          = 901,
-    icla_PREC_HS           = 902,
-    icla_PREC_HST          = 903,
-    icla_PREC_SH           = 904,
-    icla_PREC_SHT          = 905,
+    Icla_PREC_SS           = 900,
+    Icla_PREC_SST          = 901,
+    Icla_PREC_HS           = 902,
+    Icla_PREC_HST          = 903,
+    Icla_PREC_SH           = 904,
+    Icla_PREC_SHT          = 905,
 
-    icla_PREC_XHS_H        = 910,
-    icla_PREC_XHS_HTC      = 911,
-    icla_PREC_XHS_161616   = 912,
-    icla_PREC_XHS_161616TC = 913,
-    icla_PREC_XHS_161632TC = 914,
-    icla_PREC_XSH_S        = 915,
-    icla_PREC_XSH_STC      = 916,
-    icla_PREC_XSH_163232TC = 917,
-    icla_PREC_XSH_323232TC = 918,
+    Icla_PREC_XHS_H        = 910,
+    Icla_PREC_XHS_HTC      = 911,
+    Icla_PREC_XHS_161616   = 912,
+    Icla_PREC_XHS_161616TC = 913,
+    Icla_PREC_XHS_161632TC = 914,
+    Icla_PREC_XSH_S        = 915,
+    Icla_PREC_XSH_STC      = 916,
+    Icla_PREC_XSH_163232TC = 917,
+    Icla_PREC_XSH_323232TC = 918,
 
-    icla_REFINE_IRSTRS   = 920,
-    icla_REFINE_IRDTRS   = 921,
-    icla_REFINE_IRGMSTRS = 922,
-    icla_REFINE_IRGMDTRS = 923,
-    icla_REFINE_GMSTRS   = 924,
-    icla_REFINE_GMDTRS   = 925,
-    icla_REFINE_GMGMSTRS = 926,
-    icla_REFINE_GMGMDTRS = 927,
+    Icla_REFINE_IRSTRS   = 920,
+    Icla_REFINE_IRDTRS   = 921,
+    Icla_REFINE_IRGMSTRS = 922,
+    Icla_REFINE_IRGMDTRS = 923,
+    Icla_REFINE_GMSTRS   = 924,
+    Icla_REFINE_GMDTRS   = 925,
+    Icla_REFINE_GMGMSTRS = 926,
+    Icla_REFINE_GMGMDTRS = 927,
 
-    icla_PREC_HD         = 930,
+    Icla_PREC_HD         = 930,
 } icla_refinement_t;
 
 typedef enum {
-    icla_MP_BASE_SS              = 950,
-    icla_MP_BASE_DD              = 951,
-    icla_MP_BASE_XHS             = 952,
-    icla_MP_BASE_XSH             = 953,
-    icla_MP_BASE_XHD             = 954,
-    icla_MP_BASE_XDH             = 955,
+    Icla_MP_BASE_SS              = 950,
+    Icla_MP_BASE_DD              = 951,
+    Icla_MP_BASE_XHS             = 952,
+    Icla_MP_BASE_XSH             = 953,
+    Icla_MP_BASE_XHD             = 954,
+    Icla_MP_BASE_XDH             = 955,
 
-    icla_MP_ENABLE_DFLT_MATH     = 960,
-    icla_MP_ENABLE_TC_MATH       = 961,
-    icla_MP_SGEMM                = 962,
-    icla_MP_HGEMM                = 963,
-    icla_MP_GEMEX_I32_O32_C32    = 964,
-    icla_MP_GEMEX_I16_O32_C32    = 965,
-    icla_MP_GEMEX_I16_O16_C32    = 966,
-    icla_MP_GEMEX_I16_O16_C16    = 967,
+    Icla_MP_ENABLE_DFLT_MATH     = 960,
+    Icla_MP_ENABLE_TC_MATH       = 961,
+    Icla_MP_SGEMM                = 962,
+    Icla_MP_HGEMM                = 963,
+    Icla_MP_GEMEX_I32_O32_C32    = 964,
+    Icla_MP_GEMEX_I16_O32_C32    = 965,
+    Icla_MP_GEMEX_I16_O16_C32    = 966,
+    Icla_MP_GEMEX_I16_O16_C16    = 967,
 
-    icla_MP_TC_SGEMM             = 968,
-    icla_MP_TC_HGEMM             = 969,
-    icla_MP_TC_GEMEX_I32_O32_C32 = 970,
-    icla_MP_TC_GEMEX_I16_O32_C32 = 971,
-    icla_MP_TC_GEMEX_I16_O16_C32 = 972,
-    icla_MP_TC_GEMEX_I16_O16_C16 = 973,
+    Icla_MP_TC_SGEMM             = 968,
+    Icla_MP_TC_HGEMM             = 969,
+    Icla_MP_TC_GEMEX_I32_O32_C32 = 970,
+    Icla_MP_TC_GEMEX_I16_O32_C32 = 971,
+    Icla_MP_TC_GEMEX_I16_O16_C32 = 972,
+    Icla_MP_TC_GEMEX_I16_O16_C16 = 973,
 
 } icla_mp_type_t;
 
-#define icla2lapack_Min  iclaFalse
 
-#define icla2lapack_Max  iclaRowwise
 
-#define iclaRowMajorStr      "Row"
-#define iclaColMajorStr      "Col"
 
-#define iclaNoTransStr       "NoTrans"
-#define iclaTransStr         "Trans"
-#define iclaConjTransStr     "ConjTrans"
-#define icla_ConjTransStr    "ConjTrans"
 
-#define iclaUpperStr         "Upper"
-#define iclaLowerStr         "Lower"
-#define iclaFullStr          "Full"
 
-#define iclaNonUnitStr       "NonUnit"
-#define iclaUnitStr          "Unit"
+#define Icla2lapack_Min  IclaFalse
+#define Icla2lapack_Max  IclaRowwise
 
-#define iclaLeftStr          "Left"
-#define iclaRightStr         "Right"
-#define iclaBothSidesStr     "Both"
 
-#define iclaOneNormStr       "1"
-#define iclaTwoNormStr       "2"
-#define iclaFrobeniusNormStr "Fro"
-#define iclaInfNormStr       "Inf"
-#define iclaMaxNormStr       "Max"
 
-#define iclaForwardStr       "Forward"
-#define iclaBackwardStr      "Backward"
 
-#define iclaColumnwiseStr    "Columnwise"
-#define iclaRowwiseStr       "Rowwise"
 
-#define iclaNoVecStr         "NoVec"
-#define iclaVecStr           "Vec"
-#define iclaIVecStr          "IVec"
-#define iclaAllVecStr        "All"
-#define iclaSomeVecStr       "Some"
-#define iclaOverwriteVecStr  "Overwrite"
+#define IclaRowMajorStr      "Row"
+#define IclaColMajorStr      "Col"
+
+#define IclaNoTransStr       "NoTrans"
+#define IclaTransStr         "Trans"
+#define IclaConjTransStr     "ConjTrans"
+#define Icla_ConjTransStr    "ConjTrans"
+
+#define IclaUpperStr         "Upper"
+#define IclaLowerStr         "Lower"
+#define IclaFullStr          "Full"
+
+#define IclaNonUnitStr       "NonUnit"
+#define IclaUnitStr          "Unit"
+
+#define IclaLeftStr          "Left"
+#define IclaRightStr         "Right"
+#define IclaBothSidesStr     "Both"
+
+#define IclaOneNormStr       "1"
+#define IclaTwoNormStr       "2"
+#define IclaFrobeniusNormStr "Fro"
+#define IclaInfNormStr       "Inf"
+#define IclaMaxNormStr       "Max"
+
+#define IclaForwardStr       "Forward"
+#define IclaBackwardStr      "Backward"
+
+#define IclaColumnwiseStr    "Columnwise"
+#define IclaRowwiseStr       "Rowwise"
+
+#define IclaNoVecStr         "NoVec"
+#define IclaVecStr           "Vec"
+#define IclaIVecStr          "IVec"
+#define IclaAllVecStr        "All"
+#define IclaSomeVecStr       "Some"
+#define IclaOverwriteVecStr  "Overwrite"
+
+
+
+
+
 
 icla_bool_t   icla_bool_const  ( char lapack_char );
 icla_order_t  icla_order_const ( char lapack_char );
@@ -769,6 +954,16 @@ icla_range_t  icla_range_const ( char lapack_char );
 icla_vect_t   icla_vect_const  ( char lapack_char );
 icla_direct_t icla_direct_const( char lapack_char );
 icla_storev_t icla_storev_const( char lapack_char );
+
+
+
+
+
+
+
+
+
+
 
 const char* lapack_const_str   ( int            icla_const );
 const char* lapack_bool_const  ( icla_bool_t   icla_const );
@@ -804,6 +999,20 @@ static inline char lapacke_vect_const  ( icla_vect_t   icla_const ) { return *la
 static inline char lapacke_direct_const( icla_direct_t icla_const ) { return *lapack_direct_const( icla_const ); }
 static inline char lapacke_storev_const( icla_storev_t icla_const ) { return *lapack_storev_const( icla_const ); }
 
+
+
+
+#if defined(ICLA_HAVE_OPENCL)
+clblasOrder          clblas_order_const( icla_order_t order );
+clblasTranspose      clblas_trans_const( icla_trans_t trans );
+clblasUplo           clblas_uplo_const ( icla_uplo_t  uplo  );
+clblasDiag           clblas_diag_const ( icla_diag_t  diag  );
+clblasSide           clblas_side_const ( icla_side_t  side  );
+#endif
+
+
+
+
 #if defined(CUBLAS_V2_H_)
 cublasOperation_t    cublas_trans_const ( icla_trans_t trans );
 cublasFillMode_t     cublas_uplo_const  ( icla_uplo_t  uplo  );
@@ -815,6 +1024,9 @@ cublasSideMode_t     cublas_side_const  ( icla_side_t  side  );
 #define icla_backend_diag_const cublas_diag_const
 #define icla_backend_side_const cublas_side_const
 #endif
+
+
+
 
 #if defined(ICLA_HAVE_HIP)
 hipblasOperation_t   hipblas_trans_const( icla_trans_t trans );
@@ -828,6 +1040,9 @@ hipblasSideMode_t    hipblas_side_const (icla_side_t side    );
 #define icla_backend_side_const hipblas_side_const
 #endif
 
+
+
+
 #if defined(HAVE_CBLAS)
 #include <cblas.h>
 enum CBLAS_ORDER     cblas_order_const  ( icla_order_t order );
@@ -837,9 +1052,9 @@ enum CBLAS_DIAG      cblas_diag_const   ( icla_diag_t  diag  );
 enum CBLAS_SIDE      cblas_side_const   ( icla_side_t  side  );
 #endif
 
+
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-

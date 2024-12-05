@@ -7,7 +7,7 @@ extern "C" {
 
 #if defined(ICLA_HAVE_CUDA) || defined(ICLA_HAVE_HIP)
 icla_int_t icla_buildconnection_mgpu(
-    icla_int_t gnode[iclaMaxGPUs+2][iclaMaxGPUs+2],
+    icla_int_t gnode[IclaMaxGPUs+2][IclaMaxGPUs+2],
     icla_int_t *ncmplx, icla_int_t ngpu)
 {
     icla_int_t *deviceid = NULL;
@@ -42,8 +42,8 @@ icla_int_t icla_buildconnection_mgpu(
         if (deviceid[d] == 0) {
             cmplxnb = cmplxnb + 1;
             cmplxid = cmplxnb - 1;
-            gnode[cmplxid][iclaMaxGPUs] = 1;
-            lcgpunb = gnode[cmplxid][iclaMaxGPUs]-1;
+            gnode[cmplxid][IclaMaxGPUs] = 1;
+            lcgpunb = gnode[cmplxid][IclaMaxGPUs]-1;
             gnode[cmplxid][lcgpunb] = d;
             deviceid[d] = -1;
         }
@@ -83,8 +83,8 @@ icla_int_t icla_buildconnection_mgpu(
                 if ((err == cudaSuccess) || (err == cudaErrorPeerAccessAlreadyEnabled)) {
                     if (deviceid[d2] == 0) {
 
-                        gnode[cmplxid][iclaMaxGPUs] = gnode[cmplxid][iclaMaxGPUs]+1;
-                        lcgpunb                      = gnode[cmplxid][iclaMaxGPUs]-1;
+                        gnode[cmplxid][IclaMaxGPUs] = gnode[cmplxid][IclaMaxGPUs]+1;
+                        lcgpunb                      = gnode[cmplxid][IclaMaxGPUs]-1;
                         gnode[cmplxid][lcgpunb] = d2;
                         deviceid[d2] = -1;
                     }

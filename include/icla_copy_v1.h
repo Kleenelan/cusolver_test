@@ -72,6 +72,10 @@ icla_copymatrix_v1_internal(
     icla_ptr       dB_dst, icla_int_t lddb,
     const char* func, const char* file, int line );
 
+
+
+
+
 #define icla_isetvector_v1(           n, hx_src, incx, dy_dst, incy ) \
         icla_isetvector_v1_internal(  n, hx_src, incx, dy_dst, incy, __func__, __FILE__, __LINE__ )
 
@@ -119,6 +123,10 @@ icla_icopyvector_v1_internal(
                                   dy_dst, incy,
                                   func, file, line );
 }
+
+
+
+
 
 #define icla_isetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_isetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
@@ -216,6 +224,7 @@ icla_index_copyvector_v1_internal(
                                   func, file, line );
 }
 
+
 #define icla_index_setmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_index_setmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
 
@@ -269,4 +278,3 @@ icla_index_copymatrix_v1_internal(
 #endif
 
 #endif
-

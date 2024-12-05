@@ -54,7 +54,9 @@ struct gbstrct_blg {
     volatile int *ss_prog;
 };
 
+
 extern struct gbstrct_blg core_in_all;
+
 
 #ifdef __cplusplus
 }

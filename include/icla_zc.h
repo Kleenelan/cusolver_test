@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_ZC_H
 #define ICLA_ZC_H
 
@@ -39,6 +40,7 @@ icla_zcgetrs_gpu(
     iclaDoubleComplex_ptr dX, icla_int_t lddx,
     iclaFloatComplex_ptr dSX,
     icla_int_t *info);
+
 
 icla_int_t
 icla_zchesv_gpu(

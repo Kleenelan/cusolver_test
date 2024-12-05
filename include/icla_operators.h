@@ -4,7 +4,14 @@
 
 #ifdef __cplusplus
 
+
 #include "icla_types.h"
+
+#ifdef ICLA_HAVE_OPENCL
+#define __host__
+#define __device__
+#endif
+
 
 
 __host__ __device__ static inline double real(const iclaDoubleComplex &x) { return ICLA_Z_REAL(x); }
@@ -16,22 +23,41 @@ __host__ __device__ static inline float  imag(const iclaFloatComplex  &x) { retu
 __host__ __device__ static inline iclaDoubleComplex conj(const iclaDoubleComplex &x) { return ICLA_Z_CONJ(x); }
 __host__ __device__ static inline iclaFloatComplex  conj(const iclaFloatComplex  &x) { return ICLA_C_CONJ(x); }
 
+
 __host__ __device__ static inline double real(const double             &x) { return x; }
 __host__ __device__ static inline float  real(const float              &x) { return x; }
+
+
 
 __host__ __device__ static inline double imag(const double             &x) { return 0.; }
 __host__ __device__ static inline float  imag(const float              &x) { return 0.f; }
 
+
+
 __host__ __device__ static inline double             conj(const double             &x) { return x; }
 __host__ __device__ static inline float              conj(const float              &x) { return x; }
 
+
+
+
 __host__ __device__ static inline double fabs(const iclaDoubleComplex &x) { return ICLA_Z_ABS(x); }
 __host__ __device__ static inline float  fabs(const iclaFloatComplex  &x) { return ICLA_C_ABS(x); }
+
+
+
+
 
 __host__ __device__ static inline double abs1(const iclaDoubleComplex &x) { return ICLA_Z_ABS1(x); }
 __host__ __device__ static inline float  abs1(const iclaFloatComplex  &x) { return ICLA_C_ABS1(x); }
 __host__ __device__ static inline double abs1(const double             &x) { return ICLA_D_ABS1(x); }
 __host__ __device__ static inline float  abs1(const float              &x) { return ICLA_S_ABS1(x); }
+
+
+
+
+
+
+
 
 __host__ __device__ static inline iclaDoubleComplex
 operator - (const iclaDoubleComplex &a)
@@ -39,6 +65,8 @@ operator - (const iclaDoubleComplex &a)
     return ICLA_Z_MAKE( -real(a),
                          -imag(a) );
 }
+
+
 
 __host__ __device__ static inline iclaDoubleComplex
 operator + (const iclaDoubleComplex a, const iclaDoubleComplex b)
@@ -77,6 +105,8 @@ operator += (iclaDoubleComplex &a, const double s)
     return a;
 }
 
+
+
 __host__ __device__ static inline iclaDoubleComplex
 operator - (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -114,6 +144,8 @@ operator -= (iclaDoubleComplex &a, const double s)
     return a;
 }
 
+
+
 __host__ __device__ static inline iclaDoubleComplex
 operator * (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -134,6 +166,8 @@ operator * (const iclaDoubleComplex a, const float s)
     return ICLA_Z_MAKE( real(a)*s,
                          imag(a)*s );
 }
+
+
 
 __host__ __device__ static inline iclaDoubleComplex
 operator * (const double s, const iclaDoubleComplex a)
@@ -224,6 +258,8 @@ operator /= (iclaDoubleComplex &a, const double s)
     return a;
 }
 
+
+
 __host__ __device__ static inline bool
 operator == (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -245,6 +281,8 @@ operator == (const double s, const iclaDoubleComplex a)
              imag(a) == 0. );
 }
 
+
+
 __host__ __device__ static inline bool
 operator != (const iclaDoubleComplex a, const iclaDoubleComplex b)
 {
@@ -262,12 +300,20 @@ operator != (const double s, const iclaDoubleComplex a)
     return ! (a == s);
 }
 
+
+
+
+
+
+
 __host__ __device__ static inline iclaFloatComplex
 operator - (const iclaFloatComplex &a)
 {
     return ICLA_C_MAKE( -real(a),
                          -imag(a) );
 }
+
+
 
 __host__ __device__ static inline iclaFloatComplex
 operator + (const iclaFloatComplex a, const iclaFloatComplex b)
@@ -306,6 +352,8 @@ operator += (iclaFloatComplex &a, const float s)
     return a;
 }
 
+
+
 __host__ __device__ static inline iclaFloatComplex
 operator - (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -342,6 +390,8 @@ operator -= (iclaFloatComplex &a, const float s)
                       imag(a) );
     return a;
 }
+
+
 
 __host__ __device__ static inline iclaFloatComplex
 operator * (const iclaFloatComplex a, const iclaFloatComplex b)
@@ -446,6 +496,8 @@ operator /= (iclaFloatComplex &a, const float s)
     return a;
 }
 
+
+
 __host__ __device__ static inline bool
 operator == (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -467,6 +519,8 @@ operator == (const float s, const iclaFloatComplex a)
              imag(a) == 0. );
 }
 
+
+
 __host__ __device__ static inline bool
 operator != (const iclaFloatComplex a, const iclaFloatComplex b)
 {
@@ -486,7 +540,13 @@ operator != (const float s, const iclaFloatComplex a)
 }
 
 
+#ifdef ICLA_HAVE_OPENCL
+#undef __host__
+#undef __device__
 #endif
+
+#endif
+
 
 #endif
 

@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_HTC_H
 #define ICLA_HTC_H
 
@@ -7,6 +8,14 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+
+
+
+
+
+
 
 icla_int_t
 icla_dhgesv_iteref_gpu(
@@ -75,6 +84,9 @@ icla_dsgelatrs_cpu(
     iclaFloat_ptr dSX,
     icla_int_t *info);
 
+
+
+
 icla_int_t
 icla_hgetrf_gpu(
     icla_int_t m, icla_int_t n,
@@ -115,6 +127,8 @@ icla_get_xgetrf_nb(
         icla_int_t m, icla_int_t n, icla_int_t prev_nb,
         icla_mp_type_t enable_tc, icla_mp_type_t mp_algo_type);
 
+
+
 icla_int_t
 icla_dshposv_gpu_expert(
     icla_uplo_t uplo, icla_int_t n, icla_int_t nrhs,
@@ -140,6 +154,8 @@ icla_dshposv_native(
     iclaDouble_ptr dB, icla_int_t lddb,
     iclaDouble_ptr dX, icla_int_t lddx,
     icla_int_t *iter, icla_int_t *info);
+
+
 
 icla_int_t
 icla_shpotrf_gpu(
@@ -167,6 +183,8 @@ icla_dfgmres_spd_gpu(
 	double *rnorm0, icla_int_t *niters, icla_int_t is_inner,
 	icla_int_t is_preprocessed, float miu,
     icla_queue_t queue);
+
+
 
 void
 iclablas_convert_dp2hp(

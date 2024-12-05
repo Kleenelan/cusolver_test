@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_DVBATCHED_H
 #define ICLA_DVBATCHED_H
 
@@ -10,7 +11,9 @@
 extern "C" {
 #endif
 
+
 void icla_get_dgetrf_vbatched_nbparam(icla_int_t max_m, icla_int_t max_n, icla_int_t *nb, icla_int_t *recnb);
+
 
 icla_int_t
 icla_dgetf2_fused_vbatched(
@@ -651,6 +654,8 @@ iclablas_dsymm_vbatched(
         double **dC_array, icla_int_t *lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
+
+
 void
 iclablas_dgemv_vbatched_max_nocheck(
     icla_trans_t trans, icla_int_t* m, icla_int_t* n,
@@ -733,6 +738,9 @@ iclablas_dsymv_vbatched(
     iclaDouble_ptr dy_array[], icla_int_t* incy,
     icla_int_t batchCount, icla_queue_t queue);
 
+
+
+
 void icla_dset_pointer_var_cc(
     double **output_array,
     double *input,
@@ -781,6 +789,7 @@ iclablas_dlacpy_vbatched(
     double const * const * dAarray, icla_int_t* ldda,
     double**               dBarray, icla_int_t* lddb,
     icla_int_t batchCount, icla_queue_t queue );
+
 
 icla_int_t icla_get_dpotrf_vbatched_crossover();
 

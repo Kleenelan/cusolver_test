@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_LAPACK_H
 #define ICLA_LAPACK_H
 
@@ -34,6 +35,7 @@ extern "C" {
 #define lapackf77_zlat2c FORTRAN_NAME( zlat2c, ZLAT2C )
 #define lapackf77_dlat2s FORTRAN_NAME( dlat2s, DLAT2S )
 
+
 #define lapackf77_dlapy2 FORTRAN_NAME( dlapy2, DLAPY2 )
 #define lapackf77_slapy2 FORTRAN_NAME( slapy2, SLAPY2 )
 
@@ -43,6 +45,7 @@ long   lapackf77_lsame(  const char *ca, const char *cb );
 
 float  lapackf77_slamch( const char *cmach );
 double lapackf77_dlamch( const char *cmach );
+
 
 void   lapackf77_slabad( float  *Small, float  *large );
 void   lapackf77_dlabad( double *Small, double *large );
@@ -73,6 +76,7 @@ void   lapackf77_ssterf( const icla_int_t *n,
                          float *d, float *e,
                          icla_int_t *info );
 
+
 void   lapackf77_zlag2c( const icla_int_t *m, const icla_int_t *n,
                          const iclaDoubleComplex *A,  const icla_int_t *lda,
                                iclaFloatComplex  *SA, const icla_int_t *ldsa,
@@ -93,6 +97,7 @@ void   lapackf77_slag2d( const icla_int_t *m, const icla_int_t *n,
                                double *A,  const icla_int_t *lda,
                          icla_int_t *info );
 
+
 void   lapackf77_zlat2c( const char *uplo, const icla_int_t *n,
                          const iclaDoubleComplex *A,  const icla_int_t *lda,
                                iclaFloatComplex  *SA, const icla_int_t *ldsa,
@@ -102,6 +107,17 @@ void   lapackf77_dlat2s( const char *uplo, const icla_int_t *n,
                          const double *A,  const icla_int_t *lda,
                                float  *SA, const icla_int_t *ldsa,
                          icla_int_t *info );
+
+
+
+
+
+
+
+
+
+
+
 
 double lapackf77_dlapy2( const double *x, const double *y );
 float  lapackf77_slapy2( const float  *x, const float  *y );

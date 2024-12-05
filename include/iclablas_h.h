@@ -1,12 +1,16 @@
 
+
 #ifndef ICLABLAS_H_H
 #define ICLABLAS_H_H
 
 #include "icla_types.h"
 #include "icla_copy.h"
 
+
 #ifdef __cplusplus
 extern "C" {
+
+
 
 void
 iclablas_slag2h(
@@ -37,6 +41,8 @@ iclablas_hlag2s_batched(
     float               **dSAarray, icla_int_t ldsa,
     icla_int_t batchCount, icla_queue_t queue );
 
+
+
 void
 icla_hgemm(
     icla_trans_t transA, icla_trans_t transB,
@@ -62,4 +68,3 @@ icla_hgemmx(
 
 #endif
 #endif
-

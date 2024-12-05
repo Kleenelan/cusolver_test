@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_SVBATCHED_H
 #define ICLA_SVBATCHED_H
 
@@ -10,7 +11,10 @@
 extern "C" {
 #endif
 
+
 void icla_get_sgetrf_vbatched_nbparam(icla_int_t max_m, icla_int_t max_n, icla_int_t *nb, icla_int_t *recnb);
+
+
 
 icla_int_t
 icla_sgetf2_fused_vbatched(
@@ -651,6 +655,8 @@ iclablas_ssymm_vbatched(
         float **dC_array, icla_int_t *lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
+
+
 void
 iclablas_sgemv_vbatched_max_nocheck(
     icla_trans_t trans, icla_int_t* m, icla_int_t* n,
@@ -732,6 +738,9 @@ iclablas_ssymv_vbatched(
     float beta,
     iclaFloat_ptr dy_array[], icla_int_t* incy,
     icla_int_t batchCount, icla_queue_t queue);
+
+
+
 
 void icla_sset_pointer_var_cc(
     float **output_array,

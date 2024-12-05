@@ -53,11 +53,10 @@ public:
 
     #ifdef ICLA_HAVE_CUDA
 
-    cudaStream_t     cuda_stream()     { return stream__;   }
-
-    cublasHandle_t   cublas_handle()   { return cublas__;   }
-
-    cusparseHandle_t cusparse_handle() { return cusparse__; }
+    cudaStream_t        cuda_stream()       { return stream__;   }
+    cublasHandle_t      cublas_handle()     { return cublas__;   }
+    cusparseHandle_t    cusparse_handle()   { return cusparse__; }
+    cusolverDnHandle_t  cusolverdn_handle() { return cusolverdn__; }
 
     #endif
 
@@ -74,10 +73,9 @@ public:
     #ifdef ICLA_HAVE_HIP
 
     hipStream_t      hip_stream()      { return stream__; };
-
     hipblasHandle_t  hipblas_handle()  { return hipblas__; };
-
     hipsparseHandle_t hipsparse_handle() { return hipsparse__; };
+    hipsolverHandle_t hipsolver_handle() { return hipsolver__;}
 
     #endif
 
@@ -147,10 +145,9 @@ protected:
 
     #ifdef ICLA_HAVE_CUDA
     cudaStream_t     stream__;
-
     cublasHandle_t   cublas__;
-
     cusparseHandle_t cusparse__;
+    cusolverDnHandle_t cusolverdn__;
 
     #endif
 
@@ -159,6 +156,7 @@ protected:
 
     hipblasHandle_t  hipblas__;
     hipsparseHandle_t hipsparse__;
+    hipsolverHandle_t hipsolver__;
 
     #endif
 };

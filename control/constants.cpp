@@ -7,11 +7,11 @@ extern "C"
 icla_bool_t   icla_bool_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'N': case 'n': return iclaFalse;
-        case 'Y': case 'y': return iclaTrue;
+        case 'N': case 'n': return IclaFalse;
+        case 'Y': case 'y': return IclaTrue;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaFalse;
+            return IclaFalse;
     }
 }
 
@@ -19,11 +19,11 @@ extern "C"
 icla_order_t  icla_order_const ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'R': case 'r': return iclaRowMajor;
-        case 'C': case 'c': return iclaColMajor;
+        case 'R': case 'r': return IclaRowMajor;
+        case 'C': case 'c': return IclaColMajor;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaRowMajor;
+            return IclaRowMajor;
     }
 }
 
@@ -31,12 +31,12 @@ extern "C"
 icla_trans_t  icla_trans_const ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'N': case 'n': return iclaNoTrans;
-        case 'T': case 't': return iclaTrans;
-        case 'C': case 'c': return iclaConjTrans;
+        case 'N': case 'n': return IclaNoTrans;
+        case 'T': case 't': return IclaTrans;
+        case 'C': case 'c': return IclaConjTrans;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaNoTrans;
+            return IclaNoTrans;
     }
 }
 
@@ -44,9 +44,9 @@ extern "C"
 icla_uplo_t   icla_uplo_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'U': case 'u': return iclaUpper;
-        case 'L': case 'l': return iclaLower;
-        default:            return iclaFull;
+        case 'U': case 'u': return IclaUpper;
+        case 'L': case 'l': return IclaLower;
+        default:            return IclaFull;
 
     }
 }
@@ -55,11 +55,11 @@ extern "C"
 icla_diag_t   icla_diag_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'N': case 'n': return iclaNonUnit;
-        case 'U': case 'u': return iclaUnit;
+        case 'N': case 'n': return IclaNonUnit;
+        case 'U': case 'u': return IclaUnit;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaNonUnit;
+            return IclaNonUnit;
     }
 }
 
@@ -67,12 +67,12 @@ extern "C"
 icla_side_t   icla_side_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'L': case 'l': return iclaLeft;
-        case 'R': case 'r': return iclaRight;
-        case 'B': case 'b': return iclaBothSides;
+        case 'L': case 'l': return IclaLeft;
+        case 'R': case 'r': return IclaRight;
+        case 'B': case 'b': return IclaBothSides;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaLeft;
+            return IclaLeft;
     }
 }
 
@@ -80,15 +80,15 @@ extern "C"
 icla_norm_t   icla_norm_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'O': case 'o': case '1': return iclaOneNorm;
-        case '2':           return iclaTwoNorm;
-        case 'F': case 'f': case 'E': case 'e': return iclaFrobeniusNorm;
-        case 'I': case 'i': return iclaInfNorm;
-        case 'M': case 'm': return iclaMaxNorm;
+        case 'O': case 'o': case '1': return IclaOneNorm;
+        case '2':           return IclaTwoNorm;
+        case 'F': case 'f': case 'E': case 'e': return IclaFrobeniusNorm;
+        case 'I': case 'i': return IclaInfNorm;
+        case 'M': case 'm': return IclaMaxNorm;
 
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaOneNorm;
+            return IclaOneNorm;
     }
 }
 
@@ -96,12 +96,12 @@ extern "C"
 icla_dist_t   icla_dist_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'U': case 'u': return iclaDistUniform;
-        case 'S': case 's': return iclaDistSymmetric;
-        case 'N': case 'n': return iclaDistNormal;
+        case 'U': case 'u': return IclaDistUniform;
+        case 'S': case 's': return IclaDistSymmetric;
+        case 'N': case 'n': return IclaDistNormal;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaDistUniform;
+            return IclaDistUniform;
     }
 }
 
@@ -109,13 +109,13 @@ extern "C"
 icla_sym_t    icla_sym_const   ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'H': case 'h': return iclaHermGeev;
-        case 'P': case 'p': return iclaHermPoev;
-        case 'N': case 'n': return iclaNonsymPosv;
-        case 'S': case 's': return iclaSymPosv;
+        case 'H': case 'h': return IclaHermGeev;
+        case 'P': case 'p': return IclaHermPoev;
+        case 'N': case 'n': return IclaNonsymPosv;
+        case 'S': case 's': return IclaSymPosv;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaHermGeev;
+            return IclaHermGeev;
     }
 }
 
@@ -123,17 +123,17 @@ extern "C"
 icla_pack_t   icla_pack_const  ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'N': case 'n': return iclaNoPacking;
-        case 'U': case 'u': return iclaPackSubdiag;
-        case 'L': case 'l': return iclaPackSupdiag;
-        case 'C': case 'c': return iclaPackColumn;
-        case 'R': case 'r': return iclaPackRow;
-        case 'B': case 'b': return iclaPackLowerBand;
-        case 'Q': case 'q': return iclaPackUpeprBand;
-        case 'Z': case 'z': return iclaPackAll;
+        case 'N': case 'n': return IclaNoPacking;
+        case 'U': case 'u': return IclaPackSubdiag;
+        case 'L': case 'l': return IclaPackSupdiag;
+        case 'C': case 'c': return IclaPackColumn;
+        case 'R': case 'r': return IclaPackRow;
+        case 'B': case 'b': return IclaPackLowerBand;
+        case 'Q': case 'q': return IclaPackUpeprBand;
+        case 'Z': case 'z': return IclaPackAll;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaNoPacking;
+            return IclaNoPacking;
     }
 }
 
@@ -141,15 +141,15 @@ extern "C"
 icla_vec_t    icla_vec_const   ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'N': case 'n': return iclaNoVec;
-        case 'V': case 'v': return iclaVec;
-        case 'I': case 'i': return iclaIVec;
-        case 'A': case 'a': return iclaAllVec;
-        case 'S': case 's': return iclaSomeVec;
-        case 'O': case 'o': return iclaOverwriteVec;
+        case 'N': case 'n': return IclaNoVec;
+        case 'V': case 'v': return IclaVec;
+        case 'I': case 'i': return IclaIVec;
+        case 'A': case 'a': return IclaAllVec;
+        case 'S': case 's': return IclaSomeVec;
+        case 'O': case 'o': return IclaOverwriteVec;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaNoVec;
+            return IclaNoVec;
     }
 }
 
@@ -157,12 +157,12 @@ extern "C"
 icla_range_t  icla_range_const ( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'A': case 'a': return iclaRangeAll;
-        case 'V': case 'v': return iclaRangeV;
-        case 'I': case 'i': return iclaRangeI;
+        case 'A': case 'a': return IclaRangeAll;
+        case 'V': case 'v': return IclaRangeV;
+        case 'I': case 'i': return IclaRangeI;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaRangeAll;
+            return IclaRangeAll;
     }
 }
 
@@ -170,11 +170,11 @@ extern "C"
 icla_vect_t icla_vect_const( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'Q': case 'q': return iclaQ;
-        case 'P': case 'p': return iclaP;
+        case 'Q': case 'q': return IclaQ;
+        case 'P': case 'p': return IclaP;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaQ;
+            return IclaQ;
     }
 }
 
@@ -182,11 +182,11 @@ extern "C"
 icla_direct_t icla_direct_const( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'F': case 'f': return iclaForward;
-        case 'B': case 'b': return iclaBackward;
+        case 'F': case 'f': return IclaForward;
+        case 'B': case 'b': return IclaBackward;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaForward;
+            return IclaForward;
     }
 }
 
@@ -194,11 +194,11 @@ extern "C"
 icla_storev_t icla_storev_const( char lapack_char )
 {
     switch( lapack_char ) {
-        case 'C': case 'c': return iclaColumnwise;
-        case 'R': case 'r': return iclaRowwise;
+        case 'C': case 'c': return IclaColumnwise;
+        case 'R': case 'r': return IclaRowwise;
         default:
             fprintf( stderr, "Error in %s: unexpected value %c\n", __func__, lapack_char );
-            return iclaColumnwise;
+            return IclaColumnwise;
     }
 }
 
@@ -407,55 +407,55 @@ const char* lapack_const_str( int icla_const )
 extern "C"
 const char* lapack_bool_const( icla_bool_t icla_const )
 {
-    assert( icla_const >= iclaFalse );
-    assert( icla_const <= iclaTrue  );
+    assert( icla_const >= IclaFalse );
+    assert( icla_const <= IclaTrue  );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_order_const( icla_order_t icla_const )
 {
-    assert( icla_const >= iclaRowMajor );
-    assert( icla_const <= iclaColMajor );
+    assert( icla_const >= IclaRowMajor );
+    assert( icla_const <= IclaColMajor );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_trans_const( icla_trans_t icla_const )
 {
-    assert( icla_const >= iclaNoTrans   );
-    assert( icla_const <= iclaConjTrans );
+    assert( icla_const >= IclaNoTrans   );
+    assert( icla_const <= IclaConjTrans );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_uplo_const ( icla_uplo_t icla_const )
 {
-    assert( icla_const >= iclaUpper );
-    assert( icla_const <= iclaFull  );
+    assert( icla_const >= IclaUpper );
+    assert( icla_const <= IclaFull  );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_diag_const ( icla_diag_t icla_const )
 {
-    assert( icla_const >= iclaNonUnit );
-    assert( icla_const <= iclaUnit    );
+    assert( icla_const >= IclaNonUnit );
+    assert( icla_const <= IclaUnit    );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_side_const ( icla_side_t icla_const )
 {
-    assert( icla_const >= iclaLeft  );
-    assert( icla_const <= iclaBothSides );
+    assert( icla_const >= IclaLeft  );
+    assert( icla_const <= IclaBothSides );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_norm_const  ( icla_norm_t   icla_const )
 {
-    assert( icla_const >= iclaOneNorm     );
+    assert( icla_const >= IclaOneNorm     );
     assert( icla_const <= iclaRealMaxNorm );
     return icla2lapack_constants[ icla_const ];
 }
@@ -463,64 +463,64 @@ const char* lapack_norm_const  ( icla_norm_t   icla_const )
 extern "C"
 const char* lapack_dist_const  ( icla_dist_t   icla_const )
 {
-    assert( icla_const >= iclaDistUniform );
-    assert( icla_const <= iclaDistNormal );
+    assert( icla_const >= IclaDistUniform );
+    assert( icla_const <= IclaDistNormal );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_sym_const   ( icla_sym_t    icla_const )
 {
-    assert( icla_const >= iclaHermGeev );
-    assert( icla_const <= iclaSymPosv  );
+    assert( icla_const >= IclaHermGeev );
+    assert( icla_const <= IclaSymPosv  );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_pack_const  ( icla_pack_t   icla_const )
 {
-    assert( icla_const >= iclaNoPacking );
-    assert( icla_const <= iclaPackAll   );
+    assert( icla_const >= IclaNoPacking );
+    assert( icla_const <= IclaPackAll   );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_vec_const   ( icla_vec_t    icla_const )
 {
-    assert( icla_const >= iclaNoVec );
-    assert( icla_const <= iclaOverwriteVec );
+    assert( icla_const >= IclaNoVec );
+    assert( icla_const <= IclaOverwriteVec );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_range_const ( icla_range_t  icla_const )
 {
-    assert( icla_const >= iclaRangeAll );
-    assert( icla_const <= iclaRangeI   );
+    assert( icla_const >= IclaRangeAll );
+    assert( icla_const <= IclaRangeI   );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_vect_const( icla_vect_t icla_const )
 {
-    assert( icla_const >= iclaQ );
-    assert( icla_const <= iclaP );
+    assert( icla_const >= IclaQ );
+    assert( icla_const <= IclaP );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_direct_const( icla_direct_t icla_const )
 {
-    assert( icla_const >= iclaForward );
-    assert( icla_const <= iclaBackward );
+    assert( icla_const >= IclaForward );
+    assert( icla_const <= IclaBackward );
     return icla2lapack_constants[ icla_const ];
 }
 
 extern "C"
 const char* lapack_storev_const( icla_storev_t icla_const )
 {
-    assert( icla_const >= iclaColumnwise );
-    assert( icla_const <= iclaRowwise    );
+    assert( icla_const >= IclaColumnwise );
+    assert( icla_const <= IclaRowwise    );
     return icla2lapack_constants[ icla_const ];
 }
 
@@ -572,32 +572,32 @@ const int icla2cublas_constants[] =
 extern "C"
 cublasOperation_t    cublas_trans_const ( icla_trans_t icla_const )
 {
-    assert( icla_const >= iclaNoTrans   );
-    assert( icla_const <= iclaConjTrans );
+    assert( icla_const >= IclaNoTrans   );
+    assert( icla_const <= IclaConjTrans );
     return (cublasOperation_t)  icla2cublas_constants[ icla_const ];
 }
 
 extern "C"
 cublasFillMode_t     cublas_uplo_const  ( icla_uplo_t icla_const )
 {
-    assert( icla_const >= iclaUpper );
-    assert( icla_const <= iclaLower );
+    assert( icla_const >= IclaUpper );
+    assert( icla_const <= IclaLower );
     return (cublasFillMode_t)   icla2cublas_constants[ icla_const ];
 }
 
 extern "C"
 cublasDiagType_t     cublas_diag_const  ( icla_diag_t icla_const )
 {
-    assert( icla_const >= iclaNonUnit );
-    assert( icla_const <= iclaUnit    );
+    assert( icla_const >= IclaNonUnit );
+    assert( icla_const <= IclaUnit    );
     return (cublasDiagType_t)   icla2cublas_constants[ icla_const ];
 }
 
 extern "C"
 cublasSideMode_t     cublas_side_const  ( icla_side_t icla_const )
 {
-    assert( icla_const >= iclaLeft  );
-    assert( icla_const <= iclaRight );
+    assert( icla_const >= IclaLeft  );
+    assert( icla_const <= IclaRight );
     return (cublasSideMode_t)   icla2cublas_constants[ icla_const ];
 }
 
@@ -651,32 +651,32 @@ const int icla2hipblas_constants[] =
 extern "C"
 hipblasOperation_t    hipblas_trans_const ( icla_trans_t icla_const )
 {
-    assert( icla_const >= iclaNoTrans   );
-    assert( icla_const <= iclaConjTrans );
+    assert( icla_const >= IclaNoTrans   );
+    assert( icla_const <= IclaConjTrans );
     return (hipblasOperation_t)  icla2hipblas_constants[ icla_const ];
 }
 
 extern "C"
 hipblasFillMode_t     hipblas_uplo_const  ( icla_uplo_t icla_const )
 {
-    assert( icla_const >= iclaUpper );
-    assert( icla_const <= iclaLower );
+    assert( icla_const >= IclaUpper );
+    assert( icla_const <= IclaLower );
     return (hipblasFillMode_t)   icla2hipblas_constants[ icla_const ];
 }
 
 extern "C"
 hipblasDiagType_t     hipblas_diag_const  ( icla_diag_t icla_const )
 {
-    assert( icla_const >= iclaNonUnit );
-    assert( icla_const <= iclaUnit    );
+    assert( icla_const >= IclaNonUnit );
+    assert( icla_const <= IclaUnit    );
     return (hipblasDiagType_t)   icla2hipblas_constants[ icla_const ];
 }
 
 extern "C"
 hipblasSideMode_t     hipblas_side_const  ( icla_side_t icla_const )
 {
-    assert( icla_const >= iclaLeft  );
-    assert( icla_const <= iclaRight );
+    assert( icla_const >= IclaLeft  );
+    assert( icla_const <= IclaRight );
     return (hipblasSideMode_t)   icla2hipblas_constants[ icla_const ];
 }
 
@@ -687,45 +687,45 @@ hipblasSideMode_t     hipblas_side_const  ( icla_side_t icla_const )
 extern "C"
 enum CBLAS_ORDER     cblas_order_const  ( icla_order_t icla_const )
 {
-    assert( icla_const >= iclaRowMajor );
-    assert( icla_const <= iclaColMajor );
-    assert( (int)iclaRowMajor == CblasRowMajor );
+    assert( icla_const >= IclaRowMajor );
+    assert( icla_const <= IclaColMajor );
+    assert( (int)IclaRowMajor == CblasRowMajor );
     return (enum CBLAS_ORDER)     icla_const;
 }
 
 extern "C"
 enum CBLAS_TRANSPOSE cblas_trans_const  ( icla_trans_t icla_const )
 {
-    assert( icla_const >= iclaNoTrans   );
-    assert( icla_const <= iclaConjTrans );
-    assert( (int)iclaNoTrans == CblasNoTrans );
+    assert( icla_const >= IclaNoTrans   );
+    assert( icla_const <= IclaConjTrans );
+    assert( (int)IclaNoTrans == CblasNoTrans );
     return (enum CBLAS_TRANSPOSE) icla_const;
 }
 
 extern "C"
 enum CBLAS_UPLO      cblas_uplo_const   ( icla_uplo_t icla_const )
 {
-    assert( icla_const >= iclaUpper );
-    assert( icla_const <= iclaLower );
-    assert( (int)iclaUpper == CblasUpper );
+    assert( icla_const >= IclaUpper );
+    assert( icla_const <= IclaLower );
+    assert( (int)IclaUpper == CblasUpper );
     return (enum CBLAS_UPLO)      icla_const;
 }
 
 extern "C"
 enum CBLAS_DIAG      cblas_diag_const   ( icla_diag_t icla_const )
 {
-    assert( icla_const >= iclaNonUnit );
-    assert( icla_const <= iclaUnit    );
-    assert( (int)iclaUnit == CblasUnit );
+    assert( icla_const >= IclaNonUnit );
+    assert( icla_const <= IclaUnit    );
+    assert( (int)IclaUnit == CblasUnit );
     return (enum CBLAS_DIAG)      icla_const;
 }
 
 extern "C"
 enum CBLAS_SIDE      cblas_side_const   ( icla_side_t icla_const )
 {
-    assert( icla_const >= iclaLeft  );
-    assert( icla_const <= iclaRight );
-    assert( (int)iclaLeft == CblasLeft );
+    assert( icla_const >= IclaLeft  );
+    assert( icla_const <= IclaRight );
+    assert( (int)IclaLeft == CblasLeft );
     return (enum CBLAS_SIDE)      icla_const;
 }
 

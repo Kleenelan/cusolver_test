@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_D_H
 #define ICLABLAS_D_H
 
@@ -10,6 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 void
 iclablas_dtranspose_inplace(
@@ -125,6 +127,8 @@ iclablas_dsetmatrix_transpose_mgpu(
     iclaDouble_ptr    dwork[], icla_int_t lddw,
     icla_queue_t queues[][2] );
 
+
+
 icla_int_t
 icla_dhtodhe(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -132,6 +136,8 @@ icla_dhtodhe(
     iclaDouble_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][10],
     icla_int_t *info );
+
+
 
 icla_int_t
 icla_dhtodpo(
@@ -142,6 +148,8 @@ icla_dhtodpo(
     icla_queue_t queues[][3],
     icla_int_t *info );
 
+
+
 icla_int_t
 icla_ddtohpo(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -150,6 +158,7 @@ icla_ddtohpo(
     iclaDouble_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][3],
     icla_int_t *info );
+
 
 void
 iclablas_dsymm_mgpu(
@@ -161,10 +170,11 @@ iclablas_dsymm_mgpu(
     iclaDouble_ptr dC[],    icla_int_t lddc,
     iclaDouble_ptr dwork[], icla_int_t dworksiz,
 
+
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue,
-    icla_event_t events[][iclaMaxGPUs*iclaMaxGPUs+10], icla_int_t nevents,
-    icla_int_t gnode[iclaMaxGPUs][iclaMaxGPUs+2], icla_int_t ncmplx );
+    icla_event_t events[][IclaMaxGPUs*IclaMaxGPUs+10], icla_int_t nevents,
+    icla_int_t gnode[IclaMaxGPUs][IclaMaxGPUs+2], icla_int_t ncmplx );
 
 icla_int_t
 iclablas_dsymv_mgpu(
@@ -205,6 +215,7 @@ icla_dsytrs_gpu(
     icla_int_t *info,
     icla_queue_t queue );
 
+
 void
 icla_dsyr2k_mgpu(
     icla_int_t ngpu,
@@ -226,6 +237,7 @@ iclablas_dsyr2k_mgpu2(
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue );
 
+
 void
 icla_dsyrk_mgpu(
     icla_int_t ngpu,
@@ -236,6 +248,7 @@ icla_dsyrk_mgpu(
     iclaDouble_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
+
 void
 icla_dsyrk_mgpu2(
     icla_int_t ngpu,
@@ -245,6 +258,7 @@ icla_dsyrk_mgpu2(
     double beta,
     iclaDouble_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
+
 
 icla_int_t
 iclablas_ddiinertia(
@@ -534,6 +548,7 @@ icla_dlarfx_gpu(
     iclaDouble_ptr work,
     icla_queue_t queue );
 
+
 void
 iclablas_daxpycp(
     icla_int_t m,
@@ -608,6 +623,7 @@ iclablas_dnrm2_row_check_adjust(
     iclaDouble_ptr dlsticc,
     icla_queue_t queue );
 
+
 void
 iclablas_dtrsv(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -615,6 +631,7 @@ iclablas_dtrsv(
     iclaDouble_const_ptr dA, icla_int_t ldda,
     iclaDouble_ptr       db, icla_int_t incb,
     icla_queue_t queue );
+
 
 void
 iclablas_dtrsv_outofplace(
@@ -664,6 +681,7 @@ iclablas_dsymv(
     double beta,
     iclaDouble_ptr       dy, icla_int_t incy,
     icla_queue_t queue );
+
 
 icla_int_t
 iclablas_dsymv_work(
@@ -843,20 +861,36 @@ icla_dcopyvector_async_internal(
                                      func, file, line );
 }
 
+
+
+
+
+
+
 #define icla_dsetmatrix(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_dsetmatrix_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_dgetmatrix(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_dgetmatrix_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_dcopymatrix(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_dcopymatrix_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_dsetmatrix_async(           m, n, hA_src, lda, dB_dst, lddb, queue ) \
         icla_dsetmatrix_async_internal(  m, n, hA_src, lda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_dgetmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb, queue ) \
         icla_dgetmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_dcopymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_dcopymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
@@ -944,6 +978,10 @@ icla_dcopymatrix_async_internal(
                                      dB_dst, lddb, queue,
                                      func, file, line );
 }
+
+
+
+
 
 icla_int_t
 icla_idamax(
@@ -1082,6 +1120,9 @@ icla_dswap_native(
     icla_int_t step, icla_int_t* ipiv,
     icla_queue_t queue);
 
+
+
+
 void
 icla_dgemv(
     icla_trans_t transA,
@@ -1196,6 +1237,9 @@ icla_dtrsv(
     iclaDouble_const_ptr dA, icla_int_t ldda,
     iclaDouble_ptr       dx, icla_int_t incx,
     icla_queue_t queue );
+
+
+
 
 void
 icla_dgemm(
@@ -1403,4 +1447,3 @@ icla_dpotf2_lpin(
 #undef ICLA_REAL
 
 #endif
-

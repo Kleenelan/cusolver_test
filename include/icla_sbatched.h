@@ -1232,6 +1232,7 @@ icla_spotrf_v33_batched(
     icla_int_t *info_array,
     icla_int_t batchCount, icla_queue_t queue);
 
+
 void
 blas_slacpy_batched(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -1295,6 +1296,7 @@ blas_ssyr2k_batched(
                               float const * const * hB_array, icla_int_t ldb,
     float beta,              float               **hC_array, icla_int_t ldc,
     icla_int_t batchCount );
+
 
 void
 sset_stepinit_ipiv(

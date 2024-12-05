@@ -20,18 +20,18 @@ icla_int_t icla_num_gpus( void )
         char* endptr;
         ngpu = strtol( ngpu_str, &endptr, 10 );
         icla_int_t ndevices;
-        icla_device_t devices[ iclaMaxGPUs ];
-        icla_getdevices( devices, iclaMaxGPUs, &ndevices );
+        icla_device_t devices[ IclaMaxGPUs ];
+        icla_getdevices( devices, IclaMaxGPUs, &ndevices );
 
         if ( ngpu < 1 || *endptr != '\0' ) {
             ngpu = 1;
             fprintf( stderr, "$ICLA_NUM_GPUS='%s' is an invalid number; using %lld GPU.\n",
                      ngpu_str, (long long) ngpu );
         }
-        else if ( ngpu > iclaMaxGPUs || ngpu > ndevices ) {
-            ngpu = min( ndevices, iclaMaxGPUs );
-            fprintf( stderr, "$ICLA_NUM_GPUS='%s' exceeds iclaMaxGPUs=%d or available GPUs=%lld; using %lld GPUs.\n",
-                     ngpu_str, iclaMaxGPUs, (long long) ndevices, (long long) ngpu );
+        else if ( ngpu > IclaMaxGPUs || ngpu > ndevices ) {
+            ngpu = min( ndevices, IclaMaxGPUs );
+            fprintf( stderr, "$ICLA_NUM_GPUS='%s' exceeds IclaMaxGPUs=%d or available GPUs=%lld; using %lld GPUs.\n",
+                     ngpu_str, IclaMaxGPUs, (long long) ndevices, (long long) ngpu );
         }
         assert( 1 <= ngpu && ngpu <= ndevices );
     }
@@ -46,7 +46,7 @@ void icla_swp2pswp( icla_trans_t trans, icla_int_t n, icla_int_t *ipiv, icla_int
     for (i=0; i < n; i++)
         newipiv[i] = -1;
 
-    if (trans == iclaNoTrans) {
+    if (trans == IclaNoTrans) {
         for (i=0; i < n; i++) {
             newind = ipiv[i] - 1;
             if (newipiv[newind] == -1) {

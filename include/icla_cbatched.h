@@ -59,6 +59,7 @@ iclablas_cswapdblk_batched(
     iclaFloatComplex **dB, icla_int_t lddb, icla_int_t incb,
     icla_int_t batchCount, icla_queue_t queue );
 
+
 void
 iclablas_cgemm_batched_core(
     icla_trans_t transA, icla_trans_t transB,
@@ -1232,6 +1233,7 @@ icla_cpotrf_v33_batched(
     icla_int_t *info_array,
     icla_int_t batchCount, icla_queue_t queue);
 
+
 void
 blas_clacpy_batched(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -1295,6 +1297,7 @@ blas_cher2k_batched(
                               iclaFloatComplex const * const * hB_array, icla_int_t ldb,
     float beta,              iclaFloatComplex               **hC_array, icla_int_t ldc,
     icla_int_t batchCount );
+
 
 void
 cset_stepinit_ipiv(

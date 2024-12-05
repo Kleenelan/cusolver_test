@@ -59,6 +59,7 @@ iclablas_zswapdblk_batched(
     iclaDoubleComplex **dB, icla_int_t lddb, icla_int_t incb,
     icla_int_t batchCount, icla_queue_t queue );
 
+
 void
 iclablas_zgemm_batched_core(
     icla_trans_t transA, icla_trans_t transB,
@@ -1232,6 +1233,7 @@ icla_zpotrf_v33_batched(
     icla_int_t *info_array,
     icla_int_t batchCount, icla_queue_t queue);
 
+
 void
 blas_zlacpy_batched(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -1295,6 +1297,7 @@ blas_zher2k_batched(
                               iclaDoubleComplex const * const * hB_array, icla_int_t ldb,
     double beta,              iclaDoubleComplex               **hC_array, icla_int_t ldc,
     icla_int_t batchCount );
+
 
 void
 zset_stepinit_ipiv(

@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_SLAPACK_H
 #define ICLA_SLAPACK_H
 
@@ -148,9 +149,13 @@ extern "C" {
 #define lapackf77_sormrq   FORTRAN_NAME( sormrq, SORMRQ )
 #define lapackf77_sormtr   FORTRAN_NAME( sormtr, SORMTR )
 
+
+
 #ifdef ICLA_WITH_MKL
 #define lapackf77_sgetrf_batch   FORTRAN_NAME( sgetrf_batch, SGETRF_BATCH )
 #endif
+
+
 
 #define lapackf77_sbdt01   FORTRAN_NAME( sbdt01, SBDT01 )
 #define lapackf77_sget22   FORTRAN_NAME( sget22, SGET22 )
@@ -270,6 +275,8 @@ void blasf77_sswap(  const icla_int_t *n,
                      float *x, const icla_int_t *incx,
                      float *y, const icla_int_t *incy );
 
+
+
 void blasf77_ssymm(  const char *side, const char *uplo,
                      const icla_int_t *m, const icla_int_t *n,
                      const float *alpha,
@@ -328,6 +335,8 @@ void blasf77_strsv(  const char *uplo, const char *transa, const char *diag,
                      const float *A, const icla_int_t *lda,
                            float *x, const icla_int_t *incx );
 
+
+
 float icla_cblas_sasum(
     icla_int_t n,
     const float *x, icla_int_t incx );
@@ -345,6 +354,8 @@ float icla_cblas_sdot(
     icla_int_t n,
     const float *x, icla_int_t incx,
     const float *y, icla_int_t incy );
+
+
 
 #ifdef ICLA_REAL
 void   lapackf77_sbdsdc( const char *uplo, const char *compq,
@@ -744,7 +755,6 @@ void   lapackf77_sladiv( float *ret_val,
                          const float *x,
                          const float *y );
 #else
-
 void   lapackf77_sladiv( const float *a, const float *b,
                          const float *c, const float *d,
                          float *p, float *q );
@@ -1113,6 +1123,7 @@ void   lapackf77_sormtr( const char *side, const char *uplo, const char *trans,
                          float *work, const icla_int_t *lwork,
                          icla_int_t *info );
 
+
 void   lapackf77_sstebz( const char *range, const char *order,
                          const icla_int_t *n,
                          const float *vl, const float *vu,
@@ -1166,6 +1177,7 @@ void   lapackf77_slaed4( const icla_int_t *n, const icla_int_t *i,
 
 void   lapackf77_slasrt( const char *id, const icla_int_t *n, float *d,
                          icla_int_t *info );
+
 
 void   lapackf77_sbdt01( const icla_int_t *m, const icla_int_t *n, const icla_int_t *kd,
                          float *A, const icla_int_t *lda,

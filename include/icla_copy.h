@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_COPY_H
 #define ICLA_COPY_H
 
@@ -7,6 +8,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 #define icla_setvector(                 n, elemSize, hx_src, incx, dy_dst, incy, queue ) \
         icla_setvector_internal(        n, elemSize, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
@@ -74,6 +76,10 @@ icla_copyvector_async_internal(
     icla_queue_t queue,
     const char* func, const char* file, int line );
 
+
+
+
+
 #define icla_setmatrix(                 m, n, elemSize, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_setmatrix_internal(        m, n, elemSize, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
@@ -140,20 +146,36 @@ icla_copymatrix_async_internal(
     icla_queue_t queue,
     const char* func, const char* file, int line );
 
+
+
+
+
+
+
 #define icla_isetvector(                 n, hx_src, incx, dy_dst, incy, queue ) \
         icla_isetvector_internal(        n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_igetvector(                 n, dx_src, incx, hy_dst, incy, queue ) \
         icla_igetvector_internal(        n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_icopyvector(                n, dx_src, incx, dy_dst, incy, queue ) \
         icla_icopyvector_internal(       n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_isetvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_isetvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_igetvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_igetvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_icopyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_icopyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
@@ -242,20 +264,36 @@ icla_icopyvector_async_internal(
                                      queue, func, file, line );
 }
 
+
+
+
+
+
+
 #define icla_isetmatrix(                 m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_isetmatrix_internal(        m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_igetmatrix(                 m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_igetmatrix_internal(        m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_icopymatrix(                m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_icopymatrix_internal(       m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_isetmatrix_async(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_isetmatrix_async_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_igetmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_igetmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_icopymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_icopymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
@@ -344,20 +382,36 @@ icla_icopymatrix_async_internal(
                                      queue, func, file, line );
 }
 
+
+
+
+
+
+
 #define icla_index_setvector(                 n, hx_src, incx, dy_dst, incy, queue ) \
         icla_index_setvector_internal(        n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_index_getvector(                 n, dx_src, incx, hy_dst, incy, queue ) \
         icla_index_getvector_internal(        n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_index_copyvector(                n, dx_src, incx, dy_dst, incy, queue ) \
         icla_index_copyvector_internal(       n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_index_setvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_index_setvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_index_getvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_index_getvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_index_copyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_index_copyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
@@ -446,20 +500,35 @@ icla_index_copyvector_async_internal(
                                      queue, func, file, line );
 }
 
+
+
+
+
+
 #define icla_uindex_setvector(                 n, hx_src, incx, dy_dst, incy, queue ) \
         icla_uindex_setvector_internal(        n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_uindex_getvector(                 n, dx_src, incx, hy_dst, incy, queue ) \
         icla_uindex_getvector_internal(        n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_uindex_copyvector(                n, dx_src, incx, dy_dst, incy, queue ) \
         icla_uindex_copyvector_internal(       n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_uindex_setvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_uindex_setvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_uindex_getvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_uindex_getvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_uindex_copyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_uindex_copyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
@@ -548,20 +617,36 @@ icla_uindex_copyvector_async_internal(
                                      queue, func, file, line );
 }
 
+
+
+
+
+
+
 #define icla_index_setmatrix(                 m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_index_setmatrix_internal(        m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_index_getmatrix(                 m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_index_getmatrix_internal(        m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_index_copymatrix(                m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_index_copymatrix_internal(       m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_index_setmatrix_async(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_index_setmatrix_async_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_index_getmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_index_getmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_index_copymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_index_copymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
@@ -655,4 +740,3 @@ icla_index_copymatrix_async_internal(
 #endif
 
 #endif
-

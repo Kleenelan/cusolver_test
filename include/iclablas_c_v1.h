@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_C_V1_H
 #define ICLABLAS_C_V1_H
 
@@ -14,6 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 void
 iclablas_ctranspose_inplace_v1(
@@ -51,6 +53,7 @@ iclablas_csetmatrix_transpose_v1(
     iclaFloatComplex_ptr    dAT,   icla_int_t ldda,
     iclaFloatComplex_ptr    dwork, icla_int_t lddwork, icla_int_t nb );
 
+
 void
 iclablas_cprbt_v1(
     icla_int_t n,
@@ -69,6 +72,7 @@ iclablas_cprbt_mtv_v1(
     icla_int_t n, icla_int_t nrhs,
     iclaFloatComplex_ptr du,
     iclaFloatComplex_ptr db, icla_int_t lddb);
+
 
 void
 icla_cgetmatrix_1D_col_bcyclic_v1(
@@ -97,6 +101,7 @@ icla_csetmatrix_1D_row_bcyclic_v1(
     const iclaFloatComplex *hA,   icla_int_t lda,
     iclaFloatComplex_ptr    dA[], icla_int_t ldda,
     icla_int_t ngpu, icla_int_t nb );
+
 
 void
 iclablas_cgeadd_v1(
@@ -349,6 +354,7 @@ icla_clarfx_gpu_v1(
     iclaFloatComplex_ptr dT, icla_int_t iter,
     iclaFloatComplex_ptr work );
 
+
 void
 iclablas_caxpycp_v1(
     icla_int_t m,
@@ -377,6 +383,7 @@ iclablas_cswapdblk_v1(
     icla_int_t n, icla_int_t nb,
     iclaFloatComplex_ptr dA, icla_int_t ldda, icla_int_t inca,
     iclaFloatComplex_ptr dB, icla_int_t lddb, icla_int_t incb );
+
 
 void
 iclablas_cgemv_v1(
@@ -412,6 +419,7 @@ iclablas_csymv_v1(
     iclaFloatComplex_const_ptr dx, icla_int_t incx,
     iclaFloatComplex beta,
     iclaFloatComplex_ptr       dy, icla_int_t incy );
+
 
 void
 iclablas_cgemm_v1(
@@ -568,6 +576,10 @@ icla_ccopyvector_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
 #define icla_csetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_csetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
 
@@ -616,15 +628,22 @@ icla_ccopymatrix_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
+
 icla_int_t
 icla_icamax_v1(
     icla_int_t n,
     iclaFloatComplex_const_ptr dx, icla_int_t incx );
 
+
 icla_int_t
 icla_icamin_v1(
     icla_int_t n,
     iclaFloatComplex_const_ptr dx, icla_int_t incx );
+
 
 float
 icla_scasum_v1(
@@ -644,17 +663,20 @@ icla_ccopy_v1(
     iclaFloatComplex_const_ptr dx, icla_int_t incx,
     iclaFloatComplex_ptr       dy, icla_int_t incy );
 
+
 iclaFloatComplex
 icla_cdotc_v1(
     icla_int_t n,
     iclaFloatComplex_const_ptr dx, icla_int_t incx,
     iclaFloatComplex_const_ptr dy, icla_int_t incy );
 
+
 iclaFloatComplex
 icla_cdotu_v1(
     icla_int_t n,
     iclaFloatComplex_const_ptr dx, icla_int_t incx,
     iclaFloatComplex_const_ptr dy, icla_int_t incy );
+
 
 float
 icla_scnrm2_v1(
@@ -707,6 +729,9 @@ icla_cswap_v1(
     icla_int_t n,
     iclaFloatComplex_ptr dx, icla_int_t incx,
     iclaFloatComplex_ptr dy, icla_int_t incy );
+
+
+
 
 void
 icla_cgemv_v1(
@@ -774,6 +799,9 @@ icla_ctrsv_v1(
     icla_int_t n,
     iclaFloatComplex_const_ptr dA, icla_int_t ldda,
     iclaFloatComplex_ptr       dx, icla_int_t incx );
+
+
+
 
 void
 icla_cgemm_v1(
@@ -859,6 +887,7 @@ icla_ctrsm_v1(
     iclaFloatComplex_const_ptr dA, icla_int_t ldda,
     iclaFloatComplex_ptr       dB, icla_int_t lddb );
 
+
 #ifdef __cplusplus
 }
 #endif
@@ -866,4 +895,3 @@ icla_ctrsm_v1(
 #undef ICLA_COMPLEX
 
 #endif
-
