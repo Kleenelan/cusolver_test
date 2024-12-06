@@ -461,22 +461,23 @@ float  icla_cabsf( iclaFloatComplex  x );
     typedef cl_mem iclaDoubleComplex_const_ptr;
 #else
 
-    typedef void               *icla_ptr;
+    typedef void              *icla_ptr;
+    typedef bool              *iclaBool_ptr;
     typedef icla_int_t        *iclaInt_ptr;
     typedef icla_index_t      *iclaIndex_ptr;
     typedef icla_uindex_t     *iclaUIndex_ptr;
-    typedef float              *iclaFloat_ptr;
-    typedef double             *iclaDouble_ptr;
+    typedef float             *iclaFloat_ptr;
+    typedef double            *iclaDouble_ptr;
     typedef iclaFloatComplex  *iclaFloatComplex_ptr;
     typedef iclaDoubleComplex *iclaDoubleComplex_ptr;
     typedef iclaHalf          *iclaHalf_ptr;
 
-    typedef void               const *icla_const_ptr;
+    typedef void              const *icla_const_ptr;
     typedef icla_int_t        const *iclaInt_const_ptr;
     typedef icla_index_t      const *iclaIndex_const_ptr;
     typedef icla_uindex_t     const *iclaUIndex_const_ptr;
-    typedef float              const *iclaFloat_const_ptr;
-    typedef double             const *iclaDouble_const_ptr;
+    typedef float             const *iclaFloat_const_ptr;
+    typedef double            const *iclaDouble_const_ptr;
     typedef iclaFloatComplex  const *iclaFloatComplex_const_ptr;
     typedef iclaDoubleComplex const *iclaDoubleComplex_const_ptr;
     typedef iclaHalf          const *iclaHalf_const_ptr;

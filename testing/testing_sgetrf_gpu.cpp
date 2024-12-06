@@ -143,6 +143,10 @@ int main( int argc, char** argv)
     icla_getdevice( &cdev );
     icla_queue_create( cdev, &the_queue );
 
+    iclaInt_ptr success_array = NULL;
+    icla_imalloc_cpu( &success_array, opts.ntest*opts.niter );
+    memset( success_array, -1, opts.ntest*opts.niter*sizeof(icla_int_t) );
+
     printf("%% version %lld\n", (long long) opts.version );
     if ( opts.check == 2 ) {
         printf("%%   M     N   CPU Gflop/s (sec)   GPU Gflop/s (sec)   |Ax-b|/(N*|A|*|x|)\n");
@@ -209,13 +213,13 @@ int main( int argc, char** argv)
             if ( opts.check == 2 ) {
                 icla_sgetmatrix( M, N, d_A, ldda, h_A, lda, opts.queue );
                 error = get_residual( opts, M, N, h_A, lda, ipiv );
-                printf("   %8.2e   %s\n", error, (error < tol ? "ok" : "failed"));
+                printf("   %8.2e   %s\n", error, (error < tol ? (success_array[itest*opts.niter + iter] = 0, "ok") : (success_array[itest*opts.niter + iter] = -1, "failed")));
                 status += ! (error < tol);
             }
             else if ( opts.check ) {
                 icla_sgetmatrix( M, N, d_A, ldda, h_A, lda, opts.queue );
                 error = get_LU_error( opts, M, N, h_A, lda, ipiv );
-                printf("   %8.2e   %s\n", error, (error < tol ? "ok" : "failed"));
+                printf("   %8.2e   %s\n", error, (error < tol ? (success_array[itest*opts.niter + iter] = 0, "ok") : (success_array[itest*opts.niter + iter] = -1, "failed")));
                 status += ! (error < tol);
             }
             else {
@@ -231,6 +235,16 @@ int main( int argc, char** argv)
         if ( opts.niter > 1 ) {
             printf( "\n" );
         }
+    }
+    if ( opts.check || opts.check == 2) {
+        printf("\n\nTest status:\n");
+        for( int itest = 0; itest < opts.ntest; ++itest ) {
+            for( int iter = 0; iter < opts.niter; ++iter ) {
+                printf("(%d, %s) ", (itest*opts.niter + iter), (success_array[itest*opts.niter + iter]==0? "OK" : "FAILED"));
+            }
+            printf(" ");
+        }
+        printf("\n\n");
     }
 
     icla_queue_destroy( the_queue );
