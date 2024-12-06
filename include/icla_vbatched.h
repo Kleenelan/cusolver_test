@@ -1,8 +1,12 @@
 
+
 #ifndef ICLA_VBATCHED_H
 #define ICLA_VBATCHED_H
 
 #include "icla_types.h"
+
+
+
 
 #include "icla_zvbatched.h"
 #include "icla_cvbatched.h"
@@ -13,9 +17,11 @@
 extern "C" {
 #endif
 
+
 void icla_getrf_vbatched_setup(
     icla_int_t *m, icla_int_t *n, icla_int_t *stats,
     icla_int_t batchCount, icla_queue_t queue );
+
 
 void
 setup_pivinfo_vbatched(
@@ -25,11 +31,13 @@ setup_pivinfo_vbatched(
     icla_int_t max_m, icla_int_t nb, icla_int_t batchCount,
     icla_queue_t queue);
 
+
 void
 adjust_ipiv_vbatched(
     icla_int_t **ipiv_array, icla_int_t ipiv_offset,
     icla_int_t *minmn, icla_int_t max_minmn, icla_int_t offset,
     icla_int_t batchCount, icla_queue_t queue);
+
 
 icla_int_t
 icla_getrf_vbatched_checker(
@@ -41,6 +49,7 @@ icla_potrf_vbatched_checker(
         icla_uplo_t uplo,
         icla_int_t* n, icla_int_t* ldda,
         icla_int_t batchCount, icla_queue_t queue );
+
 
 icla_int_t
 icla_gemm_vbatched_checker(
@@ -100,6 +109,7 @@ icla_hemm_vbatched_checker(
         icla_int_t* ldda, icla_int_t* lddb, icla_int_t* lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
+
 icla_int_t
 icla_gemv_vbatched_checker(
         icla_trans_t trans,
@@ -113,11 +123,13 @@ icla_hemv_vbatched_checker(
         icla_int_t* n, icla_int_t* ldda, icla_int_t* incx, icla_int_t* incy,
         icla_int_t batchCount, icla_queue_t queue );
 
+
 icla_int_t
 icla_axpy_vbatched_checker(
         icla_int_t *n,
         icla_int_t *incx, icla_int_t *incy,
         icla_int_t batchCount, icla_queue_t queue);
+
 
 void icla_imax_size_1(icla_int_t *n, icla_int_t l, icla_queue_t queue);
 
@@ -125,10 +137,12 @@ void icla_imax_size_2(icla_int_t *m, icla_int_t *n, icla_int_t l, icla_queue_t q
 
 void icla_imax_size_3(icla_int_t *m, icla_int_t *n, icla_int_t *k, icla_int_t l, icla_queue_t queue);
 
+
 icla_int_t
 icla_ivec_max( icla_int_t vecsize,
                   icla_int_t* x,
                   icla_int_t* work, icla_int_t lwork, icla_queue_t queue);
+
 
 icla_int_t
 icla_isum_reduce( icla_int_t vecsize,
@@ -243,6 +257,7 @@ icla_imax_size_3(icla_int_t *m, icla_int_t *n, icla_int_t *k, icla_int_t l, icla
 #ifdef __cplusplus
 }
 #endif
+
 
 #endif
 

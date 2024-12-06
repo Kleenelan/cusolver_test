@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_ZLAPACK_H
 #define ICLA_ZLAPACK_H
 
@@ -10,6 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 #define blasf77_izamax     FORTRAN_NAME( izamax, IZAMAX )
 #define blasf77_zaxpy      FORTRAN_NAME( zaxpy,  ZAXPY  )
@@ -148,9 +150,13 @@ extern "C" {
 #define lapackf77_zunmrq   FORTRAN_NAME( zunmrq, ZUNMRQ )
 #define lapackf77_zunmtr   FORTRAN_NAME( zunmtr, ZUNMTR )
 
+
+
 #ifdef ICLA_WITH_MKL
 #define lapackf77_zgetrf_batch   FORTRAN_NAME( zgetrf_batch, ZGETRF_BATCH )
 #endif
+
+
 
 #define lapackf77_zbdt01   FORTRAN_NAME( zbdt01, ZBDT01 )
 #define lapackf77_zget22   FORTRAN_NAME( zget22, ZGET22 )
@@ -270,6 +276,8 @@ void blasf77_zswap(  const icla_int_t *n,
                      iclaDoubleComplex *x, const icla_int_t *incx,
                      iclaDoubleComplex *y, const icla_int_t *incy );
 
+
+
 void blasf77_zsymm(  const char *side, const char *uplo,
                      const icla_int_t *m, const icla_int_t *n,
                      const iclaDoubleComplex *alpha,
@@ -328,6 +336,7 @@ void blasf77_ztrsv(  const char *uplo, const char *transa, const char *diag,
                      const iclaDoubleComplex *A, const icla_int_t *lda,
                            iclaDoubleComplex *x, const icla_int_t *incx );
 
+
 double icla_cblas_dzasum(
     icla_int_t n,
     const iclaDoubleComplex *x, icla_int_t incx );
@@ -345,6 +354,7 @@ iclaDoubleComplex icla_cblas_zdotu(
     icla_int_t n,
     const iclaDoubleComplex *x, icla_int_t incx,
     const iclaDoubleComplex *y, icla_int_t incy );
+
 
 #ifdef ICLA_REAL
 void   lapackf77_dbdsdc( const char *uplo, const char *compq,
@@ -744,7 +754,6 @@ void   lapackf77_zladiv( iclaDoubleComplex *ret_val,
                          const iclaDoubleComplex *x,
                          const iclaDoubleComplex *y );
 #else
-
 void   lapackf77_zladiv( const double *a, const double *b,
                          const double *c, const double *d,
                          double *p, double *q );
@@ -1112,6 +1121,7 @@ void   lapackf77_zunmtr( const char *side, const char *uplo, const char *trans,
                          iclaDoubleComplex *C, const icla_int_t *ldc,
                          iclaDoubleComplex *work, const icla_int_t *lwork,
                          icla_int_t *info );
+
 
 void   lapackf77_dstebz( const char *range, const char *order,
                          const icla_int_t *n,

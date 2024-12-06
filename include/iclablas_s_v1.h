@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_S_V1_H
 #define ICLABLAS_S_V1_H
 
@@ -14,6 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 void
 iclablas_stranspose_inplace_v1(
@@ -568,6 +570,10 @@ icla_scopyvector_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
 #define icla_ssetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_ssetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
 
@@ -616,15 +622,22 @@ icla_scopymatrix_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
+
 icla_int_t
 icla_isamax_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx );
 
+
 icla_int_t
 icla_isamin_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx );
+
 
 float
 icla_sasum_v1(
@@ -644,17 +657,20 @@ icla_scopy_v1(
     iclaFloat_const_ptr dx, icla_int_t incx,
     iclaFloat_ptr       dy, icla_int_t incy );
 
-float
-icla_sdot_v1(
-    icla_int_t n,
-    iclaFloat_const_ptr dx, icla_int_t incx,
-    iclaFloat_const_ptr dy, icla_int_t incy );
 
 float
 icla_sdot_v1(
     icla_int_t n,
     iclaFloat_const_ptr dx, icla_int_t incx,
     iclaFloat_const_ptr dy, icla_int_t incy );
+
+
+float
+icla_sdot_v1(
+    icla_int_t n,
+    iclaFloat_const_ptr dx, icla_int_t incx,
+    iclaFloat_const_ptr dy, icla_int_t incy );
+
 
 float
 icla_snrm2_v1(
@@ -707,6 +723,9 @@ icla_sswap_v1(
     icla_int_t n,
     iclaFloat_ptr dx, icla_int_t incx,
     iclaFloat_ptr dy, icla_int_t incy );
+
+
+
 
 void
 icla_sgemv_v1(
@@ -774,6 +793,9 @@ icla_strsv_v1(
     icla_int_t n,
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr       dx, icla_int_t incx );
+
+
+
 
 void
 icla_sgemm_v1(
@@ -859,6 +881,7 @@ icla_strsm_v1(
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr       dB, icla_int_t lddb );
 
+
 #ifdef __cplusplus
 }
 #endif
@@ -866,4 +889,3 @@ icla_strsm_v1(
 #undef ICLA_REAL
 
 #endif
-

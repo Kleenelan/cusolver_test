@@ -21,10 +21,10 @@ void check_cgesvd(
     const icla_int_t izero = 0;
     float eps = lapackf77_slamch( "E" );
 
-    if ( jobu == iclaNoVec ) {
+    if ( jobu == IclaNoVec ) {
         U = NULL;
     }
-    if ( jobv == iclaNoVec ) {
+    if ( jobv == IclaNoVec ) {
         VT = NULL;
     }
 
@@ -34,8 +34,8 @@ void check_cgesvd(
     result[3] = -1;
 
     icla_int_t min_mn = min(m, n);
-    icla_int_t n_u  = (jobu == iclaAllVec ? m : min_mn);
-    icla_int_t m_vt = (jobv == iclaAllVec ? n : min_mn);
+    icla_int_t n_u  = (jobu == IclaAllVec ? m : min_mn);
+    icla_int_t m_vt = (jobv == IclaAllVec ? n : min_mn);
 
     assert( lda >= m );
     assert( ldu >= m );

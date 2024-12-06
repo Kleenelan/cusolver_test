@@ -62,6 +62,7 @@ icla_dtrdtype1cbHLsym_withQ_v2(
     icla_int_t sweep, icla_int_t Vblksiz,
     double *work);
 
+
 void
 icla_dtrdtype2cbHLsym_withQ_v2(
     icla_int_t n, icla_int_t nb,
@@ -71,6 +72,7 @@ icla_dtrdtype2cbHLsym_withQ_v2(
     icla_int_t st, icla_int_t ed,
     icla_int_t sweep, icla_int_t Vblksiz,
     double *work);
+
 
 void
 icla_dtrdtype3cbHLsym_withQ_v2(
@@ -115,6 +117,7 @@ icla_dsbtype3cb(icla_int_t n, icla_int_t nb,
                 icla_int_t Vblksiz, icla_int_t wantz,
                 double *work);
 
+
 icla_int_t
 icla_dormqr_2stage_gpu(
     icla_side_t side, icla_trans_t trans, icla_int_t m, icla_int_t n, icla_int_t k,
@@ -132,11 +135,13 @@ icla_dbulge_getstg2size(icla_int_t n, icla_int_t nb, icla_int_t wantz,
                          icla_int_t *blkcnt, icla_int_t *sizTAU2,
                          icla_int_t *sizT2, icla_int_t *sizV2);
 
+
 icla_int_t
 icla_dbulge_getlwstg2(icla_int_t n, icla_int_t threads, icla_int_t wantz,
                        icla_int_t *Vblksiz, icla_int_t *ldv, icla_int_t *ldt,
                        icla_int_t *blkcnt, icla_int_t *sizTAU2,
                        icla_int_t *sizT2, icla_int_t *sizV2);
+
 
 void
 icla_bulge_get_VTsiz(icla_int_t n, icla_int_t nb, icla_int_t threads,
@@ -149,6 +154,8 @@ icla_dsyevdx_getworksize(icla_int_t n, icla_int_t threads,
         icla_int_t *lrwmin,
         #endif
         icla_int_t *liwmin);
+
+
 
 icla_int_t
 icla_dsytrd_bsy2trc_v5(
@@ -166,6 +173,7 @@ icla_dorgqr_2stage_gpu(
     iclaDouble_ptr dT,
     icla_int_t nb,
     icla_int_t *info);
+
 
 #ifdef __cplusplus
 }

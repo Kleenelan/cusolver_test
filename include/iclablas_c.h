@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_C_H
 #define ICLABLAS_C_H
 
@@ -10,6 +11,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 void
 iclablas_ctranspose_inplace(
@@ -125,6 +127,8 @@ iclablas_csetmatrix_transpose_mgpu(
     iclaFloatComplex_ptr    dwork[], icla_int_t lddw,
     icla_queue_t queues[][2] );
 
+
+
 icla_int_t
 icla_chtodhe(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -132,6 +136,8 @@ icla_chtodhe(
     iclaFloatComplex_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][10],
     icla_int_t *info );
+
+
 
 icla_int_t
 icla_chtodpo(
@@ -142,6 +148,8 @@ icla_chtodpo(
     icla_queue_t queues[][3],
     icla_int_t *info );
 
+
+
 icla_int_t
 icla_cdtohpo(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -150,6 +158,8 @@ icla_cdtohpo(
     iclaFloatComplex_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][3],
     icla_int_t *info );
+
+
 
 void
 iclablas_chemm_mgpu(
@@ -161,10 +171,11 @@ iclablas_chemm_mgpu(
     iclaFloatComplex_ptr dC[],    icla_int_t lddc,
     iclaFloatComplex_ptr dwork[], icla_int_t dworksiz,
 
+
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue,
-    icla_event_t events[][iclaMaxGPUs*iclaMaxGPUs+10], icla_int_t nevents,
-    icla_int_t gnode[iclaMaxGPUs][iclaMaxGPUs+2], icla_int_t ncmplx );
+    icla_event_t events[][IclaMaxGPUs*IclaMaxGPUs+10], icla_int_t nevents,
+    icla_int_t gnode[IclaMaxGPUs][IclaMaxGPUs+2], icla_int_t ncmplx );
 
 icla_int_t
 iclablas_chemv_mgpu(
@@ -205,6 +216,7 @@ icla_chetrs_gpu(
     icla_int_t *info,
     icla_queue_t queue );
 
+
 void
 icla_cher2k_mgpu(
     icla_int_t ngpu,
@@ -226,6 +238,7 @@ iclablas_cher2k_mgpu2(
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue );
 
+
 void
 icla_cherk_mgpu(
     icla_int_t ngpu,
@@ -236,6 +249,7 @@ icla_cherk_mgpu(
     iclaFloatComplex_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
+
 void
 icla_cherk_mgpu2(
     icla_int_t ngpu,
@@ -245,6 +259,7 @@ icla_cherk_mgpu2(
     float beta,
     iclaFloatComplex_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
+
 
 icla_int_t
 iclablas_cdiinertia(
@@ -534,6 +549,7 @@ icla_clarfx_gpu(
     iclaFloatComplex_ptr work,
     icla_queue_t queue );
 
+
 void
 iclablas_caxpycp(
     icla_int_t m,
@@ -608,6 +624,7 @@ iclablas_scnrm2_row_check_adjust(
     iclaFloat_ptr dlsticc,
     icla_queue_t queue );
 
+
 void
 iclablas_ctrsv(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -615,6 +632,7 @@ iclablas_ctrsv(
     iclaFloatComplex_const_ptr dA, icla_int_t ldda,
     iclaFloatComplex_ptr       db, icla_int_t incb,
     icla_queue_t queue );
+
 
 void
 iclablas_ctrsv_outofplace(
@@ -665,6 +683,7 @@ iclablas_csymv(
     iclaFloatComplex_ptr       dy, icla_int_t incy,
     icla_queue_t queue );
 
+
 icla_int_t
 iclablas_chemv_work(
     icla_uplo_t uplo, icla_int_t n,
@@ -686,6 +705,7 @@ iclablas_csymv_work(
     iclaFloatComplex_ptr       dy, icla_int_t incy,
     iclaFloatComplex_ptr       dwork, icla_int_t lwork,
     icla_queue_t queue );
+
 
 void
 iclablas_cgemm(
@@ -1403,4 +1423,3 @@ icla_cpotf2_lpin(
 #undef ICLA_COMPLEX
 
 #endif
-

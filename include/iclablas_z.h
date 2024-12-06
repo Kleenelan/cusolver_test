@@ -125,6 +125,8 @@ iclablas_zsetmatrix_transpose_mgpu(
     iclaDoubleComplex_ptr    dwork[], icla_int_t lddw,
     icla_queue_t queues[][2] );
 
+
+
 icla_int_t
 icla_zhtodhe(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -132,6 +134,8 @@ icla_zhtodhe(
     iclaDoubleComplex_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][10],
     icla_int_t *info );
+
+
 
 icla_int_t
 icla_zhtodpo(
@@ -141,6 +145,8 @@ icla_zhtodpo(
     iclaDoubleComplex_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][3],
     icla_int_t *info );
+
+
 
 icla_int_t
 icla_zdtohpo(
@@ -161,10 +167,11 @@ iclablas_zhemm_mgpu(
     iclaDoubleComplex_ptr dC[],    icla_int_t lddc,
     iclaDoubleComplex_ptr dwork[], icla_int_t dworksiz,
 
+
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue,
-    icla_event_t events[][iclaMaxGPUs*iclaMaxGPUs+10], icla_int_t nevents,
-    icla_int_t gnode[iclaMaxGPUs][iclaMaxGPUs+2], icla_int_t ncmplx );
+    icla_event_t events[][IclaMaxGPUs*IclaMaxGPUs+10], icla_int_t nevents,
+    icla_int_t gnode[IclaMaxGPUs][IclaMaxGPUs+2], icla_int_t ncmplx );
 
 icla_int_t
 iclablas_zhemv_mgpu(
@@ -205,6 +212,7 @@ icla_zhetrs_gpu(
     icla_int_t *info,
     icla_queue_t queue );
 
+
 void
 icla_zher2k_mgpu(
     icla_int_t ngpu,
@@ -226,6 +234,7 @@ iclablas_zher2k_mgpu2(
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue );
 
+
 void
 icla_zherk_mgpu(
     icla_int_t ngpu,
@@ -236,6 +245,7 @@ icla_zherk_mgpu(
     iclaDoubleComplex_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
 
+
 void
 icla_zherk_mgpu2(
     icla_int_t ngpu,
@@ -245,6 +255,7 @@ icla_zherk_mgpu2(
     double beta,
     iclaDoubleComplex_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
+
 
 icla_int_t
 iclablas_zdiinertia(
@@ -616,6 +627,7 @@ iclablas_ztrsv(
     iclaDoubleComplex_ptr       db, icla_int_t incb,
     icla_queue_t queue );
 
+
 void
 iclablas_ztrsv_outofplace(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -664,6 +676,7 @@ iclablas_zsymv(
     iclaDoubleComplex beta,
     iclaDoubleComplex_ptr       dy, icla_int_t incy,
     icla_queue_t queue );
+
 
 icla_int_t
 iclablas_zhemv_work(
@@ -741,20 +754,31 @@ iclablas_ztrsm_work(
     iclaDoubleComplex_ptr d_dinvA, icla_int_t dinvA_length,
     icla_queue_t queue );
 
+
 #define icla_zsetvector(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_zsetvector_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_zgetvector(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_zgetvector_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_zcopyvector(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_zcopyvector_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_zsetvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_zsetvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_zgetvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_zgetvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_zcopyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_zcopyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
@@ -843,20 +867,36 @@ icla_zcopyvector_async_internal(
                                      func, file, line );
 }
 
+
+
+
+
+
+
 #define icla_zsetmatrix(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_zsetmatrix_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_zgetmatrix(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_zgetmatrix_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_zcopymatrix(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_zcopymatrix_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_zsetmatrix_async(           m, n, hA_src, lda, dB_dst, lddb, queue ) \
         icla_zsetmatrix_async_internal(  m, n, hA_src, lda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_zgetmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb, queue ) \
         icla_zgetmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_zcopymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_zcopymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
@@ -944,6 +984,10 @@ icla_zcopymatrix_async_internal(
                                      dB_dst, lddb, queue,
                                      func, file, line );
 }
+
+
+
+
 
 icla_int_t
 icla_izamax(
@@ -1082,6 +1126,9 @@ icla_zswap_native(
     icla_int_t step, icla_int_t* ipiv,
     icla_queue_t queue);
 
+
+
+
 void
 icla_zgemv(
     icla_trans_t transA,
@@ -1196,6 +1243,9 @@ icla_ztrsv(
     iclaDoubleComplex_const_ptr dA, icla_int_t ldda,
     iclaDoubleComplex_ptr       dx, icla_int_t incx,
     icla_queue_t queue );
+
+
+
 
 void
 icla_zgemm(
@@ -1403,4 +1453,3 @@ icla_zpotf2_lpin(
 #undef ICLA_COMPLEX
 
 #endif
-

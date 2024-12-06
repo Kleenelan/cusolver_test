@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_DBATCHED_H
 #define ICLA_DBATCHED_H
 
@@ -1232,6 +1233,7 @@ icla_dpotrf_v33_batched(
     icla_int_t *info_array,
     icla_int_t batchCount, icla_queue_t queue);
 
+
 void
 blas_dlacpy_batched(
     icla_uplo_t uplo, icla_int_t m, icla_int_t n,
@@ -1295,6 +1297,7 @@ blas_dsyr2k_batched(
                               double const * const * hB_array, icla_int_t ldb,
     double beta,              double               **hC_array, icla_int_t ldc,
     icla_int_t batchCount );
+
 
 void
 dset_stepinit_ipiv(

@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_S_H
 #define ICLABLAS_S_H
 
@@ -125,6 +126,8 @@ iclablas_ssetmatrix_transpose_mgpu(
     iclaFloat_ptr    dwork[], icla_int_t lddw,
     icla_queue_t queues[][2] );
 
+
+
 icla_int_t
 icla_shtodhe(
     icla_int_t ngpu, icla_uplo_t uplo, icla_int_t n, icla_int_t nb,
@@ -132,6 +135,8 @@ icla_shtodhe(
     iclaFloat_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][10],
     icla_int_t *info );
+
+
 
 icla_int_t
 icla_shtodpo(
@@ -141,6 +146,8 @@ icla_shtodpo(
     iclaFloat_ptr dA[], icla_int_t ldda,
     icla_queue_t queues[][3],
     icla_int_t *info );
+
+
 
 icla_int_t
 icla_sdtohpo(
@@ -161,10 +168,11 @@ iclablas_ssymm_mgpu(
     iclaFloat_ptr dC[],    icla_int_t lddc,
     iclaFloat_ptr dwork[], icla_int_t dworksiz,
 
+
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue,
-    icla_event_t events[][iclaMaxGPUs*iclaMaxGPUs+10], icla_int_t nevents,
-    icla_int_t gnode[iclaMaxGPUs][iclaMaxGPUs+2], icla_int_t ncmplx );
+    icla_event_t events[][IclaMaxGPUs*IclaMaxGPUs+10], icla_int_t nevents,
+    icla_int_t gnode[IclaMaxGPUs][IclaMaxGPUs+2], icla_int_t ncmplx );
 
 icla_int_t
 iclablas_ssymv_mgpu(
@@ -205,6 +213,7 @@ icla_ssytrs_gpu(
     icla_int_t *info,
     icla_queue_t queue );
 
+
 void
 icla_ssyr2k_mgpu(
     icla_int_t ngpu,
@@ -226,6 +235,7 @@ iclablas_ssyr2k_mgpu2(
     icla_int_t ngpu, icla_int_t nb,
     icla_queue_t queues[][20], icla_int_t nqueue );
 
+
 void
 icla_ssyrk_mgpu(
     icla_int_t ngpu,
@@ -235,6 +245,7 @@ icla_ssyrk_mgpu(
     float beta,
     iclaFloat_ptr dC[], icla_int_t lddc, icla_int_t c_offset,
     icla_int_t nqueue, icla_queue_t queues[][10] );
+
 
 void
 icla_ssyrk_mgpu2(
@@ -616,6 +627,7 @@ iclablas_strsv(
     iclaFloat_ptr       db, icla_int_t incb,
     icla_queue_t queue );
 
+
 void
 iclablas_strsv_outofplace(
     icla_uplo_t uplo, icla_trans_t transA, icla_diag_t diag,
@@ -664,6 +676,7 @@ iclablas_ssymv(
     float beta,
     iclaFloat_ptr       dy, icla_int_t incy,
     icla_queue_t queue );
+
 
 icla_int_t
 iclablas_ssymv_work(
@@ -744,17 +757,27 @@ iclablas_strsm_work(
 #define icla_ssetvector(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_ssetvector_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_sgetvector(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_sgetvector_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_scopyvector(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_scopyvector_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_ssetvector_async(           n, hx_src, incx, dy_dst, incy, queue ) \
         icla_ssetvector_async_internal(  n, hx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_sgetvector_async(           n, dx_src, incx, hy_dst, incy, queue ) \
         icla_sgetvector_async_internal(  n, dx_src, incx, hy_dst, incy, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_scopyvector_async(          n, dx_src, incx, dy_dst, incy, queue ) \
         icla_scopyvector_async_internal( n, dx_src, incx, dy_dst, incy, queue, __func__, __FILE__, __LINE__ )
@@ -843,20 +866,36 @@ icla_scopyvector_async_internal(
                                      func, file, line );
 }
 
+
+
+
+
+
+
 #define icla_ssetmatrix(           m, n, hA_src, lda,  dB_dst, lddb, queue ) \
         icla_ssetmatrix_internal(  m, n, hA_src, lda,  dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_sgetmatrix(           m, n, dA_src, ldda, hB_dst, ldb,  queue ) \
         icla_sgetmatrix_internal(  m, n, dA_src, ldda, hB_dst, ldb,  queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_scopymatrix(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_scopymatrix_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_ssetmatrix_async(           m, n, hA_src, lda, dB_dst, lddb, queue ) \
         icla_ssetmatrix_async_internal(  m, n, hA_src, lda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
 
+
+
 #define icla_sgetmatrix_async(           m, n, dA_src, ldda, hB_dst, ldb, queue ) \
         icla_sgetmatrix_async_internal(  m, n, dA_src, ldda, hB_dst, ldb, queue, __func__, __FILE__, __LINE__ )
+
+
 
 #define icla_scopymatrix_async(          m, n, dA_src, ldda, dB_dst, lddb, queue ) \
         icla_scopymatrix_async_internal( m, n, dA_src, ldda, dB_dst, lddb, queue, __func__, __FILE__, __LINE__ )
@@ -944,6 +983,10 @@ icla_scopymatrix_async_internal(
                                      dB_dst, lddb, queue,
                                      func, file, line );
 }
+
+
+
+
 
 icla_int_t
 icla_isamax(
@@ -1082,6 +1125,9 @@ icla_sswap_native(
     icla_int_t step, icla_int_t* ipiv,
     icla_queue_t queue);
 
+
+
+
 void
 icla_sgemv(
     icla_trans_t transA,
@@ -1196,6 +1242,9 @@ icla_strsv(
     iclaFloat_const_ptr dA, icla_int_t ldda,
     iclaFloat_ptr       dx, icla_int_t incx,
     icla_queue_t queue );
+
+
+
 
 void
 icla_sgemm(
@@ -1403,4 +1452,3 @@ icla_spotf2_lpin(
 #undef ICLA_REAL
 
 #endif
-

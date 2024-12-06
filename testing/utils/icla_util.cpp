@@ -167,21 +167,21 @@ icla_opts::icla_opts( icla_opts_t flag )
     this->lapack    = (getenv("ICLA_RUN_LAPACK")     != NULL);
     this->warmup    = (getenv("ICLA_WARMUP")         != NULL);
 
-    this->uplo      = iclaLower;
+    this->uplo      = IclaLower;
 
-    this->transA    = iclaNoTrans;
+    this->transA    = IclaNoTrans;
 
-    this->transB    = iclaNoTrans;
+    this->transB    = IclaNoTrans;
 
-    this->side      = iclaLeft;
+    this->side      = IclaLeft;
 
-    this->diag      = iclaNonUnit;
+    this->diag      = IclaNonUnit;
 
-    this->jobz      = iclaNoVec;
+    this->jobz      = IclaNoVec;
 
-    this->jobvr     = iclaNoVec;
+    this->jobvr     = IclaNoVec;
 
-    this->jobvl     = iclaNoVec;
+    this->jobvl     = IclaNoVec;
 
     this->matrix    = "rand";
     this->cond      = 0;
@@ -249,8 +249,8 @@ void icla_opts::parse_opts( int argc, char** argv )
     printf( usage_short, argv[0] );
 
     icla_int_t ndevices;
-    icla_device_t devices[ iclaMaxGPUs ];
-    icla_getdevices( devices, iclaMaxGPUs, &ndevices );
+    icla_device_t devices[ IclaMaxGPUs ];
+    icla_getdevices( devices, IclaMaxGPUs, &ndevices );
 
     this->ntest = 0;
     for( int i = 1; i < argc; ++i ) {
@@ -343,8 +343,8 @@ void icla_opts::parse_opts( int argc, char** argv )
         }
         else if ( strcmp("--ngpu",    argv[i]) == 0 && i+1 < argc ) {
             this->ngpu = atoi( argv[++i] );
-            icla_assert( this->ngpu <= iclaMaxGPUs,
-                          "error: --ngpu %s exceeds iclaMaxGPUs, %d.\n", argv[i], iclaMaxGPUs );
+            icla_assert( this->ngpu <= IclaMaxGPUs,
+                          "error: --ngpu %s exceeds IclaMaxGPUs, %d.\n", argv[i], IclaMaxGPUs );
             icla_assert( this->ngpu <= ndevices,
                           "error: --ngpu %s exceeds number of CUDA or OpenCL devices, %d.\n", argv[i], ndevices );
 
@@ -470,36 +470,36 @@ void icla_opts::parse_opts( int argc, char** argv )
         else if ( strcmp("-v",         argv[i]) == 0 ||
                   strcmp("--verbose",  argv[i]) == 0 ) { this->verbose += 1;  }
 
-        else if ( strcmp("-L",  argv[i]) == 0 ) { this->uplo = iclaLower; }
-        else if ( strcmp("-U",  argv[i]) == 0 ) { this->uplo = iclaUpper; }
-        else if ( strcmp("-F",  argv[i]) == 0 ) { this->uplo = iclaFull; }
+        else if ( strcmp("-L",  argv[i]) == 0 ) { this->uplo = IclaLower; }
+        else if ( strcmp("-U",  argv[i]) == 0 ) { this->uplo = IclaUpper; }
+        else if ( strcmp("-F",  argv[i]) == 0 ) { this->uplo = IclaFull; }
 
-        else if ( strcmp("-NN", argv[i]) == 0 ) { this->transA = iclaNoTrans;   this->transB = iclaNoTrans;   }
-        else if ( strcmp("-NT", argv[i]) == 0 ) { this->transA = iclaNoTrans;   this->transB = iclaTrans;     }
-        else if ( strcmp("-NC", argv[i]) == 0 ) { this->transA = iclaNoTrans;   this->transB = iclaConjTrans; }
-        else if ( strcmp("-TN", argv[i]) == 0 ) { this->transA = iclaTrans;     this->transB = iclaNoTrans;   }
-        else if ( strcmp("-TT", argv[i]) == 0 ) { this->transA = iclaTrans;     this->transB = iclaTrans;     }
-        else if ( strcmp("-TC", argv[i]) == 0 ) { this->transA = iclaTrans;     this->transB = iclaConjTrans; }
-        else if ( strcmp("-CN", argv[i]) == 0 ) { this->transA = iclaConjTrans; this->transB = iclaNoTrans;   }
-        else if ( strcmp("-CT", argv[i]) == 0 ) { this->transA = iclaConjTrans; this->transB = iclaTrans;     }
-        else if ( strcmp("-CC", argv[i]) == 0 ) { this->transA = iclaConjTrans; this->transB = iclaConjTrans; }
-        else if ( strcmp("-T",  argv[i]) == 0 ) { this->transA = iclaTrans;     }
-        else if ( strcmp("-C",  argv[i]) == 0 ) { this->transA = iclaConjTrans; }
+        else if ( strcmp("-NN", argv[i]) == 0 ) { this->transA = IclaNoTrans;   this->transB = IclaNoTrans;   }
+        else if ( strcmp("-NT", argv[i]) == 0 ) { this->transA = IclaNoTrans;   this->transB = IclaTrans;     }
+        else if ( strcmp("-NC", argv[i]) == 0 ) { this->transA = IclaNoTrans;   this->transB = IclaConjTrans; }
+        else if ( strcmp("-TN", argv[i]) == 0 ) { this->transA = IclaTrans;     this->transB = IclaNoTrans;   }
+        else if ( strcmp("-TT", argv[i]) == 0 ) { this->transA = IclaTrans;     this->transB = IclaTrans;     }
+        else if ( strcmp("-TC", argv[i]) == 0 ) { this->transA = IclaTrans;     this->transB = IclaConjTrans; }
+        else if ( strcmp("-CN", argv[i]) == 0 ) { this->transA = IclaConjTrans; this->transB = IclaNoTrans;   }
+        else if ( strcmp("-CT", argv[i]) == 0 ) { this->transA = IclaConjTrans; this->transB = IclaTrans;     }
+        else if ( strcmp("-CC", argv[i]) == 0 ) { this->transA = IclaConjTrans; this->transB = IclaConjTrans; }
+        else if ( strcmp("-T",  argv[i]) == 0 ) { this->transA = IclaTrans;     }
+        else if ( strcmp("-C",  argv[i]) == 0 ) { this->transA = IclaConjTrans; }
 
-        else if ( strcmp("-SL", argv[i]) == 0 ) { this->side  = iclaLeft;  }
-        else if ( strcmp("-SR", argv[i]) == 0 ) { this->side  = iclaRight; }
+        else if ( strcmp("-SL", argv[i]) == 0 ) { this->side  = IclaLeft;  }
+        else if ( strcmp("-SR", argv[i]) == 0 ) { this->side  = IclaRight; }
 
-        else if ( strcmp("-DN", argv[i]) == 0 ) { this->diag  = iclaNonUnit; }
-        else if ( strcmp("-DU", argv[i]) == 0 ) { this->diag  = iclaUnit;    }
+        else if ( strcmp("-DN", argv[i]) == 0 ) { this->diag  = IclaNonUnit; }
+        else if ( strcmp("-DU", argv[i]) == 0 ) { this->diag  = IclaUnit;    }
 
-        else if ( strcmp("-JN", argv[i]) == 0 ) { this->jobz  = iclaNoVec; }
-        else if ( strcmp("-JV", argv[i]) == 0 ) { this->jobz  = iclaVec;   }
+        else if ( strcmp("-JN", argv[i]) == 0 ) { this->jobz  = IclaNoVec; }
+        else if ( strcmp("-JV", argv[i]) == 0 ) { this->jobz  = IclaVec;   }
 
-        else if ( strcmp("-LN", argv[i]) == 0 ) { this->jobvl = iclaNoVec; }
-        else if ( strcmp("-LV", argv[i]) == 0 ) { this->jobvl = iclaVec;   }
+        else if ( strcmp("-LN", argv[i]) == 0 ) { this->jobvl = IclaNoVec; }
+        else if ( strcmp("-LV", argv[i]) == 0 ) { this->jobvl = IclaVec;   }
 
-        else if ( strcmp("-RN", argv[i]) == 0 ) { this->jobvr = iclaNoVec; }
-        else if ( strcmp("-RV", argv[i]) == 0 ) { this->jobvr = iclaVec;   }
+        else if ( strcmp("-RN", argv[i]) == 0 ) { this->jobvr = IclaNoVec; }
+        else if ( strcmp("-RV", argv[i]) == 0 ) { this->jobvr = IclaVec;   }
 
         else if ( strcmp("--svd-work", argv[i]) == 0 && i+1 < argc ) {
             i += 1;
@@ -586,10 +586,10 @@ void icla_opts::parse_opts( int argc, char** argv )
         this->svd_work.push_back( iclaSVD_query );
     }
     if ( this->jobu.size() == 0 ) {
-        this->jobu.push_back( iclaNoVec );
+        this->jobu.push_back( IclaNoVec );
     }
     if ( this->jobv.size() == 0 ) {
-        this->jobv.push_back( iclaNoVec );
+        this->jobv.push_back( IclaNoVec );
     }
 
     if ( this->ntest == 0 ) {
@@ -632,13 +632,13 @@ void icla_opts::get_range(
     double* vl, double* vu,
     icla_int_t* il, icla_int_t* iu )
 {
-    *range = iclaRangeAll;
+    *range = IclaRangeAll;
     *il = -1;
     *iu = -1;
     *vl = ICLA_D_NAN;
     *vu = ICLA_D_NAN;
     if (this->fraction_lo != 0 || this->fraction_up != 1) {
-        *range = iclaRangeI;
+        *range = IclaRangeI;
         *il = this->fraction_lo * n;
         *iu = this->fraction_up * n;
         printf( "fraction (%.2f, %.2f) => irange (%lld, %lld)\n",
@@ -646,13 +646,13 @@ void icla_opts::get_range(
                 (long long) *il, (long long) *iu );
     }
     else if (this->irange_lo != 0 || this->irange_up != 0) {
-        *range = iclaRangeI;
+        *range = IclaRangeI;
         *il = min( this->irange_lo, n );
         *iu = min( this->irange_up, n );
         printf( "irange (%lld, %lld)\n", (long long) *il, (long long) *iu );
     }
     else if (this->vrange_lo != 0 || this->vrange_up != 0) {
-        *range = iclaRangeV;
+        *range = IclaRangeV;
         *vl = this->vrange_lo;
         *vu = this->vrange_up;
         printf( "vrange (%.2e, %.2e)\n", *vl, *vu );

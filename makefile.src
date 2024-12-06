@@ -1,5 +1,12 @@
 SRC_TEST := \
-testing/testing_sgetrf.cpp
+testing/testing_sgetrf.cpp  \
+testing/testing_sgetrf_gpu.cpp
+
+
+SRC_LIB :=  \
+library/dense/linear_dnsgetrf.cpp
+
+
 
 #interface_cuda/connection_mgpu.c  \
 

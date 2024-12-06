@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_DLAPACK_H
 #define ICLA_DLAPACK_H
 
@@ -148,9 +149,13 @@ extern "C" {
 #define lapackf77_dormrq   FORTRAN_NAME( dormrq, DORMRQ )
 #define lapackf77_dormtr   FORTRAN_NAME( dormtr, DORMTR )
 
+
+
 #ifdef ICLA_WITH_MKL
 #define lapackf77_dgetrf_batch   FORTRAN_NAME( dgetrf_batch, DGETRF_BATCH )
 #endif
+
+
 
 #define lapackf77_dbdt01   FORTRAN_NAME( dbdt01, DBDT01 )
 #define lapackf77_dget22   FORTRAN_NAME( dget22, DGET22 )
@@ -163,6 +168,7 @@ extern "C" {
 #define lapackf77_dqrt02   FORTRAN_NAME( dqrt02, DQRT02 )
 #define lapackf77_dstt21   FORTRAN_NAME( dstt21, DSTT21 )
 #define lapackf77_dort01   FORTRAN_NAME( dort01, DORT01 )
+
 
 icla_int_t blasf77_idamax(
                      const icla_int_t *n,
@@ -270,6 +276,8 @@ void blasf77_dswap(  const icla_int_t *n,
                      double *x, const icla_int_t *incx,
                      double *y, const icla_int_t *incy );
 
+
+
 void blasf77_dsymm(  const char *side, const char *uplo,
                      const icla_int_t *m, const icla_int_t *n,
                      const double *alpha,
@@ -327,6 +335,7 @@ void blasf77_dtrsv(  const char *uplo, const char *transa, const char *diag,
                      const icla_int_t *n,
                      const double *A, const icla_int_t *lda,
                            double *x, const icla_int_t *incx );
+
 
 double icla_cblas_dasum(
     icla_int_t n,
@@ -744,7 +753,6 @@ void   lapackf77_dladiv( double *ret_val,
                          const double *x,
                          const double *y );
 #else
-
 void   lapackf77_dladiv( const double *a, const double *b,
                          const double *c, const double *d,
                          double *p, double *q );
@@ -1166,6 +1174,7 @@ void   lapackf77_dlaed4( const icla_int_t *n, const icla_int_t *i,
 
 void   lapackf77_dlasrt( const char *id, const icla_int_t *n, double *d,
                          icla_int_t *info );
+
 
 void   lapackf77_dbdt01( const icla_int_t *m, const icla_int_t *n, const icla_int_t *kd,
                          double *A, const icla_int_t *lda,

@@ -16,8 +16,8 @@
 #define FMULS_GEMM(m_, n_, k_) ((m_) * (n_) * (k_))
 #define FADDS_GEMM(m_, n_, k_) ((m_) * (n_) * (k_))
 
-#define FMULS_SYMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FMULS_GEMM((m_), (m_), (n_)) : FMULS_GEMM((m_), (n_), (n_)) )
-#define FADDS_SYMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FADDS_GEMM((m_), (m_), (n_)) : FADDS_GEMM((m_), (n_), (n_)) )
+#define FMULS_SYMM(side_, m_, n_) ( ( (side_) == IclaLeft ) ? FMULS_GEMM((m_), (m_), (n_)) : FMULS_GEMM((m_), (n_), (n_)) )
+#define FADDS_SYMM(side_, m_, n_) ( ( (side_) == IclaLeft ) ? FADDS_GEMM((m_), (m_), (n_)) : FADDS_GEMM((m_), (n_), (n_)) )
 #define FMULS_HEMM FMULS_SYMM
 #define FADDS_HEMM FADDS_SYMM
 
@@ -34,8 +34,8 @@
 #define FMULS_TRMM_2(m_, n_) (0.5 * (n_) * (m_) * ((m_)+1))
 #define FADDS_TRMM_2(m_, n_) (0.5 * (n_) * (m_) * ((m_)-1))
 
-#define FMULS_TRMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FMULS_TRMM_2((m_), (n_)) : FMULS_TRMM_2((n_), (m_)) )
-#define FADDS_TRMM(side_, m_, n_) ( ( (side_) == iclaLeft ) ? FADDS_TRMM_2((m_), (n_)) : FADDS_TRMM_2((n_), (m_)) )
+#define FMULS_TRMM(side_, m_, n_) ( ( (side_) == IclaLeft ) ? FMULS_TRMM_2((m_), (n_)) : FMULS_TRMM_2((n_), (m_)) )
+#define FADDS_TRMM(side_, m_, n_) ( ( (side_) == IclaLeft ) ? FADDS_TRMM_2((m_), (n_)) : FADDS_TRMM_2((n_), (m_)) )
 
 #define FMULS_TRSM FMULS_TRMM
 #define FADDS_TRSM FADDS_TRMM
@@ -108,10 +108,10 @@
 #define FMULS_GEQRS(m_, n_, nrhs_) ((nrhs_) * ((n_) * ( 2.* (m_) - 0.5 * (n_) + 2.5)))
 #define FADDS_GEQRS(m_, n_, nrhs_) ((nrhs_) * ((n_) * ( 2.* (m_) - 0.5 * (n_) + 0.5)))
 
-#define FMULS_UNMQR(m_, n_, k_, side_) (( (side_) == iclaLeft ) \
+#define FMULS_UNMQR(m_, n_, k_, side_) (( (side_) == IclaLeft ) \
     ?  (2.*(n_)*(m_)*(k_) - (n_)*(k_)*(k_) + 2.*(n_)*(k_)) \
     :  (2.*(n_)*(m_)*(k_) - (m_)*(k_)*(k_) + (m_)*(k_) + (n_)*(k_) - 0.5*(k_)*(k_) + 0.5*(k_)))
-#define FADDS_UNMQR(m_, n_, k_, side_) (( ((side_)) == iclaLeft ) \
+#define FADDS_UNMQR(m_, n_, k_, side_) (( ((side_)) == IclaLeft ) \
     ?  (2.*(n_)*(m_)*(k_) - (n_)*(k_)*(k_) + (n_)*(k_)) \
     :  (2.*(n_)*(m_)*(k_) - (m_)*(k_)*(k_) + (m_)*(k_)))
 #define FMULS_ORMQR FMULS_UNMQR

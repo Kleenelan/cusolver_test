@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_D_V1_H
 #define ICLABLAS_D_V1_H
 
@@ -51,6 +52,7 @@ iclablas_dsetmatrix_transpose_v1(
     iclaDouble_ptr    dAT,   icla_int_t ldda,
     iclaDouble_ptr    dwork, icla_int_t lddwork, icla_int_t nb );
 
+
 void
 iclablas_dprbt_v1(
     icla_int_t n,
@@ -97,6 +99,7 @@ icla_dsetmatrix_1D_row_bcyclic_v1(
     const double *hA,   icla_int_t lda,
     iclaDouble_ptr    dA[], icla_int_t ldda,
     icla_int_t ngpu, icla_int_t nb );
+
 
 void
 iclablas_dgeadd_v1(
@@ -349,6 +352,7 @@ icla_dlarfx_gpu_v1(
     iclaDouble_ptr dT, icla_int_t iter,
     iclaDouble_ptr work );
 
+
 void
 iclablas_daxpycp_v1(
     icla_int_t m,
@@ -520,6 +524,7 @@ iclablas_dtrsm_work_v1(
     icla_int_t flag,
     iclaDouble_ptr d_dinvA, icla_int_t dinvA_length );
 
+
 #define icla_dsetvector_v1(           n, hx_src, incx, dy_dst, incy ) \
         icla_dsetvector_v1_internal(  n, hx_src, incx, dy_dst, incy, __func__, __FILE__, __LINE__ )
 
@@ -567,6 +572,10 @@ icla_dcopyvector_v1_internal(
                                   dy_dst, incy,
                                   func, file, line );
 }
+
+
+
+
 
 #define icla_dsetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_dsetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
@@ -616,15 +625,22 @@ icla_dcopymatrix_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
+
 icla_int_t
 icla_idamax_v1(
     icla_int_t n,
     iclaDouble_const_ptr dx, icla_int_t incx );
 
+
 icla_int_t
 icla_idamin_v1(
     icla_int_t n,
     iclaDouble_const_ptr dx, icla_int_t incx );
+
 
 double
 icla_dasum_v1(
@@ -644,17 +660,20 @@ icla_dcopy_v1(
     iclaDouble_const_ptr dx, icla_int_t incx,
     iclaDouble_ptr       dy, icla_int_t incy );
 
-double
-icla_ddot_v1(
-    icla_int_t n,
-    iclaDouble_const_ptr dx, icla_int_t incx,
-    iclaDouble_const_ptr dy, icla_int_t incy );
 
 double
 icla_ddot_v1(
     icla_int_t n,
     iclaDouble_const_ptr dx, icla_int_t incx,
     iclaDouble_const_ptr dy, icla_int_t incy );
+
+
+double
+icla_ddot_v1(
+    icla_int_t n,
+    iclaDouble_const_ptr dx, icla_int_t incx,
+    iclaDouble_const_ptr dy, icla_int_t incy );
+
 
 double
 icla_dnrm2_v1(
@@ -707,6 +726,9 @@ icla_dswap_v1(
     icla_int_t n,
     iclaDouble_ptr dx, icla_int_t incx,
     iclaDouble_ptr dy, icla_int_t incy );
+
+
+
 
 void
 icla_dgemv_v1(
@@ -774,6 +796,9 @@ icla_dtrsv_v1(
     icla_int_t n,
     iclaDouble_const_ptr dA, icla_int_t ldda,
     iclaDouble_ptr       dx, icla_int_t incx );
+
+
+
 
 void
 icla_dgemm_v1(
@@ -859,6 +884,7 @@ icla_dtrsm_v1(
     iclaDouble_const_ptr dA, icla_int_t ldda,
     iclaDouble_ptr       dB, icla_int_t lddb );
 
+
 #ifdef __cplusplus
 }
 #endif
@@ -866,4 +892,3 @@ icla_dtrsm_v1(
 #undef ICLA_REAL
 
 #endif
-

@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_ZVBATCHED_H
 #define ICLA_ZVBATCHED_H
 
@@ -10,7 +11,9 @@
 extern "C" {
 #endif
 
+
 void icla_get_zgetrf_vbatched_nbparam(icla_int_t max_m, icla_int_t max_n, icla_int_t *nb, icla_int_t *recnb);
+
 
 icla_int_t
 icla_zgetf2_fused_vbatched(
@@ -174,6 +177,7 @@ icla_zpotrf_vbatched(
     iclaDoubleComplex **dA_array, icla_int_t *ldda,
     icla_int_t *info_array,  icla_int_t batchCount,
     icla_queue_t queue);
+
 
 void
 iclablas_zgemm_vbatched_core(
@@ -651,6 +655,8 @@ iclablas_zhemm_vbatched(
         iclaDoubleComplex **dC_array, icla_int_t *lddc,
         icla_int_t batchCount, icla_queue_t queue );
 
+
+
 void
 iclablas_zgemv_vbatched_max_nocheck(
     icla_trans_t trans, icla_int_t* m, icla_int_t* n,
@@ -733,6 +739,9 @@ iclablas_zhemv_vbatched(
     iclaDoubleComplex_ptr dy_array[], icla_int_t* incy,
     icla_int_t batchCount, icla_queue_t queue);
 
+
+
+
 void icla_zset_pointer_var_cc(
     iclaDoubleComplex **output_array,
     iclaDoubleComplex *input,
@@ -781,6 +790,7 @@ iclablas_zlacpy_vbatched(
     iclaDoubleComplex const * const * dAarray, icla_int_t* ldda,
     iclaDoubleComplex**               dBarray, icla_int_t* lddb,
     icla_int_t batchCount, icla_queue_t queue );
+
 
 icla_int_t icla_get_zpotrf_vbatched_crossover();
 

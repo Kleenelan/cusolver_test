@@ -55,7 +55,7 @@ icla_int_t icla_dnan_inf(
     #define A(i_, j_) (A + (i_) + (j_)*lda)
 
     icla_int_t info = 0;
-    if (uplo != iclaLower && uplo != iclaUpper && uplo != iclaFull)
+    if (uplo != IclaLower && uplo != IclaUpper && uplo != IclaFull)
         info = -1;
     else if (m < 0)
         info = -2;
@@ -72,7 +72,7 @@ icla_int_t icla_dnan_inf(
     int c_nan = 0;
     int c_inf = 0;
 
-    if (uplo == iclaLower) {
+    if (uplo == IclaLower) {
         for (int j = 0; j < n; ++j) {
             for (int i = j; i < m; ++i) {
 
@@ -81,7 +81,7 @@ icla_int_t icla_dnan_inf(
             }
         }
     }
-    else if (uplo == iclaUpper) {
+    else if (uplo == IclaUpper) {
         for (int j = 0; j < n; ++j) {
             for (int i = 0; i < m && i <= j; ++i) {
 
@@ -90,7 +90,7 @@ icla_int_t icla_dnan_inf(
             }
         }
     }
-    else if (uplo == iclaFull) {
+    else if (uplo == IclaFull) {
         for (int j = 0; j < n; ++j) {
             for (int i = 0; i < m; ++i) {
                 if      (icla_d_isnan( *A(i,j) )) { c_nan++; }
@@ -114,7 +114,7 @@ icla_int_t icla_dnan_inf_gpu(
     icla_queue_t queue )
 {
     icla_int_t info = 0;
-    if (uplo != iclaLower && uplo != iclaUpper && uplo != iclaFull)
+    if (uplo != IclaLower && uplo != IclaUpper && uplo != IclaFull)
         info = -1;
     else if (m < 0)
         info = -2;

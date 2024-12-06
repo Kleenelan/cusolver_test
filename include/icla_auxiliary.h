@@ -10,18 +10,44 @@
 extern "C" {
 #endif
 
+
+
+
+
 icla_int_t icla_init( void );
 icla_int_t icla_finalize( void );
+
+#ifdef ICLA_HAVE_OPENCL
+icla_int_t icla_init_opencl(
+    cl_platform_id platform,
+    cl_context context,
+    icla_int_t setup_clBlas );
+
+icla_int_t icla_finalize_opencl(
+    icla_int_t finalize_clBlas );
+#endif
+
+
+
 
 
 void icla_version( icla_int_t* major, icla_int_t* minor, icla_int_t* micro );
 void icla_print_environment();
 
+
+
+
+
 real_Double_t icla_wtime( void );
 real_Double_t icla_sync_wtime( icla_queue_t queue );
 
+
+
+
+
+
 icla_int_t icla_buildconnection_mgpu(
-    icla_int_t gnode[iclaMaxGPUs+2][iclaMaxGPUs+2],
+    icla_int_t gnode[IclaMaxGPUs+2][IclaMaxGPUs+2],
     icla_int_t *ncmplx,
     icla_int_t ngpu );
 
@@ -35,7 +61,15 @@ void icla_swp2pswp(
     icla_int_t *ipiv,
     icla_int_t *newipiv );
 
+
+
+
+
 icla_int_t icla_get_smlsize_divideconquer();
+
+
+
+
 
 icla_int_t
 icla_malloc( icla_ptr *ptr_ptr, size_t bytes );
@@ -65,62 +99,125 @@ icla_free_pinned_internal(
     void *ptr,
     const char* func, const char* file, int line );
 
+
 icla_int_t
 icla_mem_info(size_t* freeMem, size_t* totalMem);
+
 
 icla_int_t
 icla_memset(void * ptr, int value, size_t count);
 
+
 icla_int_t
 icla_memset_async(void * ptr, int value, size_t count, icla_queue_t queue);
 
+
+
+
+
+
+
+
+
+
 static inline icla_int_t icla_imalloc( iclaInt_ptr           *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(icla_int_t)        ); }
+
 
 static inline icla_int_t icla_index_malloc( iclaIndex_ptr    *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(icla_index_t)      ); }
 
+
 static inline icla_int_t icla_uindex_malloc( iclaUIndex_ptr    *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(icla_uindex_t)      ); }
+
 
 static inline icla_int_t icla_smalloc( iclaFloat_ptr         *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(float)              ); }
 
+
 static inline icla_int_t icla_dmalloc( iclaDouble_ptr        *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(double)             ); }
+
 
 static inline icla_int_t icla_cmalloc( iclaFloatComplex_ptr  *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(iclaFloatComplex)  ); }
 
+
 static inline icla_int_t icla_zmalloc( iclaDoubleComplex_ptr *ptr_ptr, size_t n ) { return icla_malloc( (icla_ptr*) ptr_ptr, n*sizeof(iclaDoubleComplex) ); }
+
+
+
+
+
+
+
+
+
+
 
 static inline icla_int_t icla_imalloc_cpu( icla_int_t        **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(icla_int_t)        ); }
 
+
 static inline icla_int_t icla_index_malloc_cpu( icla_index_t **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(icla_index_t)      ); }
+
 
 static inline icla_int_t icla_uindex_malloc_cpu( icla_uindex_t **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(icla_uindex_t)      ); }
 
+
 static inline icla_int_t icla_smalloc_cpu( float              **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(float)              ); }
+
 
 static inline icla_int_t icla_dmalloc_cpu( double             **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(double)             ); }
 
+
 static inline icla_int_t icla_cmalloc_cpu( iclaFloatComplex  **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(iclaFloatComplex)  ); }
+
 
 static inline icla_int_t icla_zmalloc_cpu( iclaDoubleComplex **ptr_ptr, size_t n ) { return icla_malloc_cpu( (void**) ptr_ptr, n*sizeof(iclaDoubleComplex) ); }
 
+
+
+
+
+
+
+
+
+
+
 static inline icla_int_t icla_imalloc_pinned( icla_int_t        **ptr_ptr, size_t n ) { return icla_malloc_pinned( (void**) ptr_ptr, n*sizeof(icla_int_t)        ); }
+
 
 static inline icla_int_t icla_index_malloc_pinned( icla_index_t **ptr_ptr, size_t n ) { return icla_malloc_pinned( (void**) ptr_ptr, n*sizeof(icla_index_t)      ); }
 
+
 static inline icla_int_t icla_smalloc_pinned( float              **ptr_ptr, size_t n ) { return icla_malloc_pinned( (void**) ptr_ptr, n*sizeof(float)              ); }
+
 
 static inline icla_int_t icla_dmalloc_pinned( double             **ptr_ptr, size_t n ) { return icla_malloc_pinned( (void**) ptr_ptr, n*sizeof(double)             ); }
 
+
 static inline icla_int_t icla_cmalloc_pinned( iclaFloatComplex  **ptr_ptr, size_t n ) { return icla_malloc_pinned( (void**) ptr_ptr, n*sizeof(iclaFloatComplex)  ); }
+
 
 static inline icla_int_t icla_zmalloc_pinned( iclaDoubleComplex **ptr_ptr, size_t n ) { return icla_malloc_pinned( (void**) ptr_ptr, n*sizeof(iclaDoubleComplex) ); }
 
+
+
+
 icla_int_t icla_is_devptr( const void* ptr );
+
+
+
+
 
 icla_int_t
 icla_num_gpus( void );
 
+
+
+
+
+
 icla_int_t
 icla_getdevice_arch();
+
+
 
 void
 icla_getdevices(
@@ -154,6 +251,9 @@ icla_getdevice_shmem_block_optin();
 
 size_t
 icla_getdevice_shmem_multiprocessor();
+
+
+
 
 #define icla_queue_create(          device, queue_ptr ) \
         icla_queue_create_internal( device, queue_ptr, __func__, __FILE__, __LINE__ )
@@ -190,6 +290,7 @@ icla_queue_create_from_cuda_internal(
     const char* func, const char* file, int line );
 #endif
 
+
 #ifdef ICLA_HAVE_HIP
 void
 icla_queue_create_from_hip_internal(
@@ -198,6 +299,15 @@ icla_queue_create_from_hip_internal(
     hipblasHandle_t   hipblas,
     hipsparseHandle_t hipsparse,
     icla_queue_t*    queue_ptr,
+    const char* func, const char* file, int line );
+#endif
+
+
+#ifdef ICLA_HAVE_OPENCL
+icla_int_t
+icla_queue_create_from_opencl_internal(
+    icla_device_t   device,
+    cl_command_queue cl_queue,
     const char* func, const char* file, int line );
 #endif
 
@@ -213,6 +323,10 @@ icla_queue_sync_internal(
 
 icla_int_t
 icla_queue_get_device( icla_queue_t queue );
+
+
+
+
 
 void
 icla_event_create( icla_event_t* event_ptr );
@@ -235,11 +349,26 @@ icla_event_sync( icla_event_t event );
 void
 icla_queue_wait_event( icla_queue_t queue, icla_event_t event );
 
+
+
+
+
 void icla_xerbla( const char *name, icla_int_t info );
 
 const char* icla_strerror( icla_int_t error );
 
+
+
+
+
 size_t icla_strlcpy( char *dst, const char *src, size_t size );
+
+
+
+
+
+
+
 
 __host__ __device__
 static inline icla_int_t icla_ceildiv( icla_int_t x, icla_int_t y )
@@ -247,19 +376,39 @@ static inline icla_int_t icla_ceildiv( icla_int_t x, icla_int_t y )
     return (x + y - 1)/y;
 }
 
+
+
+
+
+
 __host__ __device__
 static inline icla_int_t icla_roundup( icla_int_t x, icla_int_t y )
 {
     return icla_ceildiv( x, y ) * y;
 }
 
+
+
+
+
+
+
+
+
 static inline float  icla_ssqrt( float  x ) { return sqrtf( x ); }
+
 
 static inline double icla_dsqrt( double x ) { return sqrt( x ); }
 
+
 iclaFloatComplex    icla_csqrt( iclaFloatComplex  x );
 
+
 iclaDoubleComplex   icla_zsqrt( iclaDoubleComplex x );
+
+
+
+
 
 void icla_iprint( icla_int_t m, icla_int_t n, const icla_int_t *A, icla_int_t lda );
 
@@ -269,5 +418,5 @@ void icla_iprint_gpu( icla_int_t m, icla_int_t n, icla_int_t* dA, icla_int_t ldd
 }
 #endif
 
-#endif
 
+#endif

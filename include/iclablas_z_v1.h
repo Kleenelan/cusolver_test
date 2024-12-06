@@ -1,4 +1,5 @@
 
+
 #ifndef ICLABLAS_Z_V1_H
 #define ICLABLAS_Z_V1_H
 
@@ -14,6 +15,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 
 void
 iclablas_ztranspose_inplace_v1(
@@ -50,6 +52,7 @@ iclablas_zsetmatrix_transpose_v1(
     const iclaDoubleComplex *hA,    icla_int_t lda,
     iclaDoubleComplex_ptr    dAT,   icla_int_t ldda,
     iclaDoubleComplex_ptr    dwork, icla_int_t lddwork, icla_int_t nb );
+
 
 void
 iclablas_zprbt_v1(
@@ -568,6 +571,10 @@ icla_zcopyvector_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
 #define icla_zsetmatrix_v1(           m, n, hA_src, lda,  dB_dst, lddb ) \
         icla_zsetmatrix_v1_internal(  m, n, hA_src, lda,  dB_dst, lddb, __func__, __FILE__, __LINE__ )
 
@@ -616,15 +623,22 @@ icla_zcopymatrix_v1_internal(
                                   func, file, line );
 }
 
+
+
+
+
+
 icla_int_t
 icla_izamax_v1(
     icla_int_t n,
     iclaDoubleComplex_const_ptr dx, icla_int_t incx );
 
+
 icla_int_t
 icla_izamin_v1(
     icla_int_t n,
     iclaDoubleComplex_const_ptr dx, icla_int_t incx );
+
 
 double
 icla_dzasum_v1(
@@ -644,17 +658,20 @@ icla_zcopy_v1(
     iclaDoubleComplex_const_ptr dx, icla_int_t incx,
     iclaDoubleComplex_ptr       dy, icla_int_t incy );
 
+
 iclaDoubleComplex
 icla_zdotc_v1(
     icla_int_t n,
     iclaDoubleComplex_const_ptr dx, icla_int_t incx,
     iclaDoubleComplex_const_ptr dy, icla_int_t incy );
 
+
 iclaDoubleComplex
 icla_zdotu_v1(
     icla_int_t n,
     iclaDoubleComplex_const_ptr dx, icla_int_t incx,
     iclaDoubleComplex_const_ptr dy, icla_int_t incy );
+
 
 double
 icla_dznrm2_v1(
@@ -707,6 +724,9 @@ icla_zswap_v1(
     icla_int_t n,
     iclaDoubleComplex_ptr dx, icla_int_t incx,
     iclaDoubleComplex_ptr dy, icla_int_t incy );
+
+
+
 
 void
 icla_zgemv_v1(
@@ -774,6 +794,9 @@ icla_ztrsv_v1(
     icla_int_t n,
     iclaDoubleComplex_const_ptr dA, icla_int_t ldda,
     iclaDoubleComplex_ptr       dx, icla_int_t incx );
+
+
+
 
 void
 icla_zgemm_v1(
@@ -859,6 +882,7 @@ icla_ztrsm_v1(
     iclaDoubleComplex_const_ptr dA, icla_int_t ldda,
     iclaDoubleComplex_ptr       dB, icla_int_t lddb );
 
+
 #ifdef __cplusplus
 }
 #endif
@@ -866,4 +890,3 @@ icla_ztrsm_v1(
 #undef ICLA_COMPLEX
 
 #endif
-

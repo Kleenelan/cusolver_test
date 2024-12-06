@@ -1,10 +1,14 @@
 
+
 #ifndef ICLABLAS_S_V1_MAP_H
 #define ICLABLAS_S_V1_MAP_H
 
 #ifdef ICLA_NO_V1
 #error "Since ICLA_NO_V1 is defined, icla.h is invalid; use icla_v2.h"
 #endif
+
+
+
 
 #define iclablas_stranspose_inplace        iclablas_stranspose_inplace_v1
 #define iclablas_stranspose_inplace   iclablas_stranspose_inplace_v1
@@ -121,4 +125,3 @@
 #define icla_strsm                         icla_strsm_v1
 
 #endif
-

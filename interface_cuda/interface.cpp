@@ -48,10 +48,11 @@ enum {
     own_stream   = 0x0001,
     own_cublas   = 0x0002,
     own_cusparse = 0x0004,
-    own_opencl   = 0x0008,
+    own_cusolverdn = 0x0008,
     own_hip      = 0x0010,
     own_hipblas  = 0x0020,
-    own_hipsparse= 0x0040
+    own_hipsparse= 0x0040,
+    own_hipsolver= 0x0080
 };
 
 #if __cplusplus >= 201103
@@ -702,10 +703,20 @@ icla_queue_create_internal(
 
     cudaError_t err;
     err = cudaStreamCreate( &queue->stream__ );
+
     check_xerror( err, func, file, line );
     queue->own__ |= own_stream;
+    queue->cublas__  = NULL;
+    queue->cusparse__ = NULL;
 
 #if defined(ICLA_HAVE_CUDA)
+    cusolverStatus_t stat_solverdn = CUSOLVER_STATUS_SUCCESS;
+    stat_solverdn = cusolverDnCreate(&queue->cusolverdn__);
+    check_xerror( stat_solverdn, func, file, line );
+    queue->own__ |= own_cusolverdn;
+    stat_solverdn = cusolverDnSetStream(queue->cusolverdn__, queue->stream__);
+    check_xerror(stat_solverdn, func, file, line);
+
     cublasStatus_t stat;
     stat = cublasCreate( &queue->cublas__ );
     check_xerror( stat, func, file, line );
@@ -869,6 +880,11 @@ icla_queue_destroy_internal(
         }
         if ( queue->cusparse__ != NULL && (queue->own__ & own_cusparse)) {
             cusparseStatus_t stat = cusparseDestroy( queue->cusparse__ );
+            check_xerror( stat, func, file, line );
+            ICLA_UNUSED( stat );
+        }
+        if ( queue->cusolverdn__ != NULL && (queue->own__ & own_cusolverdn)) {
+            cusolverStatus_t stat = cusolverDnDestroy( queue->cusolverdn__ );
             check_xerror( stat, func, file, line );
             ICLA_UNUSED( stat );
         }

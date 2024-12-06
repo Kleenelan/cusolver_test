@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_CBULGEINC_H
 #define ICLA_CBULGEINC_H
 
@@ -7,6 +8,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
+
+
+
 
 #define MAX_THREADS_BLG         256
 
@@ -54,7 +60,9 @@ struct gbstrct_blg {
     volatile int *ss_prog;
 };
 
+
 extern struct gbstrct_blg core_in_all;
+
 
 #ifdef __cplusplus
 }

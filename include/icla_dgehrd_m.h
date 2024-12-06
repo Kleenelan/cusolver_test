@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_DGEHRD_H
 #define ICLA_DGEHRD_H
 
@@ -16,19 +17,14 @@ struct dgehrd_data
     icla_int_t ldv;
     icla_int_t ldvd;
 
-    iclaDouble_ptr dA [ iclaMaxGPUs ];
+    iclaDouble_ptr dA [ IclaMaxGPUs ];
+    iclaDouble_ptr dV [ IclaMaxGPUs ];
+    iclaDouble_ptr dVd[ IclaMaxGPUs ];
+    iclaDouble_ptr dY [ IclaMaxGPUs ];
+    iclaDouble_ptr dW [ IclaMaxGPUs ];
+    iclaDouble_ptr dTi[ IclaMaxGPUs ];
 
-    iclaDouble_ptr dV [ iclaMaxGPUs ];
-
-    iclaDouble_ptr dVd[ iclaMaxGPUs ];
-
-    iclaDouble_ptr dY [ iclaMaxGPUs ];
-
-    iclaDouble_ptr dW [ iclaMaxGPUs ];
-
-    iclaDouble_ptr dTi[ iclaMaxGPUs ];
-
-    icla_queue_t queues[ iclaMaxGPUs ];
+    icla_queue_t queues[ IclaMaxGPUs ];
 };
 
 #ifdef __cplusplus
@@ -36,4 +32,3 @@ struct dgehrd_data
 #endif
 
 #endif
-

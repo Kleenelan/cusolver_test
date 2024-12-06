@@ -6,6 +6,9 @@
 #error "Since ICLA_NO_V1 is defined, icla.h is invalid; use icla_v2.h"
 #endif
 
+
+
+
 #define iclablas_ctranspose_inplace        iclablas_ctranspose_inplace_v1
 #define iclablas_ctranspose_conj_inplace   iclablas_ctranspose_conj_inplace_v1
 #define iclablas_ctranspose                iclablas_ctranspose_v1
@@ -121,4 +124,3 @@
 #define icla_ctrsm                         icla_ctrsm_v1
 
 #endif
-

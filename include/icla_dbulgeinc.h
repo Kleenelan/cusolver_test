@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_DBULGEINC_H
 #define ICLA_DBULGEINC_H
 
@@ -54,7 +55,9 @@ struct gbstrct_blg {
     volatile int *ss_prog;
 };
 
+
 extern struct gbstrct_blg core_in_all;
+
 
 #ifdef __cplusplus
 }

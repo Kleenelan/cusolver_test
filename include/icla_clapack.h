@@ -1,4 +1,5 @@
 
+
 #ifndef ICLA_CLAPACK_H
 #define ICLA_CLAPACK_H
 
@@ -148,9 +149,13 @@ extern "C" {
 #define lapackf77_cunmrq   FORTRAN_NAME( cunmrq, CUNMRQ )
 #define lapackf77_cunmtr   FORTRAN_NAME( cunmtr, CUNMTR )
 
+
+
 #ifdef ICLA_WITH_MKL
 #define lapackf77_cgetrf_batch   FORTRAN_NAME( cgetrf_batch, CGETRF_BATCH )
 #endif
+
+
 
 #define lapackf77_cbdt01   FORTRAN_NAME( cbdt01, CBDT01 )
 #define lapackf77_cget22   FORTRAN_NAME( cget22, CGET22 )
@@ -163,6 +168,7 @@ extern "C" {
 #define lapackf77_cqrt02   FORTRAN_NAME( cqrt02, CQRT02 )
 #define lapackf77_cstt21   FORTRAN_NAME( cstt21, CSTT21 )
 #define lapackf77_cunt01   FORTRAN_NAME( cunt01, CUNT01 )
+
 
 icla_int_t blasf77_icamax(
                      const icla_int_t *n,
@@ -270,6 +276,8 @@ void blasf77_cswap(  const icla_int_t *n,
                      iclaFloatComplex *x, const icla_int_t *incx,
                      iclaFloatComplex *y, const icla_int_t *incy );
 
+
+
 void blasf77_csymm(  const char *side, const char *uplo,
                      const icla_int_t *m, const icla_int_t *n,
                      const iclaFloatComplex *alpha,
@@ -328,6 +336,8 @@ void blasf77_ctrsv(  const char *uplo, const char *transa, const char *diag,
                      const iclaFloatComplex *A, const icla_int_t *lda,
                            iclaFloatComplex *x, const icla_int_t *incx );
 
+
+
 float icla_cblas_scasum(
     icla_int_t n,
     const iclaFloatComplex *x, icla_int_t incx );
@@ -345,6 +355,7 @@ iclaFloatComplex icla_cblas_cdotu(
     icla_int_t n,
     const iclaFloatComplex *x, icla_int_t incx,
     const iclaFloatComplex *y, icla_int_t incy );
+
 
 #ifdef ICLA_REAL
 void   lapackf77_sbdsdc( const char *uplo, const char *compq,
@@ -744,7 +755,6 @@ void   lapackf77_cladiv( iclaFloatComplex *ret_val,
                          const iclaFloatComplex *x,
                          const iclaFloatComplex *y );
 #else
-
 void   lapackf77_cladiv( const float *a, const float *b,
                          const float *c, const float *d,
                          float *p, float *q );
@@ -1113,6 +1123,7 @@ void   lapackf77_cunmtr( const char *side, const char *uplo, const char *trans,
                          iclaFloatComplex *work, const icla_int_t *lwork,
                          icla_int_t *info );
 
+
 void   lapackf77_sstebz( const char *range, const char *order,
                          const icla_int_t *n,
                          const float *vl, const float *vu,
@@ -1166,6 +1177,7 @@ void   lapackf77_slaed4( const icla_int_t *n, const icla_int_t *i,
 
 void   lapackf77_slasrt( const char *id, const icla_int_t *n, float *d,
                          icla_int_t *info );
+
 
 void   lapackf77_cbdt01( const icla_int_t *m, const icla_int_t *n, const icla_int_t *kd,
                          iclaFloatComplex *A, const icla_int_t *lda,
