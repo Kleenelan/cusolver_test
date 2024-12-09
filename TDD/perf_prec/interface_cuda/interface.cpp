@@ -152,7 +152,7 @@ icla_init()
             }
 
             size_t size;
-            size = max( 1, g_icla_devices_cnt ) * sizeof(struct icla_device_info);
+            size = max__( 1, g_icla_devices_cnt ) * sizeof(struct icla_device_info);
             icla_malloc_cpu( (void**) &g_icla_devices, size );
             if ( g_icla_devices == NULL ) {
                 info = ICLA_ERR_HOST_ALLOC;
@@ -200,7 +200,7 @@ icla_init()
                     }
                 #endif
 
-                size = max( 1, g_icla_devices_cnt ) * sizeof(icla_queue_t);
+                size = max__( 1, g_icla_devices_cnt ) * sizeof(icla_queue_t);
                 icla_malloc_cpu( (void**) &g_null_queues, size );
                 if ( g_null_queues == NULL ) {
                     info = ICLA_ERR_HOST_ALLOC;
@@ -485,7 +485,7 @@ icla_getdevices(
     check_error( err );
     ICLA_UNUSED( err );
 
-    cnt = min( cnt, int(size) );
+    cnt = min__( cnt, int(size) );
     for( int i = 0; i < cnt; ++i ) {
         devices[i] = i;
     }
