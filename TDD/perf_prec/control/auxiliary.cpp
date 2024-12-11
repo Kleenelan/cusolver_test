@@ -29,7 +29,7 @@ icla_int_t icla_num_gpus( void )
                      ngpu_str, (long long) ngpu );
         }
         else if ( ngpu > IclaMaxGPUs || ngpu > ndevices ) {
-            ngpu = min( ndevices, IclaMaxGPUs );
+            ngpu = min__( ndevices, IclaMaxGPUs );
             fprintf( stderr, "$ICLA_NUM_GPUS='%s' exceeds IclaMaxGPUs=%d or available GPUs=%lld; using %lld GPUs.\n",
                      ngpu_str, IclaMaxGPUs, (long long) ndevices, (long long) ngpu );
         }

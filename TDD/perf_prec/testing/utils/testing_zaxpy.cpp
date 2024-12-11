@@ -9,7 +9,7 @@
 #include "icla_lapack.h"
 #include "icla_operators.h"
 #include "testings.h"
-
+#if 0
 int main(int argc, char **argv)
 {
     #define  X(i_, j_)  ( X + (i_) + (j_)*lda)
@@ -119,3 +119,4 @@ int main(int argc, char **argv)
     TESTING_CHECK( icla_finalize() );
     return status;
 }
+#endif

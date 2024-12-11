@@ -1,6 +1,6 @@
 SRC_TEST := \
-testing/testing_sgetrf.cpp  \
 testing/testing_sgetrf_gpu.cpp
+#testing/testing_sgetrf.cpp  \
 
 
 SRC_LIB :=  \

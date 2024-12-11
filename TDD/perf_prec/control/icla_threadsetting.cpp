@@ -64,7 +64,7 @@ icla_int_t icla_get_parallel_numthreads()
         #endif
     }
 
-    threads = max( 1, min( ncores, threads ));
+    threads = max__( 1, min__( ncores, threads ));
     return threads;
 }
 

@@ -33,7 +33,7 @@ void check_dgesvd(
     result[2] = -1;
     result[3] = -1;
 
-    icla_int_t min_mn = min(m, n);
+    icla_int_t min_mn = min__(m, n);
     icla_int_t n_u  = (jobu == IclaAllVec ? m : min_mn);
     icla_int_t m_vt = (jobv == IclaAllVec ? n : min_mn);
 
@@ -45,16 +45,16 @@ void check_dgesvd(
 
         icla_int_t lwork_err = m+n;
         if ( U != NULL ) {
-            lwork_err = max( lwork_err, n_u*(n_u+1) );
+            lwork_err = max__( lwork_err, n_u*(n_u+1) );
         }
         if ( VT != NULL ) {
-            lwork_err = max( lwork_err, m_vt*(m_vt+1) );
+            lwork_err = max__( lwork_err, m_vt*(m_vt+1) );
         }
         double *work_err;
         TESTING_CHECK( icla_dmalloc_cpu( &work_err, lwork_err ));
 
         double *rwork_err;
-        TESTING_CHECK( icla_dmalloc_cpu( &rwork_err, max(m,n) ));
+        TESTING_CHECK( icla_dmalloc_cpu( &rwork_err, max__(m,n) ));
 
         if ( U != NULL && VT != NULL ) {
 

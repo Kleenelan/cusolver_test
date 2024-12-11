@@ -25,7 +25,7 @@ icla_sgetrf_gpu(
     iclaFloat_ptr   dwork = NULL;
     icla_int_t      lwork = -1;
 
-    min_mn = min(M, N);
+    min_mn = min__(M, N);
 #ifdef ICLA_HAVE_CUDA
     cusolverDnHandle_t cusolverH = NULL;
     cusolverH = the_queue->cusolverdn_handle();

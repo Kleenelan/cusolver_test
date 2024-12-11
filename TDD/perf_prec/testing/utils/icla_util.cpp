@@ -95,18 +95,18 @@ const char *usage =
 "         query*    queries LAPACK and ICLA\n"
 "         doc       is what LAPACK and ICLA document as required\n"
 "         doc_old   is what LAPACK <= 3.6 documents\n"
-"         min       is minimum required, which may be smaller than doc\n"
+"         min__       is minimum required, which may be smaller than doc\n"
 "         min_old   is minimum required by LAPACK <= 3.6\n"
 "         min_fast  is minimum to take fast path in gesvd\n"
-"         min-1     is (minimum - 1), to test error return\n"
+"         min__-1     is (minimum - 1), to test error return\n"
 "         opt       is optimal\n"
 "         opt_old   is optimal as computed by LAPACK <= 3.6\n"
 "         opt_slow  is optimal for slow path in gesvd\n"
-"         max       is maximum that will be used\n"
+"         max__       is maximum that will be used\n"
 "\n"
 "  --version x      version of routine, e.g., during development, default 1.\n"
 "  --fraction [lower,]upper  computes eigen/singular values and vectors indexed in range [lower*N + 1, upper*N]. Default lower=0, upper=1.\n"
-"  --irange   [lower,]upper  computes eigen/singular values and vectors indexed in range [lower, upper]. Default lower=1, upper=min(m,n).\n"
+"  --irange   [lower,]upper  computes eigen/singular values and vectors indexed in range [lower, upper]. Default lower=1, upper=min__(m,n).\n"
 "  --vrange   lower,upper    computes eigen/singular values and vectors in range [lower, upper].\n"
 "  --tolerance x    accuracy tolerance, multiplied by machine epsilon, default 30.\n"
 "  --tol x          same.\n"
@@ -515,8 +515,8 @@ void icla_opts::parse_opts( int argc, char** argv )
                 else if ( strcmp( token, "query"     ) == 0 ) { this->svd_work.push_back( iclaSVD_query      ); }
                 else if ( strcmp( token, "doc"       ) == 0 ) { this->svd_work.push_back( iclaSVD_doc        ); }
                 else if ( strcmp( token, "doc_old"   ) == 0 ) { this->svd_work.push_back( iclaSVD_doc_old    ); }
-                else if ( strcmp( token, "min"       ) == 0 ) { this->svd_work.push_back( iclaSVD_min        ); }
-                else if ( strcmp( token, "min-1"     ) == 0 ) { this->svd_work.push_back( iclaSVD_min_1      ); }
+                else if ( strcmp( token, "min__"       ) == 0 ) { this->svd_work.push_back( iclaSVD_min        ); }
+                else if ( strcmp( token, "min__-1"     ) == 0 ) { this->svd_work.push_back( iclaSVD_min_1      ); }
                 else if ( strcmp( token, "min_old"   ) == 0 ) { this->svd_work.push_back( iclaSVD_min_old    ); }
                 else if ( strcmp( token, "min_old-1" ) == 0 ) { this->svd_work.push_back( iclaSVD_min_old_1  ); }
                 else if ( strcmp( token, "min_fast"  ) == 0 ) { this->svd_work.push_back( iclaSVD_min_fast   ); }
@@ -524,7 +524,7 @@ void icla_opts::parse_opts( int argc, char** argv )
                 else if ( strcmp( token, "opt"       ) == 0 ) { this->svd_work.push_back( iclaSVD_opt        ); }
                 else if ( strcmp( token, "opt_old"   ) == 0 ) { this->svd_work.push_back( iclaSVD_opt_old    ); }
                 else if ( strcmp( token, "opt_slow"  ) == 0 ) { this->svd_work.push_back( iclaSVD_opt_slow   ); }
-                else if ( strcmp( token, "max"       ) == 0 ) { this->svd_work.push_back( iclaSVD_max        ); }
+                else if ( strcmp( token, "max__"       ) == 0 ) { this->svd_work.push_back( iclaSVD_max        ); }
                 else {
                     icla_assert( false, "error: --svd-work '%s' is invalid\n", argv[i] );
                 }
@@ -647,8 +647,8 @@ void icla_opts::get_range(
     }
     else if (this->irange_lo != 0 || this->irange_up != 0) {
         *range = IclaRangeI;
-        *il = min( this->irange_lo, n );
-        *iu = min( this->irange_up, n );
+        *il = min__( this->irange_lo, n );
+        *iu = min__( this->irange_up, n );
         printf( "irange (%lld, %lld)\n", (long long) *il, (long long) *iu );
     }
     else if (this->vrange_lo != 0 || this->vrange_up != 0) {
