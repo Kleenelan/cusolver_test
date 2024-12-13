@@ -1,12 +1,11 @@
-SRC_TEST := \
-testing/testing_sgetrf_gpu.cpp
-#testing/testing_sgetrf.cpp  \
+SRC_TESTING := \
+testing/testing_sgetrf_gpu.cpp  \
+testing/testing_spotrf_gpu.cpp
 
 
 SRC_LIB :=  \
-library/dense/linear_dnsgetrf.cpp
-
-
+library/dense/linear_DnSgetrf.cpp  \
+library/dense/linear_DnSpotrf.cpp
 
 #interface_cuda/connection_mgpu.c  \
 
@@ -25,7 +24,7 @@ control/icla_dnan_inf.cpp  \
 control/auxiliary.cpp  \
 control/pthread_barrier.cpp
 
-SRC_INTERFACE_CUDA := $(SRC_CONTROL) $(SRC_MATH_TOOL)  \
+SRC_INTERFACE_CUDA :=  \
 interface_cuda/alloc.cpp  \
 interface_cuda/blas_c_v1.cpp  \
 interface_cuda/blas_c_v2.cpp  \
@@ -42,7 +41,7 @@ interface_cuda/error.cpp  \
 interface_cuda/interface.cpp  \
 interface_cuda/interface_v1.cpp
 
-SRC_TOOL :=   \
+SRC_UTILS :=   \
 testing/utils/testing_zaxpy.cpp  \
 testing/utils/icla_util.cpp  \
 testing/utils/icla_zutil.cpp  \
@@ -55,45 +54,13 @@ testing/utils/icla_sgesvd_check.cpp  \
 testing/utils/icla_dgesvd_check.cpp  \
 testing/utils/icla_cgesvd_check.cpp
 
-SRC_FORT :=  \
-testing/lin/zbdt01.f  \
-testing/lin/zget22.f  \
-testing/lin/zhet21.f  \
-testing/lin/zhet22.f  \
-testing/lin/zhst01.f  \
-testing/lin/zunt01.f  \
-testing/lin/zqpt01.f  \
-testing/lin/zqrt02.f  \
-testing/lin/zlarfy.f  \
-testing/lin/zstt21.f  \
+SRC_TESTING_LIN_FORT :=  \
 testing/lin/cbdt01.f  \
-testing/lin/cget22.f  \
-testing/lin/chet21.f  \
-testing/lin/chet22.f  \
-testing/lin/chst01.f  \
 testing/lin/cunt01.f  \
-testing/lin/cqpt01.f  \
-testing/lin/cqrt02.f  \
-testing/lin/clarfy.f  \
-testing/lin/cstt21.f  \
 testing/lin/dbdt01.f  \
-testing/lin/dget22.f  \
-testing/lin/dsyt21.f  \
-testing/lin/dsyt22.f  \
-testing/lin/dhst01.f  \
 testing/lin/dort01.f  \
-testing/lin/dqpt01.f  \
-testing/lin/dqrt02.f  \
-testing/lin/dlarfy.f  \
-testing/lin/dstt21.f  \
 testing/lin/sbdt01.f  \
-testing/lin/sget22.f  \
-testing/lin/ssyt21.f  \
-testing/lin/ssyt22.f  \
-testing/lin/shst01.f  \
 testing/lin/sort01.f  \
-testing/lin/sqpt01.f  \
-testing/lin/sqrt02.f  \
-testing/lin/slarfy.f  \
-testing/lin/sstt21.f
+testing/lin/zbdt01.f  \
+testing/lin/zunt01.f
 

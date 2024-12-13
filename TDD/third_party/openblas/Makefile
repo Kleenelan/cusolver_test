@@ -14,4 +14,4 @@ install:
 	make -C OpenBLAS-0.3.27 install PREFIX=../local/
 
 clean:
-	-rm -rf ./local/ ./OpenBLAS-0.3.27/ ./v0.3.27.tar.gz
+	-rm -rf ./local/ ./OpenBLAS-0.3.27

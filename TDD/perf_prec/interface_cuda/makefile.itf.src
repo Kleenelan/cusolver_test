@@ -1,0 +1,16 @@
+SRC_INTERFACE_CUDA :=   \
+alloc.cpp  \
+blas_c_v1.cpp  \
+blas_c_v2.cpp  \
+blas_d_v1.cpp  \
+blas_d_v2.cpp  \
+blas_h_v2.cpp  \
+blas_s_v1.cpp  \
+blas_s_v2.cpp  \
+blas_z_v1.cpp  \
+blas_z_v2.cpp  \
+copy_v1.cpp  \
+copy_v2.cpp  \
+error.cpp  \
+interface.cpp  \
+interface_v1.cpp

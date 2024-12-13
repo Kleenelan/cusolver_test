@@ -1556,7 +1556,7 @@ icla_int_t
 icla_spotrf_gpu(
     icla_uplo_t uplo, icla_int_t n,
     iclaFloat_ptr dA, icla_int_t ldda,
-    icla_int_t *info);
+    icla_int_t *info, icla_queue_t queue, iclaDouble_ptr time);
 
 icla_int_t
 icla_spotrf_native(
