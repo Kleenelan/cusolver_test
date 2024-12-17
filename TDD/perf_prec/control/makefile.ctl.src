@@ -1,0 +1,8 @@
+SRC_CONTROL := \
+icla_timer.cpp  \
+icla_threadsetting.cpp  \
+constants.cpp  \
+xerbla.cpp  \
+icla_dnan_inf.cpp  \
+auxiliary.cpp  \
+pthread_barrier.cpp

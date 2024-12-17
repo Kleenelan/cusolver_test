@@ -155,7 +155,7 @@ int gtest_sgetrf_gpu( iclaInt_ptr success_array, iclaInt_ptr len)
     opts.parse_opts( argc, argv );
 
     *len = opts.ntest * opts.niter;
-    printf("len = %d\n", len);
+    printf("len = %d\n", *len);
 #endif
     //TESTING_CHECK( icla_init() );
     //icla_print_environment();
@@ -311,6 +311,8 @@ TEST(DnSgetrf, perf_pricision)
     }
     printf("\n");
 
+    free(sa);
+    sa = NULL;
 
 
 //	return 0;

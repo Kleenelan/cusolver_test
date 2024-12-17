@@ -1,96 +1,113 @@
 
-#SW_HOME ?= $(HOME)/sw_home
-#CUDADIR := $(SW_HOME)/local/corex
-SW_HOME ?= /usr/
-CUDADIR := $(SW_HOME)/local/cuda
+SW_HOME ?= /usr
+### interface variables which would be got from sw_home/Makefile #########################################
+DEVCC 			?= $(SW_HOME)/local/cuda/bin/nvcc
+TARGET_CUDA_DIR ?= $(SW_HOME)/local/cuda
+USR_DIR			?= $(SW_HOME)
+##########################################################################################################
+
+CUDADIR := $(TARGET_CUDA_DIR)
 
 include makefile.src
 
-OBJ_LIB := $(SRC_LIB:.cpp=.lib.o)
+PROJ_DIR := $(shell pwd)
 
-OBJ_TEST := $(SRC_TEST:.cpp=.cpp.o)
-OBJ_INTERFACE_CUDA := $(SRC_INTERFACE_CUDA:.cpp=.o)
 
-EXE_TEST := $(OBJ_TEST:.cpp.o=.out)
-#EXT_TEST := testing/testing_zgemm
-all:  $(EXE_TEST)
-LIBS := \
-	libtest.a \
-	libinterface_cuda.a \
-	libwrapper.a
+SRC_TESTING_EXE := $(SRC_TESTING)
 
-#OPENBLAS :
-#	make -C ../third_party/openblas/
+SRC_FRAME := \
+$(SRC_LIB)    \
+$(SRC_UTILS)   \
+$(SRC_CONTROL)  \
+$(SRC_MATH_TOOL) \
+$(SRC_INTERFACE_CUDA)
 
-OBJ_TOOL := $(SRC_TOOL:.cpp=.o)
+OBJ_TESTING_LIN_FORT := $(SRC_TESTING_LIN_FORT:.f=.f.o)
+OBJ_FRAME := $(SRC_FRAME:.cpp=.cpp.o) $(OBJ_TESTING_LIN_FORT)
+OBJ_TESTING := $(SRC_TESTING:.cpp=.cpp.o)
 
-OPT_FLAGS1 :=  -g -O0 -Wall -ggdb -fno-inline
-C_FLAGS1 := $(OPT_FLAGS1) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp
+EXE_TESTING := $(SRC_TESTING_EXE:.cpp=.out)
 
-#OPT_FLAGS1 :=  -g -O0 -Wall -ggdb -fno-inline
-CPP_FLAGS1 := $(OPT_FLAGS1) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
-INC1 := -I$(CUDADIR)/include -I./include -I./testing/utils -I./control
+LIB_SHARED_TDD   := libtdd.so
+LIB_SHARED_FRAME := libframe.so
 
-%.o: %.cpp
-	g++ $(CPP_FLAGS1)  $(INC1) -c -o $@  $<
+all: $(LIB_SHARED_FRAME) $(LIB_SHARED_TDD)
+app: $(EXE_TESTING)
 
-%.o: %.c
-	gcc $(CPP_FLAGS1)  $(INC1) -c -o $@  $<
+#################################################################################
 
-libtest.a: $(OBJ_TOOL)
-	ar cr $@ $^
-	ranlib $@
+GPU_ARCH 	:= -arch=sm_75
+DEVCC 		:= /usr/local/cuda/bin/nvcc
+CXX   		:= g++
+DEVCC_FLAGS := -Xcompiler -fPIC -DNDEBUG -DADD_
+INC_CU 	:= -I/usr/local/cuda/include -I$(PROJ_DIR)/control -I$(PROJ_DIR)/include
 
-libinterface_cuda.a: $(OBJ_INTERFACE_CUDA)
-	ar cr $@ $^
-	ranlib $@
 
-#########################################################################################
-#########################################################################################
+#include makefile.blas.src
+OBJ_ICLABLAS_CU := $(SRC_ICLABLAS_CU:.cu=.cu.o)
 
-OPT_FLAGS_LIB := -g -O0 -Wall -ggdb -fno-inline
-CPP_FLAGS_LIB := $(OPT_FLAGS_LIB) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
-INC_LIB :=  -I$(CUDADIR)/include -I./include -I./testing/utils -I./control/
+OBJ_FRAME += $(OBJ_ICLABLAS_CU)
 
-#LD_FLAGS_LIB := -Wl,-rpath,//OpenBLAS/local/lib \
-#-L//OpenBLAS/local/lib -lopenblas \
-#-L$(CUDADIR)/lib64 -lcublas -lcusparse -lcusolver -lcudart -lcudadevrt
+#all: $(OBJ_ICLABLAS_CU)
 
-LD_FLAGS_LIB := -lopenblas \
-	-L$(CUDADIR)/lib64 -lcublas -lcusparse -lcusolver -lcudart# -lcudadevrt
+%.cu.o: %.cu
+	$(DEVCC) $(DEVCC_FLAGS) $< -c -o $@ $(INC_CU)
 
-%.lib.o: %.cpp
-	g++ $(CPP_FLAGS_TEST) $(INC_TEST) -DICLA_HAVE_CUDA -c -o $@ $<
 
-libwrapper.a: $(OBJ_LIB)
-	ar cr $@ $^
-	ranlib $@
 
-#$(SRC_LIB:.cpp=.lib.o)
-
-#########################################################################################
-#########################################################################################
-
-OPT_FLAGS_TEST := -g -O0 -Wall -ggdb -fno-inline
-CPP_FLAGS_TEST := $(OPT_FLAGS_TEST) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
-INC_TEST :=  -I$(CUDADIR)/include -I./include -I./testing/utils -I./control/
-
-#LD_FLAGS_TEST := -Wl,-rpath,/home/hipper/ex_icla/testSys_icla/tmp1/icla/lib
-LD_FLAGS_TEST := -Wl,-rpath,../third_party/openblas/OpenBLAS-0.3.27  \
--L../third_party/openblas/OpenBLAS-0.3.27 -lopenblas \
--L$(CUDADIR)/lib64 -lcublas -lcusparse -lcusolver -lcudart -lgfortran -lgtest -lgtest_main# -lcudadevrt
-# \-L/home/hipper/ex_icla/testSys_icla/tmp1/icla/lib  -licla
+OPT_FLAGS :=  -g -O0 -Wall -ggdb -fno-inline
+#OPT_FLAGS := -O3
+CPP_FLAGS := $(OPT_FLAGS) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
+FORT        ?= gfortran
+FFLAGS       = $(OPT_FLAGS) -fPIC -DNDEBUG -DADD_ -Wall -Wno-unused-dummy-argument
+INC := \
+-I$(CUDADIR)/include \
+-I$(PROJ_DIR)/include \
+-I$(PROJ_DIR)/testing/utils \
+-I$(PROJ_DIR)/control \
+-I$(PROJ_DIR)/testing \
+-I$(PROJ_DIR)/interface_cuda
 
 %.cpp.o: %.cpp
-	g++ $(CPP_FLAGS_TEST) $(INC_TEST) -c -o $@ $<
+	g++ $(CPP_FLAGS)  $(INC) -c -o $@  $<
 
-%.out: %.cpp.o $(LIBS)
-	make -C ../third_party/openblas/
-	g++ -fPIC -fopenmp -o $@ $^ $(LD_FLAGS_TEST)
+%.f.o: %.f
+	gfortran $(FFLAGS) -c -o $@ $<
+
+
+LD_FLAGS := -L$(CUDADIR)/lib64 -lcudart -lcublas -lcublasLt -lcusparse -lcusolver -lgfortran \
+			-L../third_party/openblas/OpenBLAS-0.3.27 -lopenblas -Wl,-rpath,../third_party/openblas/OpenBLAS-0.3.27
+
+$(LIB_SHARED_TDD): $(OBJ_FRAME) $(OBJ_TESTING)
+	g++ -shared -fPIC $^ -o $@ $(LD_FLAGS)
+
+$(LIB_SHARED_FRAME): $(OBJ_FRAME)
+	g++ -shared -fPIC $^ -o $@ $(LD_FLAGS)
+
+INC_EXE := \
+$(INC) \
+$(PROJ_DIR)/../third_party/googletest/googletest-release-1.10.0/googletest/include
+
+LD_FLAGS_EXE := $(LD_FLAGS) \
+			-L$(PROJ_DIR) -lframe -Wl,-rpath,$(PROJ_DIR) \
+			-L$(PROJ_DIR)/../third_party/googletest/build/lib  -lgtest -lgtest_main
+
+%.out: %.cpp
+	g++ $(CPP_FLAGS) $< -o $@ $(INC) $(LD_FLAGS_EXE)
+# -DBUILD_MAIN_
+
+
+
+
 
 #########################################################################################
 #########################################################################################
+
 
 .PHONY: clean
 clean:
-	-rm -rf $(OBJ_TOOL) $(LIBS) $(EXE_TEST) $(OBJ_TEST) $(OBJ_INTERFACE_CUDA) $(OBJ_LIB)
+	-rm -rf $(EXE_TEST)  $(OBJ_TESTING) $(OBJ_FRAME) $(LIB_SHARED_TDD) $(LIB_SHARED_FRAME)
+
+.PHONY: clean-app
+clean-app:
+	-rm -rf $(EXE_TESTING)

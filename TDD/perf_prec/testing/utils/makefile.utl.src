@@ -1,0 +1,12 @@
+SRC_UTILS :=   \
+testing_zaxpy.cpp  \
+icla_util.cpp  \
+icla_zutil.cpp  \
+icla_zgesvd_check.cpp  \
+icla_generate.cpp  \
+icla_cutil.cpp  \
+icla_dutil.cpp  \
+icla_sutil.cpp  \
+icla_sgesvd_check.cpp  \
+icla_dgesvd_check.cpp  \
+icla_cgesvd_check.cpp

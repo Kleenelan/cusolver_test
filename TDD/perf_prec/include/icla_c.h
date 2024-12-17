@@ -12,9 +12,6 @@
 extern "C" {
 #endif
 
-
-
-
 #ifdef ICLA_REAL
 icla_int_t icla_get_slaex3_m_nb();
 #endif
@@ -51,20 +48,8 @@ icla_int_t icla_get_cbulge_vblksiz( icla_int_t n, icla_int_t nb, icla_int_t nbth
 icla_int_t icla_get_cbulge_gcperf();
 
 
-
 bool icla_cgetrf_gpu_recommend_cpu(icla_int_t m, icla_int_t n, icla_int_t nb);
 bool icla_cgetrf_native_recommend_notrans(icla_int_t m, icla_int_t n, icla_int_t nb);
-
-
-
-
-
-
-
-
-
-
-
 
 
 #ifdef ICLA_REAL
