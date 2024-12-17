@@ -108,17 +108,6 @@ void   lapackf77_dlat2s( const char *uplo, const icla_int_t *n,
                                float  *SA, const icla_int_t *ldsa,
                          icla_int_t *info );
 
-
-
-
-
-
-
-
-
-
-
-
 double lapackf77_dlapy2( const double *x, const double *y );
 float  lapackf77_slapy2( const float  *x, const float  *y );
 

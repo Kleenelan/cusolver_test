@@ -13,8 +13,6 @@ extern "C" {
 #endif
 
 
-
-
 #ifdef ICLA_REAL
 icla_int_t icla_get_slaex3_m_nb();
 #endif
@@ -51,20 +49,8 @@ icla_int_t icla_get_sbulge_vblksiz( icla_int_t n, icla_int_t nb, icla_int_t nbth
 icla_int_t icla_get_sbulge_gcperf();
 
 
-
 bool icla_sgetrf_gpu_recommend_cpu(icla_int_t m, icla_int_t n, icla_int_t nb);
 bool icla_sgetrf_native_recommend_notrans(icla_int_t m, icla_int_t n, icla_int_t nb);
-
-
-
-
-
-
-
-
-
-
-
 
 
 #ifdef ICLA_REAL
@@ -398,34 +384,6 @@ icla_sgeqr2x4_gpu(
     icla_int_t *info);
 
 icla_int_t
-icla_sgeqrf(
-    icla_int_t m, icla_int_t n,
-    float *A, icla_int_t lda,
-    float *tau,
-    float *work, icla_int_t lwork,
-    icla_int_t *info);
-
-icla_int_t
-icla_sgeqrf_gpu(
-    icla_int_t m, icla_int_t n,
-    iclaFloat_ptr dA, icla_int_t ldda,
-    float *tau,
-    iclaFloat_ptr dT,
-    icla_int_t *info);
-
-icla_int_t
-icla_sgeqrf_expert_gpu_work(
-    icla_int_t m, icla_int_t n,
-    iclaFloat_ptr dA, icla_int_t ldda,
-    float *tau, iclaFloat_ptr dT,
-    icla_int_t *info,
-    icla_mode_t mode, icla_int_t nb,
-    void* host_work,   icla_int_t *lwork_host,
-    void* device_work, icla_int_t *lwork_device,
-    icla_queue_t queues[2] );
-
-
-icla_int_t
 icla_sgeqrf_m(
     icla_int_t ngpu,
     icla_int_t m, icla_int_t n,
@@ -444,11 +402,12 @@ icla_sgeqrf_ooc(
     icla_int_t *info);
 
 icla_int_t
-icla_sgeqrf2_gpu(
+icla_sgeqrf_gpu(
     icla_int_t m, icla_int_t n,
     iclaFloat_ptr dA, icla_int_t ldda,
     float *tau,
-    icla_int_t *info);
+    icla_int_t *info, icla_queue_t the_queue,
+    real_Double_t *gpu_time_to);
 
 icla_int_t
 icla_sgeqrf2_mgpu(

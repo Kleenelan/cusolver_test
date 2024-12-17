@@ -36,6 +36,25 @@ app: $(EXE_TESTING)
 
 #################################################################################
 
+GPU_ARCH 	:= -arch=sm_75
+DEVCC 		:= /usr/local/cuda/bin/nvcc
+CXX   		:= g++
+DEVCC_FLAGS := -Xcompiler -fPIC -DNDEBUG -DADD_
+INC_CU 	:= -I/usr/local/cuda/include -I$(PROJ_DIR)/control -I$(PROJ_DIR)/include
+
+
+#include makefile.blas.src
+OBJ_ICLABLAS_CU := $(SRC_ICLABLAS_CU:.cu=.cu.o)
+
+OBJ_FRAME += $(OBJ_ICLABLAS_CU)
+
+#all: $(OBJ_ICLABLAS_CU)
+
+%.cu.o: %.cu
+	$(DEVCC) $(DEVCC_FLAGS) $< -c -o $@ $(INC_CU)
+
+
+
 OPT_FLAGS :=  -g -O0 -Wall -ggdb -fno-inline
 #OPT_FLAGS := -O3
 CPP_FLAGS := $(OPT_FLAGS) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11

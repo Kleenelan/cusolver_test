@@ -10,10 +10,6 @@ extern "C" {
 #endif
 
 
-
-
-
-
 #define MAX_THREADS_BLG         256
 
 void findVTpos(

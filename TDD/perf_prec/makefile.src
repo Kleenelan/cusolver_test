@@ -1,13 +1,19 @@
 SRC_TESTING := \
 testing/testing_sgetrf_gpu.cpp  \
-testing/testing_spotrf_gpu.cpp
+testing/testing_spotrf_gpu.cpp  \
+testing/testing_sgeqrf_gpu.cpp
 
 
 SRC_LIB :=  \
 library/dense/linear_DnSgetrf.cpp  \
+library/dense/linear_DnSgeqrf.cpp  \
 library/dense/linear_DnSpotrf.cpp
 
 #interface_cuda/connection_mgpu.c  \
+
+SRC_ICLABLAS_CU := \
+iclablas/slaset.cu  \
+iclablas/slacpy.cu
 
 SRC_MATH_TOOL := \
 math_tool/cblas_c.cpp  \

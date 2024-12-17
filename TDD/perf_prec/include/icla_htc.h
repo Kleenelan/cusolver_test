@@ -10,13 +10,6 @@ extern "C" {
 #endif
 
 
-
-
-
-
-
-
-
 icla_int_t
 icla_dhgesv_iteref_gpu(
     icla_trans_t trans, icla_int_t n, icla_int_t nrhs,

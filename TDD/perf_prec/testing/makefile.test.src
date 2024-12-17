@@ -1,4 +1,4 @@
 SRC_TEST := \
-testing_sgetrf_gpu.cpp
-#  \
-#testing_spotrf_gpu.cpp
+testing_sgetrf_gpu.cpp  \
+testing_spotrf_gpu.cpp  \
+testing_sgeqrf_gpu.cpp
