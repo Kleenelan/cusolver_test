@@ -719,14 +719,8 @@ icla_ssyevd_gpu(
     icla_vec_t jobz, icla_uplo_t uplo,
     icla_int_t n,
     iclaFloat_ptr dA, icla_int_t ldda,
-    float *w,
-    float *wA,  icla_int_t ldwa,
-    float *work, icla_int_t lwork,
-    #ifdef ICLA_COMPLEX
-    float *rwork, icla_int_t lrwork,
-    #endif
-    icla_int_t *iwork, icla_int_t liwork,
-    icla_int_t *info);
+    float *w, icla_int_t *info,
+    icla_queue_t the_queue, real_Double_t *gpu_time_to);
 
 
 icla_int_t

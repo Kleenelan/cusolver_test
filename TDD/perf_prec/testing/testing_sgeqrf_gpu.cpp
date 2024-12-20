@@ -246,6 +246,9 @@ int gtest_sgeqrf_gpu(iclaInt_ptr success_array, iclaInt_ptr len)
         }
         printf("\n\n");
     }
+#ifdef BUILD_MAIN_
+    icla_free_cpu(success_array);
+#endif
 
     icla_queue_destroy( the_queue );
 

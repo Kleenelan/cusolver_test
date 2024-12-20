@@ -7,7 +7,8 @@ OpenBLAS-0.3.27/version.h: v0.3.27.tar.gz
 	tar zxf v0.3.27.tar.gz 
 
 OpenBLAS-0.3.27/libopenblas.so: OpenBLAS-0.3.27/version.h
-	make -C OpenBLAS-0.3.27 FC=gfortran -j
+	make -C OpenBLAS-0.3.27 FC=gfortran
+# DEBUG=1 -j
 
 
 install:

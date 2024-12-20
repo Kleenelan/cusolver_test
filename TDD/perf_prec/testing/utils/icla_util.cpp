@@ -193,7 +193,7 @@ icla_opts::icla_opts( icla_opts_t flag )
     this->iseed[2]  = 0;
     this->iseed[3]  = 1;
 
-    if ( flag == iclaOptsBatched ) {
+    if ( flag == IclaOptsBatched ) {
 
         this->default_nstart = 32;
         this->default_nstep  = 32;
@@ -511,20 +511,20 @@ void icla_opts::parse_opts( int argc, char** argv )
             {
                 if ( *token == '\0' ) {
  }
-                else if ( strcmp( token, "all"       ) == 0 ) { this->svd_work.push_back( iclaSVD_all        ); }
-                else if ( strcmp( token, "query"     ) == 0 ) { this->svd_work.push_back( iclaSVD_query      ); }
-                else if ( strcmp( token, "doc"       ) == 0 ) { this->svd_work.push_back( iclaSVD_doc        ); }
-                else if ( strcmp( token, "doc_old"   ) == 0 ) { this->svd_work.push_back( iclaSVD_doc_old    ); }
-                else if ( strcmp( token, "min__"       ) == 0 ) { this->svd_work.push_back( iclaSVD_min        ); }
-                else if ( strcmp( token, "min__-1"     ) == 0 ) { this->svd_work.push_back( iclaSVD_min_1      ); }
-                else if ( strcmp( token, "min_old"   ) == 0 ) { this->svd_work.push_back( iclaSVD_min_old    ); }
-                else if ( strcmp( token, "min_old-1" ) == 0 ) { this->svd_work.push_back( iclaSVD_min_old_1  ); }
-                else if ( strcmp( token, "min_fast"  ) == 0 ) { this->svd_work.push_back( iclaSVD_min_fast   ); }
-                else if ( strcmp( token, "min_fast-1") == 0 ) { this->svd_work.push_back( iclaSVD_min_fast_1 ); }
-                else if ( strcmp( token, "opt"       ) == 0 ) { this->svd_work.push_back( iclaSVD_opt        ); }
-                else if ( strcmp( token, "opt_old"   ) == 0 ) { this->svd_work.push_back( iclaSVD_opt_old    ); }
-                else if ( strcmp( token, "opt_slow"  ) == 0 ) { this->svd_work.push_back( iclaSVD_opt_slow   ); }
-                else if ( strcmp( token, "max__"       ) == 0 ) { this->svd_work.push_back( iclaSVD_max        ); }
+                else if ( strcmp( token, "all"       ) == 0 ) { this->svd_work.push_back( IclaSVD_all        ); }
+                else if ( strcmp( token, "query"     ) == 0 ) { this->svd_work.push_back( IclaSVD_query      ); }
+                else if ( strcmp( token, "doc"       ) == 0 ) { this->svd_work.push_back( IclaSVD_doc        ); }
+                else if ( strcmp( token, "doc_old"   ) == 0 ) { this->svd_work.push_back( IclaSVD_doc_old    ); }
+                else if ( strcmp( token, "min__"       ) == 0 ) { this->svd_work.push_back( IclaSVD_min        ); }
+                else if ( strcmp( token, "min__-1"     ) == 0 ) { this->svd_work.push_back( IclaSVD_min_1      ); }
+                else if ( strcmp( token, "min_old"   ) == 0 ) { this->svd_work.push_back( IclaSVD_min_old    ); }
+                else if ( strcmp( token, "min_old-1" ) == 0 ) { this->svd_work.push_back( IclaSVD_min_old_1  ); }
+                else if ( strcmp( token, "min_fast"  ) == 0 ) { this->svd_work.push_back( IclaSVD_min_fast   ); }
+                else if ( strcmp( token, "min_fast-1") == 0 ) { this->svd_work.push_back( IclaSVD_min_fast_1 ); }
+                else if ( strcmp( token, "opt"       ) == 0 ) { this->svd_work.push_back( IclaSVD_opt        ); }
+                else if ( strcmp( token, "opt_old"   ) == 0 ) { this->svd_work.push_back( IclaSVD_opt_old    ); }
+                else if ( strcmp( token, "opt_slow"  ) == 0 ) { this->svd_work.push_back( IclaSVD_opt_slow   ); }
+                else if ( strcmp( token, "max__"       ) == 0 ) { this->svd_work.push_back( IclaSVD_max        ); }
                 else {
                     icla_assert( false, "error: --svd-work '%s' is invalid\n", argv[i] );
                 }
@@ -583,7 +583,7 @@ void icla_opts::parse_opts( int argc, char** argv )
     }
 
     if ( this->svd_work.size() == 0 ) {
-        this->svd_work.push_back( iclaSVD_query );
+        this->svd_work.push_back( IclaSVD_query );
     }
     if ( this->jobu.size() == 0 ) {
         this->jobu.push_back( IclaNoVec );

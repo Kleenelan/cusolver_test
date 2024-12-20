@@ -1,10 +1,5 @@
 *> \brief \b ZBDT01
 *
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at
-*            http://www.netlib.org/lapack/explore-html/
-*
 *  Definition:
 *  ===========
 *
@@ -130,16 +125,6 @@
 *>          The test ratio:  norm(A - Q * B * P') / ( n * norm(A) * EPS )
 *> \endverbatim
 *
-*  Authors:
-*  ========
-*
-*> \author Univ. of Tennessee
-*> \author Univ. of California Berkeley
-*> \author Univ. of Colorado Denver
-*> \author NAG Ltd.
-*
-*> \date November 2011
-*
 *> \ingroup complex16_eig
 *
 *  =====================================================================
@@ -147,10 +132,6 @@
      $                   RWORK, RESID )
       implicit none
 *
-*  -- LAPACK test routine (version 3.4.0) --
-*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       INTEGER            KD, LDA, LDPT, LDQ, M, N

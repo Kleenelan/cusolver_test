@@ -488,8 +488,8 @@ float  icla_cabsf( iclaFloatComplex  x );
 
 
 
-#define ICLA_VERSION_MAJOR 2
-#define ICLA_VERSION_MINOR 8
+#define ICLA_VERSION_MAJOR 1
+#define ICLA_VERSION_MINOR 0
 #define ICLA_VERSION_MICRO 0
 
 
