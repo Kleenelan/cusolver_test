@@ -1,4 +1,5 @@
 SRC_SOLVER :=  \
 dense/linear_DnSgetrf.cpp  \
 dense/linear_DnSgeqrf.cpp  \
-dense/linear_DnSpotrf.cpp
+dense/linear_DnSpotrf.cpp  \
+dense/linear_DnSsyevd.cpp

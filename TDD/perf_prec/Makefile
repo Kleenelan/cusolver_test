@@ -54,10 +54,10 @@ OBJ_FRAME += $(OBJ_ICLABLAS_CU)
 	$(DEVCC) $(DEVCC_FLAGS) $< -c -o $@ $(INC_CU)
 
 
-
+# -fsanitize=leak -fsanitize=address -fsanitize=undefined  -fsanitize=thread
 OPT_FLAGS :=  -g -O0 -Wall -ggdb -fno-inline
 #OPT_FLAGS := -O3
-CPP_FLAGS := $(OPT_FLAGS) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11
+CPP_FLAGS := $(OPT_FLAGS) -fPIC -DNDEBUG -DADD_ -Wall -fopenmp -std=c++11 #-fsanitize=undefined# -fsanitize=thread
 FORT        ?= gfortran
 FFLAGS       = $(OPT_FLAGS) -fPIC -DNDEBUG -DADD_ -Wall -Wno-unused-dummy-argument
 INC := \
@@ -76,9 +76,10 @@ INC := \
 
 
 LD_FLAGS := -L$(CUDADIR)/lib64 -lcudart -lcublas -lcublasLt -lcusparse -lcusolver -lgfortran \
-			-L../third_party/openblas/OpenBLAS-0.3.27 -lopenblas -Wl,-rpath,../third_party/openblas/OpenBLAS-0.3.27
+			-L../third_party/openblas/OpenBLAS-0.3.27 -lopenblas -Wl,-rpath,$(PROJ_DIR)/../third_party/openblas/OpenBLAS-0.3.27
 
 $(LIB_SHARED_TDD): $(OBJ_FRAME) $(OBJ_TESTING)
+	make -C $(PROJ_DIR)/../third_party/openblas
 	g++ -shared -fPIC $^ -o $@ $(LD_FLAGS)
 
 $(LIB_SHARED_FRAME): $(OBJ_FRAME)
@@ -111,3 +112,7 @@ clean:
 .PHONY: clean-app
 clean-app:
 	-rm -rf $(EXE_TESTING)
+
+.PHONY: clean-openblas
+clean-openblas:
+	-rm -rf $(PROJ_DIR)/../third_party/openblas/OpenBLAS-0.3.27

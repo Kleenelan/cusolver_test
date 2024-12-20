@@ -1,10 +1,5 @@
 *> \brief \b CUNT01
 *
-*  =========== DOCUMENTATION ===========
-*
-* Online html documentation available at
-*            http://www.netlib.org/lapack/explore-html/
-*
 *  Definition:
 *  ===========
 *
@@ -111,14 +106,6 @@
 *>          RESID = norm( I - U' * U ) / ( m * EPS ), if ROWCOL = 'C'.
 *> \endverbatim
 *
-*  Authors:
-*  ========
-*
-*> \author Univ. of Tennessee
-*> \author Univ. of California Berkeley
-*> \author Univ. of Colorado Denver
-*> \author NAG Ltd.
-*
 *> \date November 2011
 *
 *> \ingroup complex_eig
@@ -127,11 +114,6 @@
       SUBROUTINE CUNT01( ROWCOL, M, N, U, LDU, WORK, LWORK, RWORK,
      $                   RESID )
       implicit none
-*
-*  -- LAPACK test routine (version 3.4.0) --
-*  -- LAPACK is a software package provided by Univ. of Tennessee,    --
-*  -- Univ. of California Berkeley, Univ. of Colorado Denver and NAG Ltd..--
-*     November 2011
 *
 *     .. Scalar Arguments ..
       CHARACTER          ROWCOL

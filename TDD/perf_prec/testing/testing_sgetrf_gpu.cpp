@@ -154,6 +154,10 @@ int gtest_sgetrf_gpu( iclaInt_ptr success_array, iclaInt_ptr len)
     icla_opts opts;
     opts.parse_opts( argc, argv );
 
+    if(argv != NULL){
+        free(argv);
+        argv = NULL;
+    }
     *len = opts.ntest * opts.niter;
     printf("len = %d\n", *len);
 #endif

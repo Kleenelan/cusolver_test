@@ -46,6 +46,11 @@ int gtest_spotrf_gpu(iclaInt_ptr success_array, iclaInt_ptr len)
     icla_opts opts;
     opts.matrix = "rand_dominant";  // default
     opts.parse_opts( argc, argv );
+
+    if(argv != NULL){
+        free(argv);
+        argv = NULL;
+    }
 #endif
 
     // constants
@@ -103,57 +108,6 @@ int gtest_spotrf_gpu(iclaInt_ptr success_array, iclaInt_ptr len)
                 icla_spotrf_gpu( opts.uplo, N, d_A, ldda, &info, the_queue, &gpu_time );
                 //gpu_time = icla_wtime() - gpu_time;
             }
-#if 0
-            else if(opts.version == 2){
-                gpu_time = icla_wtime();
-                //LL::  icla_spotrf_native(opts.uplo, N, d_A, ldda, &info );
-                gpu_time = icla_wtime() - gpu_time;
-            }
-            else if(opts.version == 3 || opts.version == 4) {
-                // expert interface
-                icla_mode_t mode = (opts.version == 3) ? IclaHybrid : IclaNative;
-                icla_int_t nb    = 32;//LL:: icla_get_spotrf_nb( N );
-                icla_int_t recnb = 128;
-
-                // query workspace
-                void *hwork = NULL, *dwork=NULL;
-                icla_int_t lhwork[1] = {-1}, ldwork[1] = {-1};
-                /*LL::  icla_spotrf_expert_gpu_work(
-                    opts.uplo, N, NULL, ldda, &info,
-                    mode, nb, recnb,
-                    NULL, lhwork, NULL, ldwork,
-                    events, queues );*/
-
-                // alloc workspace
-                if( lhwork[0] > 0 ) {
-                    icla_malloc_pinned( (void**)&hwork, lhwork[0] );
-                }
-
-                if( ldwork[0] > 0 ) {
-                    icla_malloc( (void**)&dwork, ldwork[0] );
-                }
-
-                // time actual call only
-                gpu_time = icla_wtime();
-                /*LL::  icla_spotrf_expert_gpu_work(
-                    opts.uplo, N, d_A, ldda, &info,
-                    mode, nb, recnb,
-                    hwork, lhwork, dwork, ldwork,
-                    events, queues );*/
-                icla_queue_sync( queues[0] );
-                icla_queue_sync( queues[1] );
-                gpu_time = icla_wtime() - gpu_time;
-
-                // free workspace
-                if( hwork != NULL) {
-                    icla_free_pinned( hwork );
-                }
-
-                if( dwork != NULL ) {
-                    icla_free( dwork );
-                }
-            }
-#endif
 
             gpu_perf = gflops / gpu_time;
             if (info != 0) {

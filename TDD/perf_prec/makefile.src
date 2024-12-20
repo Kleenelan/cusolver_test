@@ -1,13 +1,16 @@
 SRC_TESTING := \
 testing/testing_sgetrf_gpu.cpp  \
 testing/testing_spotrf_gpu.cpp  \
-testing/testing_sgeqrf_gpu.cpp
+testing/testing_sgeqrf_gpu.cpp  \
+testing/testing_ssyevd_gpu.cpp
 
 
 SRC_LIB :=  \
 library/dense/linear_DnSgetrf.cpp  \
 library/dense/linear_DnSgeqrf.cpp  \
-library/dense/linear_DnSpotrf.cpp
+library/dense/linear_DnSpotrf.cpp  \
+library/dense/linear_DnSsyevd.cpp
+
 
 #interface_cuda/connection_mgpu.c  \
 
@@ -68,5 +71,12 @@ testing/lin/dort01.f  \
 testing/lin/sbdt01.f  \
 testing/lin/sort01.f  \
 testing/lin/zbdt01.f  \
-testing/lin/zunt01.f
+testing/lin/zunt01.f  \
+testing/lin/ssyt01.f  \
+testing/lin/ssyt21.f  \
+testing/lin/ssyt22.f  \
+testing/lin/clavsy.f  \
+testing/lin/dlavsy.f  \
+testing/lin/slavsy.f  \
+testing/lin/zlavsy.f
 
